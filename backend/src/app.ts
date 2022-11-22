@@ -13,6 +13,12 @@ app.use(cors());
 app.use(express.json());
 connectDB();
 
+// Logging middleware
+app.use((req: Request, res: Response, next: any) => {
+    console.log(`${req.method} ${req.path}`);
+    next();
+});
+
 app.use("/api/users", userRoutes);
 app.use("/api/prof", profRoutes);
 app.use("/api/course", courseRoutes);

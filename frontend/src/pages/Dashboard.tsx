@@ -9,6 +9,7 @@ import { UserTypes } from "../enums/UserTypes";
 import ManageProfessors from "../components/sysop/ManageProfessors";
 import ManageCourses from "../components/sysop/ManageCourses";
 import ManageUsers from "../components/sysop/ManageUsers";
+import { emptyUser } from "../classes/User";
 
 
 export function Dashboard() {
@@ -46,15 +47,14 @@ export function Dashboard() {
   }
 
   function handleLogout(): void {
+    // remove token from local storage
+    localStorage.removeItem("user");
+
+    // set user state
+    setUser(emptyUser);
+
     navigate("/logout");
   }
-
-  useEffect(() => {
-    // if no user redirect to login page
-    if (!user.email) {
-      navigate("/login");
-    }
-  }, [user, navigate]);
 
   // Render nav dropdown options and nav tabs based on state above
   return (
@@ -63,7 +63,7 @@ export function Dashboard() {
         <Container>
           <img className="logo" src={logo} alt="mcgill-logo" />
           <Nav className="me-auto">
-            <NavDropdown title={currentProfile} id="basic-nav-dropdown">              
+            <NavDropdown title={currentProfile} id="basic-nav-dropdown">
               {user.userType.map((profile) => (
                 <NavDropdown.Item
                   key={profile.toString()}

@@ -49,6 +49,10 @@ const Login: React.FC = () => {
         const result = await res.json();
         // set user state
         setUser(result);
+
+        // save user to local storage
+        localStorage.setItem("user", JSON.stringify(result));
+
         navigate("/dashboard");
         return;
       } else {
