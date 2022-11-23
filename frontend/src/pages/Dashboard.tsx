@@ -12,16 +12,29 @@ import ManageUsers from "../components/sysop/ManageUsers";
 import { emptyUser } from "../classes/User";
 
 
-export function Dashboard() {
-  const tabsPerProfile = new Map<UserTypes, Array<string>>([
-    [UserTypes.Sysop, ["Professors", "Courses", "Users"]],
-  ]);
+// these don't need to be in the component since they don't change
+const adminTabs = ["TA Admin"];
+const managementTabs = []; // TODO: add blue tabs here
+const rateTabs = ["Rate TA"];
+const sysopTabs = ["Professors", "Courses", "Users"];
 
-  const tabNamesToJSX = new Map<string, JSX.Element>([
-    ["Professors", <ManageProfessors />],
-    ["Courses", <ManageCourses />],
-    ["Users", <ManageUsers />]
-  ]);
+const tabsPerProfile = new Map<UserTypes, Array<string>>([
+  [UserTypes.Admin, [...adminTabs, ...managementTabs, ...rateTabs]],
+  [UserTypes.Professor, [...managementTabs, ...rateTabs]],
+  [UserTypes.Student, [...rateTabs]],
+  [UserTypes.Sysop, [...sysopTabs, ...adminTabs, ...managementTabs, ...rateTabs]],
+  [UserTypes.TA, [...managementTabs, ...rateTabs]]
+]);
+
+// TODO: add new tab names linked to corresponding components here
+const tabNamesToJSX = new Map<string, JSX.Element>([
+  ["Professors", <ManageProfessors />],
+  ["Courses", <ManageCourses />],
+  ["Users", <ManageUsers />],
+  ["TA Admin", <div>TA Admin</div>]
+]);
+
+export function Dashboard() {
 
   const navigate = useNavigate();
   /**
