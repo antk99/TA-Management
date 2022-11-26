@@ -9,17 +9,20 @@ import { UserTypes } from "../enums/UserTypes";
 import ManageProfessors from "../components/sysop/ManageProfessors";
 import ManageCourses from "../components/sysop/ManageCourses";
 import ManageUsers from "../components/sysop/ManageUsers";
+import ManageTAs from "../components/ta-management/ManageTAs";
 
 
 export function Dashboard() {
   const tabsPerProfile = new Map<UserTypes, Array<string>>([
     [UserTypes.Sysop, ["Professors", "Courses", "Users"]],
+    [UserTypes.TA, ["TA Management"]],
   ]);
 
   const tabNamesToJSX = new Map<string, JSX.Element>([
     ["Professors", <ManageProfessors />],
     ["Courses", <ManageCourses />],
-    ["Users", <ManageUsers />]
+    ["Users", <ManageUsers />],
+    ["TA Management", <ManageTAs />]
   ]);
 
   const navigate = useNavigate();
