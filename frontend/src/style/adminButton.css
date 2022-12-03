@@ -1,0 +1,43 @@
+.adminButton {
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: 600;
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    color: var(--bs-gray-500);
+    transition: all 0.2s ease-in-out;
+}
+
+.adminButton:hover {
+    color: white;
+}
+
+.adminButtonRed {
+    color: red;
+    border: 1px solid red;
+}
+
+.adminButtonRed:hover {
+    background-color: red;
+}
+
+.adminButtonGreen {
+    color: rgb(0, 128, 0);
+    border: 1px solid rgb(0, 128, 0);
+}
+
+.adminButtonGreen:hover {
+    background-color: rgb(0, 128, 0);
+}
+
+.adminButtonGray {
+    color: var(--bs-gray-600);
+    border: 1px solid var(--bs-gray-700);
+}
+
+.adminButtonGray:hover {
+    background-color: var(--bs-gray-700);
+}
+
+.adminButton:disabled {
+    font-weight: 400;
+}
