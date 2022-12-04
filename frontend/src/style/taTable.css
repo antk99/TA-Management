@@ -1,0 +1,120 @@
+.appliedFilters {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 10px;
+    justify-content: left;
+}
+
+.appliedFilters .btn {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1px;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.adminDropdownInput {
+    padding: 3px 10px 3px 10px;
+}
+
+#taCourseInfoTable thead tr {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+}
+
+#taCourseInfoTable tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+#taCourseInfoTable {
+    height: 600px;
+    overflow: auto;
+    scroll-snap-type: both mandatory;
+}
+
+.taTableFilter {
+    margin-left: -0.75rem;
+}
+
+#taCourseInfoTable tr {
+    scroll-snap-align: end;
+}
+
+#taCourseInfoTable table td {
+    border: 1px solid #e9ecee;
+}
+#taCourseInfoTable th {
+    font-weight: normal;
+    border: 1px solid #e9ecee;
+}
+#taCourseInfoTable td {
+    font-weight: 200;
+    color: black;
+    border: 1px solid #e9ecee;
+}
+
+#taCourseInfoTable th:first-child,
+#taCourseInfoTable td:first-child {
+    border-left: none;
+}
+
+#taCourseInfoTable th:nth-child(2),
+#taCourseInfoTable td:nth-child(2) {
+    border-left: none;
+}
+
+#taCourseInfoTable th:last-child,
+#taCourseInfoTable td:last-child {
+    border-right: none;
+}
+
+#taCourseInfoTable .column0 {
+    border: none;
+}
+
+/*
+#taCourseInfoTable .column5 {
+    width: 20%;
+}
+
+#taCourseInfoTable .column4 {
+    width: 20%;
+}
+
+#taCourseInfoTable .column3 {
+    width: 5%;
+}
+
+#taCourseInfoTable .column2 {
+    width: 25%;
+}
+
+#taCourseInfoTable .column1 {
+    width: 25%;
+} */
+
+#taCourseInfoTable .btn.btn-secondary:hover {
+    background-color: var(--bs-gray-700);
+    color: white;
+}
+
+#taCourseInfoTable .btn.btn-secondary {
+    background-color: none;
+    color: black;
+    border: none;
+    font-weight: normal;
+    transition: all 0.2s ease-in-out;
+}
+
+.actionsBarCourseInput {
+    width: 80%;
+}
+
+.actionsBarCourseInputSubmit {
+    cursor: pointer;
+    width: 20%;
+}

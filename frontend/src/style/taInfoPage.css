@@ -1,0 +1,118 @@
+.taInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-weight: 200;
+}
+
+.taInfoContainer {
+    --actions-bar-height: 75px;
+    margin-bottom: var(--actions-bar-height);
+}
+
+.taInfo .card-title {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.cohortFieldsContainer {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row !important;
+    gap: 20px;
+}
+
+.cohortFields {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    width: 50%;
+}
+
+.wishlistMembership {
+    width: 100%;
+}
+
+.wishlistProfessors {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.wishlistProfessor {
+    width: fit-content;
+    border: 1px solid var(--bs-card-border-color);
+    border-radius: 7px;
+    padding: 5px;
+}
+
+.wishlistProfessors {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.studentComments,
+.professorPerformanceLogs {
+    max-height: 300px;
+    overflow: auto;
+}
+
+.taInfoCard {
+    overflow: auto;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.taInfoCardBody {
+    display: flex;
+    overflow: auto;
+    gap: 20px;
+}
+
+.taActionsBackdrop {
+    position: fixed;
+    width: 100%;
+    height: var(--actions-bar-height);
+    bottom: 0;
+    background-color: white;
+}
+
+.realBackdrop {
+    box-shadow: 0px -5px 10px 0px rgba(0, 0, 0, 0.15);
+    left: 0;
+}
+
+.containerBackdrop {
+    display: flex;
+    align-items: center;
+}
+
+.taActionsBar {
+    z-index: 1;
+    position: fixed;
+    gap: 20px;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-primary.greenDropdown {
+    background-color: green !important;
+    border-color: rgb(0, 128, 0) !important;
+}
+
+.btn-primary.greenDropdown:hover {
+    background-color: rgb(0, 96, 0) !important;
+}
+
+.btn-primary.redDropdown {
+    background-color: rgb(185, 0, 0) !important;
+    border-color: rgb(185, 0, 0) !important;
+}
+
+.btn-primary.redDropdown:hover {
+    background-color: rgb(135, 0, 0) !important;
+}

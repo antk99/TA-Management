@@ -1,0 +1,22 @@
+.labelledTextbox {
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    border-radius: 7px;
+    transition: all 0.2s ease-in-out;
+}
+
+.labelledTextbox:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.labelledTextbox legend {
+    font-weight: normal;
+    font-size: inherit;
+    float: initial;
+    width: auto;
+    padding: 5px;
+    margin-bottom: 0;
+}
+
+.labelledTextbox span {
+    padding-bottom: 15px;
+}
