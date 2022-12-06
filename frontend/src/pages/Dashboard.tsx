@@ -10,6 +10,8 @@ import ManageProfessors from "../components/sysop/ManageProfessors";
 import ManageCourses from "../components/sysop/ManageCourses";
 import ManageUsers from "../components/sysop/ManageUsers";
 import { emptyUser } from "../classes/User";
+import TACourseHistory from "../components/admin/TACourseHistoryTable";
+import TAAdmin from "../components/admin/TAAdmin";
 
 
 // these don't need to be in the component since they don't change
@@ -31,7 +33,7 @@ const tabNamesToJSX = new Map<string, JSX.Element>([
   ["Professors", <ManageProfessors />],
   ["Courses", <ManageCourses />],
   ["Users", <ManageUsers />],
-  ["TA Admin", <div>TA Admin</div>]
+  ["TA Admin", <TAAdmin />]
 ]);
 
 export function Dashboard() {
