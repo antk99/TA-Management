@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useHttp = (requestConfig, dataFn) => {
+export const useHttp = (requestConfig, dataFn, token) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -12,7 +12,7 @@ const useHttp = (requestConfig, dataFn) => {
             const response = await fetch(
                 requestConfig.url, {
                     method: requestConfig.method ? requestConfig.method : 'GET',
-                    headers: requestConfig.headers ? requestConfig.headers : {},
+                    headers: requestConfig.headers ? requestConfig.headers : {Authorization: `Bearer ${token}`},
                     body: requestConfig.body ? JSON.stringify(requestConfig.body) : null
                 }
             );
