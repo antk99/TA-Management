@@ -1,35 +1,34 @@
 import mongoose from 'mongoose';
-import { ICourse } from './Course';
-import { IStudent } from './Student';
-import { ITA } from './TA';
-const Schema = mongoose.Schema;
 
 export interface IRating extends mongoose.Document {
-	author: IStudent;
-	ta: ITA;
-	course: ICourse;
-	score: number;
-	comment: string;
+    authorID: string;
+    authorName: string;
+    taStudentID: string;
+    courseNumber: string;
+    score: number;
+    comment: string;
 }
 
 const RatingSchema = new mongoose.Schema({
 
-    author: {
-        type: Schema.Types.ObjectId,
+    authorID: {
+        type: String,
         required: true,
-        ref: "Student"
     },
 
-    ta: {
-        type: Schema.Types.ObjectId,
+    authorName: {
+        type: String,
         required: true,
-        ref: "TA"
     },
 
-    course: {
-        type: Schema.Types.ObjectId,
+    taStudentID: {
+        type: String,
         required: true,
-        ref: "Course"
+    },
+
+    courseNumber: {
+        type: String,
+        required: true,
     },
 
     score: {

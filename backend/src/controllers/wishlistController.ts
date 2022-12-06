@@ -1,28 +1,20 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import Course from "../models/Course";
-import User from "../models/User";
 import Wishlist from "../models/Wishlist";
 import Professor from "../models/Professor";
 import TA from "../models/TA";
-import objectIdFromString from "../utils/objectIdFromString";
 import { capitalizeFirstLetter } from "../utils/stringFormatting";
+import { getProfNameByEmail } from "./profController";
 
 // @Desc Get a prof's wishlist
-// @Route /api/wishlist
+// @Route /api/wishlist/:profEmail
 // @Method GET
-export const getWishlist = asyncHandler(async (req: Request, res: Response) => {
-    const { profEmail } = req.body;
-    console.log("NEW");
+export const getProfWishlist = asyncHandler(async (req: Request, res: Response) => {
+    const profEmail = req.params.profEmail;
+
     try {
-        if (!profEmail)
-            throw new Error("Missing at least one of required fields: profEmail.");
-
-        const profUserID = await User.findOne({ email: profEmail }).select("_id");
-        if (!profUserID)
-            throw new Error(`No user with email ${profEmail} found in the database! Add user and continue.`);
-
-        const wishlist = await Wishlist.find({ professor: profUserID });
+        const wishlist = await Wishlist.find({ profEmail });
         res.status(200).json({ wishlist });
 
     } catch (error: any) {
@@ -30,19 +22,41 @@ export const getWishlist = asyncHandler(async (req: Request, res: Response) => {
     }
 });
 
-// @Desc Delete a prof's singular ta in their wishlist
-// @Route /api/wishlist/delete
-// @Method DELETE
-export const deleteWishlist = asyncHandler(async (req: Request, res: Response) => {
-    const { wishlistID } = req.body;
+// @Desc Get all wishlists for given TA
+// @Route /api/wishlist/ta/:studentID
+// @Method GET
+export const getTAWishlist = asyncHandler(async (req: Request, res: Response) => {
+    const studentID = req.params.studentID;
 
     try {
-        if (!wishlistID)
-            throw new Error("Missing at least one of required fields: wishlistID.");
-
-        const wishlist = await Wishlist.findByIdAndDelete(objectIdFromString(wishlistID));
+        const wishlist = await Wishlist.find({ taStudentID: studentID }) as any;
         if (!wishlist)
-            throw new Error("No wishlist found with that ID.");
+            throw new Error(`No wishlist found.`);
+
+        const list = [];
+        for (const item of wishlist) {
+            // get prof name & attach to wishlist
+            const profName = await getProfNameByEmail(item.profEmail);
+            item.profName = profName;
+            list.push({ ...item._doc, profName });
+        }
+        res.status(200).json({ wishlist: list });
+
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// @Desc Delete a prof's singular ta in their wishlist
+// @Route /api/wishlist/delete/:wishlistID
+// @Method DELETE
+export const deleteWishlist = asyncHandler(async (req: Request, res: Response) => {
+    const wishlistID = req.params.wishlistID;
+
+    try {
+        const wishlist = await Wishlist.findByIdAndDelete({ _id: wishlistID });
+        if (!wishlist)
+            throw new Error(`No wishlist found.`);
 
         res.status(200).json({ "message": "Wishlist deleted successfully." });
 
@@ -55,49 +69,33 @@ export const deleteWishlist = asyncHandler(async (req: Request, res: Response) =
 // @Route /api/wishlist/add
 // @Method POST
 export const addWishlist = asyncHandler(async (req: Request, res: Response) => {
-    let { professorEmail, taEmail, courseNumber, termFor, termYearFor } = req.body;
+    let { profEmail, taStudentID, courseNumber, termFor, termYearFor } = req.body;
 
     try {
-        if (!professorEmail || !taEmail || !courseNumber || !termFor || !termYearFor)
-            throw new Error("Missing at least one of required fields: professorEmail, taEmail, courseNumber, termFor, termYearFor.");
+        if (!profEmail || !taStudentID || !courseNumber || !termFor || !termYearFor)
+            throw new Error("Missing at least one of required fields: profEmail, taStudentID, courseNumber, termFor, termYearFor.");
 
+        courseNumber = courseNumber.toUpperCase(); // uppercase course number
         termFor = capitalizeFirstLetter(termFor); // capitalize first letter of term
 
-        const professorUserID = await User.findOne({ email: professorEmail }).select("_id");
-        if (!professorUserID)
-            throw new Error(`No user found with email ${professorEmail} in the database! Add user and continue.`);
+        const professorExists = await Professor.findOne({ profEmail });
+        if (!professorExists)
+            throw new Error(`Professor ${profEmail} not found in the database! Add professor and continue.`);
 
-        const professorID = await Professor.findOne({ professor: professorUserID }).select("_id");
-        if (!professorID)
-            throw new Error("Professor not found in the database! Add professor and continue.");
+        const taExists = await TA.findOne({ studentID: taStudentID });
+        if (!taExists)
+            throw new Error(`TA ${taStudentID} not found in the database! Add TA and continue.`);
 
-        const taUserID = await User.findOne({ email: taEmail }).select("_id");
-        if (!taUserID)
-            throw new Error(`No user found with email ${taEmail} in the database! Add user and continue.`);
-
-        const taID = await TA.findOne({ ta: taUserID }).select("_id");
-        if (!taID)
-            throw new Error("TA not found in the database! Add TA and continue.");
-
-        const courseID = await Course.findOne({ courseNumber }).select("_id");
-        if (!courseID)
+        const courseExists = await Course.findOne({ courseNumber });
+        if (!courseExists)
             throw new Error(`Course ${courseNumber} not found in the database! Add course and continue.`);
 
-        const exists = await Wishlist.findOne({ professor: professorUserID, ta: taUserID, course: courseID, termFor, termYearFor });
-        if (exists)
-            throw new Error("Wishlist already exists in the database!");
-
-        const wishlist = new Wishlist({ professor: professorUserID, ta: taUserID, course: courseID, termFor, termYearFor });
-        await wishlist.save();
-        res.status(201).json({
-            id: wishlist._id,
-            professor: wishlist.professor,
-            ta: wishlist.ta,
-            course: wishlist.course,
-            termFor: wishlist.termFor,
-            termYearFor: wishlist.termYearFor
-        });
-
+        let wishlist = await Wishlist.findOne({ profEmail, taStudentID, courseNumber, termFor, termYearFor });
+        if (!wishlist) {
+            wishlist = new Wishlist({ profEmail, taStudentID, courseNumber, termFor, termYearFor });
+            await wishlist.save();
+        }
+        res.status(201).json({ wishlist });
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }

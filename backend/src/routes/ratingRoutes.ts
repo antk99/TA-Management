@@ -3,9 +3,9 @@ import { getRatings, addRating, deleteRating } from '../controllers/ratingContro
 
 const router = express.Router();
 
-router.route("/").get(getRatings);
+router.route("/:taStudentID").get(getRatings);
 router.route("/add").post(addRating);
-router.route("/delete").delete(deleteRating);
+router.route("/delete/:ratingID").delete(deleteRating);
 
 
 export default router;

@@ -33,10 +33,10 @@ export const registerProfFromFile = asyncHandler(async (req: Request, res: Respo
                 console.log("Instructor or course not found in the database! Skipping row.");
             } else {
                 const prof = new Professor({
-                    professor: instructor,
+                    professor: instructor._id,
+                    profEmail: professorEmail,
                     faculty: record[1],
                     department: record[2],
-                    course: course
                 });
                 await prof.save();
             }
@@ -52,34 +52,37 @@ export const registerProfFromFile = asyncHandler(async (req: Request, res: Respo
 // @Route /api/prof/add
 // @Method POST
 export const addProf = asyncHandler(async (req: Request, res: Response) => {
-    const { professorEmail, faculty, department } = req.body;
+    const { profEmail, faculty, department } = req.body;
     // Also think of the case when the email is not that of a prof, how can you handle it?
 
     try {
-        if (!professorEmail || !faculty || !department)
-            throw new Error("Missing at least one of required fields: professorEmail, faculty, department.");
+        if (!profEmail || !faculty || !department)
+            throw new Error("Missing at least one of required fields: profEmail, faculty, department.");
 
-        const professorUserID = await User.findOne({ email: professorEmail }).select("_id");
-        if (!professorUserID)
-            throw new Error(`No user with email: ${professorEmail} found in the database. Add user and continue.`);
+        const userExists = await User.findOne({ email: profEmail });
+        if (!userExists)
+            throw new Error(`No user with email: ${profEmail} found in the database. Add user and continue.`);
 
-        const exists = await Professor.findOne({ professor: professorUserID });
-        if (exists)
-            throw new Error(`Professor with email: ${professorEmail} already exists in the database.`);
+        const profExists = await Professor.findOne({ profEmail });
+        if (profExists)
+            throw new Error(`Professor with email: ${profEmail} already exists in the database.`);
 
         const prof = new Professor({
-            professor: professorUserID,
-            faculty: faculty,
-            department: department,
+            professor: userExists._id,
+            profEmail,
+            faculty,
+            department,
         });
         await prof.save();
-        res.status(201).json({
-            id: prof._id,
-            professor: prof.professor,
-            faculty: prof.faculty,
-            term: prof.department,
-        });
+        res.status(201).json({ prof });
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }
 });
+
+export const getProfNameByEmail = async (profEmail: string) => {
+    const profNames = await User.findOne({ email: profEmail }).select("firstName lastName") as any;
+    if (!profNames) return "No Name";
+
+    return profNames.firstName + " " + profNames.lastName;
+}

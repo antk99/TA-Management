@@ -1,14 +1,11 @@
 import express from 'express';
-import multer from "multer";
-import { addWishlist, deleteWishlist, getWishlist } from '../controllers/wishlistController';
+import { addWishlist, deleteWishlist, getProfWishlist, getTAWishlist } from '../controllers/wishlistController';
 
 const router = express.Router();
 
-// require authentication for all course routes
-// router.use(requireAuth);
-
-router.route("/").get(getWishlist);
+router.route("/:profEmail").get(getProfWishlist);
+router.route("/ta/:studentID").get(getTAWishlist);
 router.route("/add").post(addWishlist);
-router.route("/delete").delete(deleteWishlist);
+router.route("/delete/:wishlistID").delete(deleteWishlist);
 
 export default router;

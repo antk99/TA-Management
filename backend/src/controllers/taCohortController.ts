@@ -4,20 +4,12 @@ import TA from '../models/TA';
 import TACohort from '../models/TACohort';
 
 // @Desc Get all cohort info for given TA
-// @Route /api/cohort
+// @Route /api/cohort/:studentID
 // @Method GET
 export const getCohortInfo = asyncHandler(async (req: Request, res: Response) => {
-    const { taStudentID } = req.body;
-
+    const studentID = req.params.studentID;
     try {
-        if (!taStudentID)
-            throw new Error("Missing required field: taStudentID.");
-
-        const taID = await TA.findOne({ studentID: taStudentID }).select("_id");
-        if (!taID)
-            throw new Error("TA not found. Add TA and continue.");
-
-        const cohortInfo = await TACohort.find({ ta: taID });
+        const cohortInfo = await TACohort.findOne({ studentID });
         if (!cohortInfo)
             throw new Error("No cohort info found.");
         res.status(200).json({ cohortInfo });
@@ -31,24 +23,24 @@ export const getCohortInfo = asyncHandler(async (req: Request, res: Response) =>
 // @Route /api/cohort/add
 // @Method POST
 export const addCohortInfo = asyncHandler(async (req: Request, res: Response) => {
-    const { taStudentID, phone, legalName, level, supervisorName, isPriority, hours, dateApplied, location, degree, coursesAppliedFor, openToOtherCourses, notes } = req.body;
+    const { studentID, phone, legalName, level, supervisorName, isPriority, hours, dateApplied, location, degree, coursesAppliedFor, openToOtherCourses, notes } = req.body;
 
     try {
-        if (!taStudentID || !phone || !legalName || !level || !supervisorName || !isPriority || !hours || !dateApplied || !location || !degree || !coursesAppliedFor || !openToOtherCourses || !notes)
+        if (!studentID || !phone || !legalName || !level || !supervisorName || !isPriority || !hours || !dateApplied || !location || !degree || !coursesAppliedFor || !openToOtherCourses || !notes)
             throw new Error("Missing required field(s).");
 
-        const taID = await TA.findOne({ studentID: taStudentID }).select("_id");
-        if (!taID)
-            throw new Error("TA not found. Add TA and continue.");
+        const taExists = await TA.findOne({ studentID });
+        if (!taExists)
+            throw new Error("No TA found with given studentID.");
 
-        const exists = await TACohort.findOne({ ta: taID });
+        const exists = await TACohort.findOne({ studentID });
         if (exists)
             throw new Error("Cohort info already exists for this TA. Delete it and try again.");
 
         // TODO: IMPORTANT validate fields 
 
         const cohortInfo = await TACohort.create({
-            ta: taID, phone, legalName, level, supervisorName, isPriority, hours, dateApplied, location, degree,
+            studentID, phone, legalName, level, supervisorName, isPriority, hours, dateApplied, location, degree,
             coursesAppliedFor: coursesAppliedFor.map((course: string) => course.toUpperCase()), openToOtherCourses, notes
         });
         res.status(200).json({ cohortInfo });
@@ -59,20 +51,13 @@ export const addCohortInfo = asyncHandler(async (req: Request, res: Response) =>
 });
 
 // @Desc Delete cohort info for given TA
-// @Route /api/cohort/delete
+// @Route /api/cohort/delete/:studentID
 // @Method DELETE
 export const deleteCohortInfo = asyncHandler(async (req: Request, res: Response) => {
-    const { taStudentID } = req.body;
+    const studentID = req.params.studentID;
 
     try {
-        if (!taStudentID)
-            throw new Error("Missing required field: taStudentID.");
-
-        const taID = await TA.findOne({ studentID: taStudentID }).select("_id");
-        if (!taID)
-            throw new Error("TA not found. Add TA and continue.");
-
-        const cohortInfo = await TACohort.findOneAndDelete({ ta: taID });
+        const cohortInfo = await TACohort.findOneAndDelete({ studentID });
         if (!cohortInfo)
             throw new Error("No cohort info found.");
 

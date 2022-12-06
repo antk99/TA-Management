@@ -39,7 +39,7 @@ app.use("/api/prof", profRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/student", studentRoutes);
 app.use("/api/ta", taRoutes);
-app.use("/api/review", ratingRoutes);
+app.use("/api/rating", ratingRoutes);
 app.use("/api/performanceLog", performanceLogRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/cohort", taCohortRoutes);

@@ -1,10 +1,11 @@
 import express from 'express';
-import { addPerformanceLog, deletePerformanceLog, getPerformanceLogs } from '../controllers/performanceLogController';
+import { addPerformanceLog, deletePerformanceLog, getPerformanceLogs, getPerformanceLogsByProf } from '../controllers/performanceLogController';
 
 const router = express.Router();
 
-router.route("/").get(getPerformanceLogs);
+router.route("/:studentID").get(getPerformanceLogs);
+router.route("/:profEmail/:studentID").get(getPerformanceLogsByProf);
 router.route("/add").post(addPerformanceLog);
-router.route("/delete").delete(deletePerformanceLog);
+router.route("/delete/:performanceLogID").delete(deletePerformanceLog);
 
 export default router;

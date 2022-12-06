@@ -3,8 +3,8 @@ import { getCohortInfo, addCohortInfo, deleteCohortInfo } from '../controllers/t
 
 const router = express.Router();
 
-router.route('/').get(getCohortInfo);
+router.route('/:studentID').get(getCohortInfo);
 router.route('/add').post(addCohortInfo);
-router.route('/delete').delete(deleteCohortInfo);
+router.route('/delete/:studentID').delete(deleteCohortInfo);
 
 export default router;
