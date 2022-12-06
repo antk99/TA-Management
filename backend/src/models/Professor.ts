@@ -1,12 +1,11 @@
 import mongoose from 'mongoose';
-import {IUser} from "./User";
+import { IUser } from "./User";
 const Schema = mongoose.Schema;
 
 export interface IProfessor extends mongoose.Document {
     professor: IUser,
     faculty: string, // think about what happens when profs are cross appointed 
     department: string,
-    course: string
 }
 
 const ProfessorSchema = new mongoose.Schema({
@@ -14,7 +13,8 @@ const ProfessorSchema = new mongoose.Schema({
     professor: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "User"
+        ref: "User",
+        unique: true
     },
 
     faculty: {
@@ -26,12 +26,6 @@ const ProfessorSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-
-    course: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "Course"
-    }
 
 }, {
     timestamps: true
