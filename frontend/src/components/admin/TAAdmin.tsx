@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { UserContext } from "../../App";
 import { TA } from "../../classes/TA";
 import { useHttp } from "../../hooks/useHttp";
-import TACourseHistory from "./TACourseHistoryTable";
+import TACourseHistory from "./TACourseHistory";
 import TAInfo from "./TAInfo";
 
 const TAAdmin = () => {

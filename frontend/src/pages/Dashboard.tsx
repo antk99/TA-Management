@@ -10,7 +10,7 @@ import ManageProfessors from "../components/sysop/ManageProfessors";
 import ManageCourses from "../components/sysop/ManageCourses";
 import ManageUsers from "../components/sysop/ManageUsers";
 import { emptyUser } from "../classes/User";
-import TACourseHistory from "../components/admin/TACourseHistoryTable";
+import TACourseHistory from "../components/admin/TACourseHistory";
 import TAAdmin from "../components/admin/TAAdmin";
 
 
