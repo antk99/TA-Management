@@ -1,9 +1,8 @@
 import express from 'express';
-import {register, login, getAllUsers, getUserByID, registerUsersFromFile} from '../controllers/userController';
+import { register, login, getAllUsers, getUserByID, registerUsersFromFile } from '../controllers/userController';
 import multer from "multer";
 
 const upload = multer();
-
 const router = express.Router();
 
 router.route("/:id").get(getUserByID);
