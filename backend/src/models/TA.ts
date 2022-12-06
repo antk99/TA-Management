@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {IUser} from "./User";
+import { IUser } from "./User";
 const Schema = mongoose.Schema;
 
 export interface ITA extends mongoose.Document {
@@ -14,12 +14,14 @@ const TASchema = new mongoose.Schema({
     ta: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "User"
+        ref: "User",
+        unique: true
     },
 
     studentID: {
         type: String,
         required: true,
+        unique: true,
     },
 
     currCourses: {
@@ -31,7 +33,7 @@ const TASchema = new mongoose.Schema({
         type: Array, // or Array<ObjectId>?
         required: true,
     },
-    
+
 }, {
     timestamps: true
 })

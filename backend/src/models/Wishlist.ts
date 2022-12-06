@@ -5,10 +5,11 @@ import { ITA } from './TA';
 const Schema = mongoose.Schema;
 
 export interface IWishlist extends mongoose.Document {
-	professor: IProfessor;
-	ta: ITA;
-	course: ICourse;
-	termFor: Term;
+    professor: IProfessor;
+    ta: ITA;
+    course: ICourse;
+    termFor: Term;
+    termYearFor: string;
 }
 
 const WishlistSchema = new mongoose.Schema({
@@ -35,6 +36,11 @@ const WishlistSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+
+    termYearFor: {
+        type: String,
+        required: true,
+    }
 
 }, {
     timestamps: true

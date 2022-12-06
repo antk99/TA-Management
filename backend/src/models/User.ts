@@ -7,7 +7,7 @@ export enum UserTypes {
     TA = "ta",
     Admin = "admin",
     Sysop = "sysop",
-  }
+}
 
 export interface IUser extends mongoose.Document {
     firstName: string,
@@ -17,7 +17,7 @@ export interface IUser extends mongoose.Document {
     createdAt: Date,
     updatedAt: Date,
     userType: Array<UserTypes>,
-    comparePassword(entredPassword: string): Promise<Boolean> 
+    comparePassword(entredPassword: string): Promise<Boolean>
 }
 
 const UserSchema = new mongoose.Schema({
@@ -35,6 +35,7 @@ const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true
     },
 
     password: {
@@ -54,9 +55,9 @@ export interface IUserRequest extends Request {
     user?: any
 }
 
-UserSchema.pre("save", async function(next) {
+UserSchema.pre("save", async function (next) {
     const user = this as IUser;
-    if(!user.isModified("password")) return next();
+    if (!user.isModified("password")) return next();
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(user.password, salt);
     user.password = hash;
@@ -64,7 +65,7 @@ UserSchema.pre("save", async function(next) {
 
 })
 
-UserSchema.methods.comparePassword = function(enteredPassword: string) {
+UserSchema.methods.comparePassword = function (enteredPassword: string) {
     const user = this as IUser;
     return bcrypt.compareSync(enteredPassword, user.password);
 }
