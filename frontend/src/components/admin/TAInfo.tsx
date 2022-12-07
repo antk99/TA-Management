@@ -8,6 +8,7 @@ import LabelledTextbox from './LabelledTextbox';
 import TAActionsBar from './TAActionsBar';
 import { UserContext } from '../../App';
 import { useHttp } from '../../hooks/useHttp';
+import { courseRegArrayToString } from '../../classes/TA';
 
 const booleanToYesNo = (bool) => { return bool ? "Yes" : "No" };
 const arrToString = (arr) => { return arr ? arr.length === 0 ? "None" : arr.join(", ") : "" };
@@ -88,8 +89,8 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
         { label: "Courses Applied For", value: isCohortError ? defaultData : arrToString(taCohortInfo.coursesAppliedFor) },
         { label: "Open To Other Courses", value: isCohortError ? defaultData : booleanToYesNo(taCohortInfo.openToOtherCourses) },
         { label: "Hours", value: isCohortError ? defaultData : taCohortInfo.hours },
-        { label: "Current Courses", value: arrToString(ta.currCourses) },
-        { label: "Previous Courses", value: arrToString(ta.prevCourses) }
+        { label: "Current Courses", value: courseRegArrayToString(ta.currCourses) },
+        { label: "Previous Courses", value: courseRegArrayToString(ta.prevCourses) }
     ];
 
     const midPoint = Math.ceil(fields.length / 2);
@@ -125,8 +126,6 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
                         <span style={{ alignSelf: "center", fontSize: "28px" }}>⭐⭐⭐⭐⭐</span>
                     </OverlayTrigger>
                 </div>
-
-
 
                 <TAInfoCard title="Cohort Information" style={{ width: '100%' }} maxHeight="fit-content" flexDirection="row">
                     <div className="cohortFields">
@@ -167,7 +166,7 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
                     {!hasStudentComments && "No student comments found."}
                 </TAInfoCard>
 
-                <TAActionsBar currCourses={ta.currCourses} modifyCurrCourses={(newCurrCourses) => modifyCurrCourses(ta.studentID, newCurrCourses)} isAtBottom={isAtBottom} />
+                <TAActionsBar ta={ta} modifyCurrCourses={modifyCurrCourses} isAtBottom={isAtBottom} />
             </Container>
         </div>
     );

@@ -14,29 +14,7 @@ const TAAdmin = () => {
 
     const { isLoading, error, sendRequest: fetchAllTAs } = useHttp(
         { url: "http://localhost:3000/api/ta" },
-        async (responseData) => {
-            const taObject = [];
-            for (const d of responseData.TAs) {
-                const userResponse = await fetch(
-                    "http://localhost:3000/api/users/" + d.ta,
-                    { headers: { Authorization: "Bearer " + user.token } }
-                );
-                let item = {
-                    currCourses: d.currCourses,
-                    prevCourses: d.prevCourses,
-                    studentID: d.studentID,
-                }
-                if (userResponse) {
-                    const userResponseData = await userResponse.json();
-                    const firstName = userResponseData.user.firstName;
-                    const lastName = userResponseData.user.lastName;
-                    item["name"] = firstName + " " + lastName;
-                    item["email"] = userResponseData.user.email;
-                }
-                taObject.push(item);
-            }
-            setTAs(taObject);
-        },
+        (data) => { setTAs(data.TAs) },
         user.token
     );
 
@@ -45,7 +23,7 @@ const TAAdmin = () => {
         fetchAllTAs();
     }, []);
 
-    const modifyTACurrCourses = (studentID, newCurrCourses) => {
+    const modifyCurrCourses = (studentID, newCurrCourses) => {
         setTAs(TAs.map((ta) => (studentID === ta.studentID ? { ...ta, currCourses: newCurrCourses } : ta)));
     };
 
@@ -53,7 +31,7 @@ const TAAdmin = () => {
         <>
             {
                 studentID ?
-                    <TAInfo modifyCurrCourses={modifyTACurrCourses} ta={TAs.find(ta => ta.studentID === studentID)} exitTAInfoView={() => setStudentID("")} /> :
+                    <TAInfo modifyCurrCourses={modifyCurrCourses} ta={TAs.find(ta => ta.studentID === studentID)} exitTAInfoView={() => setStudentID("")} /> :
                     <TACourseHistory TAs={TAs} focusStudent={setStudentID} />
             }
         </>

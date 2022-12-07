@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, DropdownButton } from "react-bootstrap";
-import { TA } from "../../classes/TA";
+import { courseRegArrayToString as arrToStr, TA } from "../../classes/TA";
 import ImportForm from "../sysop/ImportForm";
 import TARow from "./TARow";
 import "../../style/taTable.css";
@@ -26,7 +26,7 @@ const TACourseHistory = ({ TAs, focusStudent }: { TAs: Array<TA>, focusStudent: 
             allFilters.every((filter) => {
                 let s = ta[filter.taKey];
                 if (filter.isArr)
-                    s = s.join(" ");
+                    s = arrToStr(s, " ");
                 return s.toLowerCase().includes(filter.filterValue.toLowerCase());
             }));
     });
