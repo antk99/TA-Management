@@ -5,6 +5,7 @@ import userRoutes from './routes/userRoutes';
 import profRoutes from './routes/profRoutes';
 import courseRoutes from './routes/courseRoutes';
 import performanceLogRoutes from './routes/performanceLogRoutes';
+import wishListRoutes from './routes/wishListRoutes';
 
 const app = express();
 const port = 3000;
@@ -24,6 +25,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/prof", profRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/performanceLog", performanceLogRoutes);
+app.use("/api/wishlist", wishListRoutes);
 
 
 app.listen(port, () => {

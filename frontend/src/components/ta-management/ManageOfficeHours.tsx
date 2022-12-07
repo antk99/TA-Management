@@ -33,7 +33,7 @@ const ManageOfficeHours = () => {
     }, [course, user])
     
     return (
-        <div className="mt-4">
+        <div>
             {profile && profile === UserTypes.Professor &&
                 <InformationCard
                     form={<EditProfInformationForm instructor={{ instructorName: course.instructorName, email: course.instructorEmail, officeHours: course.instructorOfficeHours }}/>}
@@ -54,7 +54,7 @@ const ManageOfficeHours = () => {
             }
 
             {profile && profile === UserTypes.Professor && course.courseTAs &&
-                <Card className="mt-5">
+                <Card className="mt-5 taInfoCard mb-5">
                     <Card.Body>
                         <Card.Title>TAs</Card.Title>
 

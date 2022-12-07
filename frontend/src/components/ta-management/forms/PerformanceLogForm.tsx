@@ -5,6 +5,7 @@ import "../../../style/userTable.css";
 import { CourseContext } from "../ManageTAs";
 import { fetchPerformanceLogByTa } from "../../../helpers/fetchPerformanceLogs";
 import { PerformanceLog } from "../../../classes/PerformanceLog";
+import LabelledTextbox from "../../admin/LabelledTextbox";
 
 function PerformanceLogForm({ ta }) {
   const [show, setShow] = useState(false);
@@ -80,12 +81,7 @@ function PerformanceLogForm({ ta }) {
             </Card.Body>
           </Card>
           {performanceLogs && performanceLogs.map((log, i) => (
-            <Card className="mt-3" key={i}>
-              <Card.Body>
-                <Card.Subtitle className="mb-2 text-muted">{log.course_num}</Card.Subtitle>
-                <Card.Text>{log.comment}</Card.Text>
-              </Card.Body>
-            </Card>
+              <LabelledTextbox key={i} label={log.course_num} value={log.comment} styles={{ marginTop: 10 }}/>
           ))}
         </Modal.Body>
       </Modal>

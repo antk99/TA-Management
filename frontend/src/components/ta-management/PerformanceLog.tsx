@@ -24,11 +24,11 @@ const PerformanceLog = () => {
             const ta = course.courseTAs.find((ta: CourseTA) => ta.uuid === selectedTAUuid);
             setSelectedTA(ta);
         }
-    }, [selectedTAUuid])
+    }, [selectedTAUuid, course])
 
     return (
-        <div className="mt-3">
-            <div className="mt-4 d-flex flex-column align-items-start">
+        <div className="mt-2">
+            <div className="d-flex flex-column align-items-start">
                 <h4>Select a TA to view their performance log</h4>
                 <Form.Select
                     className="w-25 mt-3"
