@@ -1,20 +1,15 @@
+import { CourseRegInfo } from './../../../backend/src/models/TA';
+
 export interface TA {
-    // TA cohort fields
+    // TA DB fields
+    email: string;
     name: string;
     studentID: string;
-    legalName: string;
-    email: string;
-    level: string; // "Undergraduate" or "Graduate"
-    supervisorName: string;
-    isPriority: boolean;
-    hours: number;
-    dateApplied: string;
-    location: string;
-    phone: string;
-    degree: string;
-    coursesAppliedFor: Array<string>;
-    openToOtherCourses: boolean;
-    notes: string;
-    currCourses: Array<string>;
-    prevCourses: Array<string>;
+    currCourses: Array<CourseRegInfo>;
+    prevCourses: Array<CourseRegInfo>;
 }
+
+// converts an array of course registration objects to a string of course numbers
+export const courseRegArrayToString = (arr: Array<any>, delim: string = ", ") => {
+    return arr.map((courseReg) => courseReg.courseNumber).join(delim);
+};
