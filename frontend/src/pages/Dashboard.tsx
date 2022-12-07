@@ -10,20 +10,35 @@ import ManageProfessors from "../components/sysop/ManageProfessors";
 import ManageCourses from "../components/sysop/ManageCourses";
 import ManageUsers from "../components/sysop/ManageUsers";
 import ManageTAs from "../components/ta-management/ManageTAs";
+import { emptyUser } from "../classes/User";
 
+
+// these don't need to be in the component since they don't change
+const adminTabs = ["TA Admin"];
+const managementTabs = ["TA Management"];
+const rateTabs = ["Rate TA"];
+const sysopTabs = ["Professors", "Courses", "Users"];
+
+const tabsPerProfile = new Map<UserTypes, Array<string>>([
+  [UserTypes.Admin, [...adminTabs, ...managementTabs, ...rateTabs]],
+  [UserTypes.Professor, [...managementTabs, ...rateTabs]],
+  [UserTypes.Student, [...rateTabs]],
+  [UserTypes.Sysop, [...sysopTabs, ...adminTabs, ...managementTabs, ...rateTabs]],
+  [UserTypes.TA, [...managementTabs, ...rateTabs]]
+]);
+
+// TODO: add new tab names linked to corresponding components here
+const tabNamesToJSX = new Map<string, JSX.Element>([
+  ["Professors", <ManageProfessors />],
+  ["Courses", <ManageCourses />],
+  ["Users", <ManageUsers />],
+  ["TA Admin", <div>TA Admin</div>],
+  ["TA Management", <ManageTAs />],
+]);
+
+export const ProfileContext = React.createContext<{ profile: UserTypes }>({ profile: UserTypes.Student });
 
 export function Dashboard() {
-  const tabsPerProfile = new Map<UserTypes, Array<string>>([
-    [UserTypes.Sysop, ["Professors", "Courses", "Users"]],
-    [UserTypes.TA, ["TA Management"]],
-  ]);
-
-  const tabNamesToJSX = new Map<string, JSX.Element>([
-    ["Professors", <ManageProfessors />],
-    ["Courses", <ManageCourses />],
-    ["Users", <ManageUsers />],
-    ["TA Management", <ManageTAs />]
-  ]);
 
   const navigate = useNavigate();
   /**
@@ -49,56 +64,57 @@ export function Dashboard() {
   }
 
   function handleLogout(): void {
+    // remove token from local storage
+    localStorage.removeItem("user");
+
+    // set user state
+    setUser(emptyUser);
+
     navigate("/logout");
   }
 
-  useEffect(() => {
-    // if no user redirect to login page
-    if (!user.email) {
-      navigate("/login");
-    }
-  }, [user, navigate]);
-
   // Render nav dropdown options and nav tabs based on state above
   return (
-    <div>
-      <Navbar expand="lg">
+    <ProfileContext.Provider value={{ profile: currentProfile }}>
+       <div>
+        <Navbar expand="lg">
+          <Container>
+            <img className="logo" src={logo} alt="mcgill-logo" />
+            <Nav className="me-auto">
+              <NavDropdown title={currentProfile} id="basic-nav-dropdown">
+                {user.userType.map((profile) => (
+                  <NavDropdown.Item
+                    key={profile.toString()}
+                    onClick={() => {
+                      handleNavClick(profile);
+                    }}
+                  >
+                    {profile}
+                  </NavDropdown.Item>
+                ))}
+              </NavDropdown>
+            </Nav>
+            <button className="logout" onClick={() => handleLogout()}>
+              <LogoutIcon />
+            </button>
+          </Container>
+        </Navbar>
         <Container>
-          <img className="logo" src={logo} alt="mcgill-logo" />
-          <Nav className="me-auto">
-            <NavDropdown title={currentProfile} id="basic-nav-dropdown">              
-              {user.userType.map((profile) => (
-                <NavDropdown.Item
-                  key={profile.toString()}
-                  onClick={() => {
-                    handleNavClick(profile);
-                  }}
-                >
-                  {profile}
-                </NavDropdown.Item>
-              ))}
-            </NavDropdown>
-          </Nav>
-          <button className="logout" onClick={() => handleLogout()}>
-            <LogoutIcon />
-          </button>
+          <Tabs
+            defaultActiveKey="0"
+            transition={false}
+            id="noanim-tab"
+            className="sub"
+          >
+            {currentTabs.map((currentTabName, i) => (
+              <Tab className="sub" key={i} eventKey={i} title={currentTabName}>
+                {tabNamesToJSX.get(currentTabName)}
+              </Tab>
+            ))}
+          </Tabs>
         </Container>
-      </Navbar>
-      <Container>
-        <Tabs
-          defaultActiveKey="0"
-          transition={false}
-          id="noanim-tab"
-          className="sub"
-        >
-          {currentTabs.map((currentTabName, i) => (
-            <Tab className="sub" key={i} eventKey={i} title={currentTabName}>
-              {tabNamesToJSX.get(currentTabName)}
-            </Tab>
-          ))}
-        </Tabs>
-      </Container>
-    </div>
+      </div>
+    </ProfileContext.Provider>
   );
 }
 

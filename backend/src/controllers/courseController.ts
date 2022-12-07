@@ -3,6 +3,7 @@ import asyncHandler from "express-async-handler";
 import Course from "../models/Course";
 import User from "../models/User";
 import { parse } from 'csv-string';
+import { CourseTA } from "../models/CourseTA";
 
 // @Desc Get all Courses
 // @Route /api/course
@@ -65,8 +66,56 @@ export const addCourses = asyncHandler(async (req: Request, res: Response) => {
         term: course.term,
         year: course.year,
         courseNumber: course.courseNumber,
-        instructor: course.courseInstructor
+        instructor: course.courseInstructor,
     });
+});
+
+// @Desc Update Course
+// @Route /api/course/:id
+// @Method PUT
+export const updateCourse = asyncHandler(async (req: Request, res: Response) => {
+    const { courseName, courseDesc, term, year, courseNumber, instructorEmail, courseTAs, instructorOfficeHours } = req.body;
+    let courseInstructor = await User.findOne({ email: instructorEmail }).select("-password");
+    console.log(courseInstructor)
+    if (!courseInstructor) {
+        res.status(404);
+        throw new Error("Instructor not found in the database! Add user and continue.");
+    }
+
+    courseTAs.forEach(async (ta: CourseTA) => {
+        let courseTA = await User.findOne({ uuid: ta.uuid }).select("-password");
+        if (!courseTA) {
+            res.status(404);
+            throw new Error("TA not found in the database! Add user and continue.");
+        }
+    });
+   
+    const updatedCourse = await Course.findByIdAndUpdate(req.params.id, {
+        courseName,
+        courseDesc,
+        term,
+        year,
+        courseNumber,
+        courseInstructor: courseInstructor._id,
+        courseTAs,
+        instructorOfficeHours
+    });
+    if(updatedCourse) {
+        res.status(204).json({
+            id: updatedCourse._id,
+            courseName: updatedCourse.courseName,
+            courseDesc: updatedCourse.courseDesc,
+            term: updatedCourse.term,
+            year: updatedCourse.year,
+            courseNumber: updatedCourse.courseNumber,
+            instructor: updatedCourse.courseInstructor,
+            courseTAs: updatedCourse.courseTAs,
+            instructorOfficeHours: updatedCourse.instructorOfficeHours
+        });
+    } else {
+        res.status(404);
+        throw new Error("Course not found");
+    }
 });
 
 // @Desc Delete Course
