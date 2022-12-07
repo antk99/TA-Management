@@ -4,6 +4,9 @@ export const useHttp = (requestConfig, dataFn, token) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const defaultMethod = 'GET';
+    const defaultHeaders = { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
+
     const sendRequest = async () => {
         setIsLoading(true);
         setError(null);
@@ -11,10 +14,10 @@ export const useHttp = (requestConfig, dataFn, token) => {
         try {
             const response = await fetch(
                 requestConfig.url, {
-                    method: requestConfig.method ? requestConfig.method : 'GET',
-                    headers: requestConfig.headers ? requestConfig.headers : {Authorization: `Bearer ${token}`},
-                    body: requestConfig.body ? JSON.stringify(requestConfig.body) : null
-                }
+                method: requestConfig.method ? requestConfig.method : defaultMethod,
+                headers: requestConfig.headers ? { ...requestConfig.headers, ...defaultHeaders } : defaultHeaders,
+                body: requestConfig.body ? JSON.stringify(requestConfig.body) : null
+            }
             );
 
             if (!response.ok) {
