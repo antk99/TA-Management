@@ -11,6 +11,8 @@ import ManageCourses from "../components/sysop/ManageCourses";
 import ManageUsers from "../components/sysop/ManageUsers";
 import ManageTAs from "../components/ta-management/ManageTAs";
 import { emptyUser } from "../classes/User";
+import TACourseHistory from "../components/admin/TACourseHistory";
+import TAAdmin from "../components/admin/TAAdmin";
 
 
 // these don't need to be in the component since they don't change
@@ -32,8 +34,12 @@ const tabNamesToJSX = new Map<string, JSX.Element>([
   ["Professors", <ManageProfessors />],
   ["Courses", <ManageCourses />],
   ["Users", <ManageUsers />],
+<<<<<<< HEAD
   ["TA Admin", <div>TA Admin</div>],
   ["TA Management", <ManageTAs />],
+=======
+  ["TA Admin", <TAAdmin />]
+>>>>>>> origin/api+controllers
 ]);
 
 export const ProfileContext = React.createContext<{ profile: UserTypes }>({ profile: UserTypes.Student });

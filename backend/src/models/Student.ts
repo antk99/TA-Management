@@ -1,11 +1,12 @@
+import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
-import {IUser} from "./User";
+import { IUser } from "./User";
 const Schema = mongoose.Schema;
 
 export interface IStudent extends mongoose.Document {
-	student: IUser;
+    student: IUser;
     studentID: string;
-    courses: Array<string>;
+    courses: Array<ObjectId>;
 }
 
 const StudentSchema = new mongoose.Schema({
@@ -13,12 +14,14 @@ const StudentSchema = new mongoose.Schema({
     student: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "User"
+        ref: "User",
+        unique: true
     },
 
     studentID: {
         type: String,
         required: true,
+        unique: true,
     },
 
     courses: {

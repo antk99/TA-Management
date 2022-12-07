@@ -3,6 +3,8 @@ import asyncHandler from "express-async-handler";
 import Course from "../models/Course";
 import User from "../models/User";
 import { parse } from 'csv-string';
+import Professor from "../models/Professor";
+import { capitalizeFirstLetter } from "../utils/stringFormatting";
 import { CourseTA } from "../models/CourseTA";
 
 // @Desc Get all Courses
@@ -10,7 +12,7 @@ import { CourseTA } from "../models/CourseTA";
 // @Method GET
 export const getAllCourses = asyncHandler(async (req: Request, res: Response) => {
     const courses = await Course.find({});
-    res.status(200).json({courses});
+    res.status(200).json({ courses });
 });
 
 // @Desc Save multiple courses
@@ -18,56 +20,76 @@ export const getAllCourses = asyncHandler(async (req: Request, res: Response) =>
 // @Method POST
 export const registerCourseFromFile = asyncHandler(async (req: Request, res: Response) => {
     const csv = req.file;
+
+    // TODO
+
     if (csv) {
-      const fileContent = parse(csv.buffer.toString('utf-8'));
-      for (let record of fileContent) {
-        const instructorEmail = record[5];
-        let courseInstructor = await User.findOne({ instructorEmail }).select("-password");
-        if (!courseInstructor) {
-            res.status(404);
-            console.log("Instructor not found in the database! Skipping row.");
-        } else {
-            const course = new Course({ 
-                courseName: record[0],
-                courseDesc: record[1],
-                term: record[2],
-                year: record[3],
-                courseNumber: record[4],
-                courseInstructor: courseInstructor
-            });
-            course.save(); // can be made concurrent
+        const fileContent = parse(csv.buffer.toString('utf-8'));
+        for (let record of fileContent) {
+            const instructorEmail = record[5];
+            let courseInstructor = await User.findOne({ email: instructorEmail }).select("-password");
+            if (!courseInstructor) {
+                res.status(404);
+                console.log("Instructor not found in the database! Skipping row.");
+            } else {
+                const course = new Course({
+                    courseName: record[0],
+                    courseDesc: record[1],
+                    term: record[2],
+                    year: record[3],
+                    courseNumber: record[4],
+                    courseInstructor: courseInstructor
+                });
+                course.save(); // can be made concurrent
+            }
         }
-      }
     } else {
-      res.status(500);
-      throw new Error("File upload unsuccessful.");
+        res.status(500);
+        throw new Error("File upload unsuccessful.");
     }
     res.status(200).json({});
-  });
+});
 
 
-// @Desc Add Courses
+// @Desc Add Course
 // @Route /api/course/add
 // @Method POST
-export const addCourses = asyncHandler(async (req: Request, res: Response) => {
-    const { courseName, courseDesc, term, year, courseNumber, instructorEmail } = req.body;
-    let courseInstructor = await User.findOne({ instructorEmail }).select("-password");
-    if (!courseInstructor) {
-        res.status(404);
-        throw new Error("Instructor not found in the database! Add user and continue.");
+export const addCourse = asyncHandler(async (req: Request, res: Response) => {
+    let { courseName, courseDesc, term, year, courseNumber, instructorEmail } = req.body;
+
+    try {
+        if (!courseName || !courseDesc || !term || !year || !courseNumber || !instructorEmail)
+            throw new Error("Missing at least one of required fields: courseName, courseDesc, term, year, courseNumber, instructorEmail.");
+
+        courseNumber = courseNumber.toUpperCase();
+        term = capitalizeFirstLetter(term)  // capitalize first letter: fall -> Fall
+
+        let professorUserID = await User.findOne({ email: instructorEmail }).select("_id");
+        if (!professorUserID)
+            throw new Error(`No user with email: ${instructorEmail} found in the database! Add user and continue.`);
+
+        const professorID = await Professor.findOne({ professor: professorUserID }).select("_id");
+        if (!professorID)
+            throw new Error(`No professor with email: ${instructorEmail} found in the database! Add professor and continue.`);
+
+        const exists = await Course.findOne({ "$and": [{ courseNumber, term, year }] });
+        if (exists)
+            throw new Error(`Course with courseNumber: ${courseNumber} already exists in the database for term ${term} ${year}!`);
+
+        const course = new Course({ courseName, courseDesc, term, year, courseNumber: courseNumber, courseInstructor: professorUserID });
+        await course.save();
+        res.status(201).json({
+            id: course._id,
+            courseName: course.courseName,
+            courseDesc: course.courseDesc,
+            term: course.term,
+            year: course.year,
+            courseNumber: course.courseNumber,
+            instructor: course.courseInstructor._id
+        });
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
     }
-  
-    const course = new Course({ courseName, courseDesc, term, year, courseNumber, courseInstructor });
-    await course.save();
-    res.status(201).json({
-        id: course._id,
-        courseName: course.courseName,
-        courseDesc: course.courseDesc,
-        term: course.term,
-        year: course.year,
-        courseNumber: course.courseNumber,
-        instructor: course.courseInstructor,
-    });
 });
 
 // @Desc Update Course
@@ -119,16 +141,25 @@ export const updateCourse = asyncHandler(async (req: Request, res: Response) => 
 });
 
 // @Desc Delete Course
-// @Route /api/course/:id
+// @Route /api/course/delete
 // @Method DELETE
 export const deleteCourse = asyncHandler(async (req: Request, res: Response) => {
     const { courseNumber } = req.body;
 
-    let course = await Course.findOne({ courseNumber });
-    if(!course) {
-        res.status(404);
-        throw new Error("Course not found");
+    try {
+        if (!courseNumber)
+            throw new Error("Missing required field: courseNumber.");
+
+        let course = await Course.findOne({ courseNumber });
+        if (!course)
+            throw new Error("Course not found.");
+
+        const deletedCourse = await Course.findOneAndDelete({ courseNumber });
+        if (!deletedCourse)
+            throw new Error("Course could not be deleted.");
+
+        res.status(201).json({ 'message': `Course ${courseNumber} deleted successfully.` });
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
     }
-    await User.findOneAndDelete({ courseNumber });
-    res.status(201).json({});
-})
+});

@@ -1,19 +1,11 @@
 import express from 'express';
-import { getAllCourses, addCourses, registerCourseFromFile, updateCourse } from '../controllers/courseController';
-import multer from "multer";
-import requireAuth from '../middleware/requireAuth';
-import { addPerformanceLog, getAllPerformanceLogs, getAllPerformanceLogsByTA } from '../controllers/performanceLogController';
-
-const upload = multer();
+import { addPerformanceLog, deletePerformanceLog, getPerformanceLogs, getPerformanceLogsByProf } from '../controllers/performanceLogController';
 
 const router = express.Router();
 
-// require authentication for all course routes
-// router.use(requireAuth);
+router.route("/:studentID").get(getPerformanceLogs);
+router.route("/:profEmail/:studentID").get(getPerformanceLogsByProf);
+router.route("/add").post(addPerformanceLog);
+router.route("/delete/:performanceLogID").delete(deletePerformanceLog);
 
-router.route("/").get(getAllPerformanceLogs);
-router.route("/").post(addPerformanceLog);
-router.route("/ta/:id").get(getAllPerformanceLogsByTA);
-
-
-export default router;  
+export default router;
