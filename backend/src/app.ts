@@ -5,7 +5,7 @@ import userRoutes from './routes/userRoutes';
 import profRoutes from './routes/profRoutes';
 import courseRoutes from './routes/courseRoutes';
 import taRoutes from './routes/taRoutes';
-import wishlistRoutes from './routes/wishlistRoutes';
+import wishlistRoutes from './routes/wishListRoutes';
 import ratingRoutes from './routes/ratingRoutes';
 import studentRoutes from './routes/studentRoutes';
 import performanceLogRoutes from './routes/performanceLogRoutes';
