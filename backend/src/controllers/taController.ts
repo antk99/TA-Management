@@ -1,3 +1,5 @@
+import { CourseRegInfo } from './../models/TA';
+import { capitalizeFirstLetter } from './../utils/stringFormatting';
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import Professor from "../models/Professor";
@@ -18,33 +20,42 @@ export const getAllTAs = asyncHandler(async (req: Request, res: Response) => {
 // @Route /api/ta/add
 // @Method POST
 export const addTA = asyncHandler(async (req: Request, res: Response) => {
-    const { taEmail, studentID, currCourses, prevCourses } = req.body;
+    let { email, studentID, currCourses, prevCourses } = req.body;
 
     try {
-        if (!taEmail || !studentID || !currCourses || !prevCourses)
-            throw new Error("Missing at least one of required fields: taEmail, studentID, currCourses, prevCourses.");
+        if (!email || !studentID || !currCourses || !prevCourses)
+            throw new Error("Missing at least one of required fields: email, studentID, currCourses, prevCourses.");
 
-        const taUserID = await User.findOne({ email: taEmail }).select("_id");
-        if (!taUserID)
-            throw new Error(`No user with email ${taEmail} found in the database! Add user and continue.`);
+        const taUser = await User.findOne({ email });
+        if (!taUser)
+            throw new Error(`No user with email ${email} found in the database! Add user and continue.`);
 
-        const exists = await TA.findOne({ "$or": [{ studentID }, { ta: taUserID }] });
+        const exists = await TA.findOne({ "$or": [{ studentID }, { email }] });
         if (exists)
-            throw new Error(`TA with either email: ${taEmail} or studentID: ${studentID} already exists in the database!`);
+            throw new Error(`TA with either email: ${email} or studentID: ${studentID} already exists in the database!`);
 
-        const ta = new TA({
-            ta: taUserID,
-            studentID,
-            currCourses,
-            prevCourses,
-        });
+        // Check if all courses exist in the database
+        for (const course of currCourses) {
+            const { courseNumber } = course;
+            const courseExists = await Course.findOne({ courseNumber: courseNumber.toUpperCase() });
+            if (!courseExists)
+                throw new Error(`Course ${courseNumber.toUpperCase()} does not exist in the database!`);
+        }
+
+        // Check if all courses exist in the database
+        for (const course of prevCourses) {
+            const { courseNumber } = course;
+            const courseExists = await Course.findOne({ courseNumber: courseNumber.toUpperCase() });
+            if (!courseExists)
+                throw new Error(`Course ${courseNumber.toUpperCase()} does not exist in the database!`);
+        }
+
+        currCourses = currCourses.map((course: CourseRegInfo) => { return { ...course, term: capitalizeFirstLetter(course.term), courseNumber: course.courseNumber.toUpperCase() } });
+        prevCourses = prevCourses.map((course: CourseRegInfo) => { return { ...course, term: capitalizeFirstLetter(course.term), courseNumber: course.courseNumber.toUpperCase() } });
+
+        const ta = new TA({ email, name: taUser.firstName + " " + taUser.lastName, studentID, currCourses, prevCourses });
         await ta.save();
-        res.status(201).json({
-            id: ta._id,
-            studentID: ta.studentID,
-            currCourses: ta.currCourses,
-            prevCourses: ta.prevCourses
-        });
+        res.status(201).json({ ta });
 
     } catch (error: any) {
         res.status(400).json({ error: error.message });
@@ -55,19 +66,34 @@ export const addTA = asyncHandler(async (req: Request, res: Response) => {
 // @Route /api/ta/addCurrCourse
 // @Method POST
 export const addTACurrCourse = asyncHandler(async (req: Request, res: Response) => {
-    const { taStudentID, courseNumber } = req.body;
+    let { taStudentID, term, termYear, courseNumber, assignedHours } = req.body;
 
     try {
 
-        if (!taStudentID || !courseNumber)
-            throw new Error("Missing at least one of required fields: taStudentID, courseNumber.");
+        if (!taStudentID || !term || !termYear || !courseNumber || !assignedHours)
+            throw new Error("Missing at least one of required fields: taStudentID, term, termYear, courseNumber, assignedHours.");
 
-        // push courseNumber to currCourses array if it doesn't already exist
-        const update = await TA.updateOne({ studentID: taStudentID }, { $addToSet: { currCourses: courseNumber.toUpperCase() } });
-        if (update.matchedCount === 0)
+        term = capitalizeFirstLetter(term);
+        courseNumber = courseNumber.toUpperCase();
+
+        const ta = await TA.findOne({ studentID: taStudentID });
+        if (!ta)
             throw new Error(`No TA found with studentID ${taStudentID} in the database!`);
 
-        res.status(200).json({ "message": `Successfully added course ${courseNumber} to TA with studentID ${taStudentID}!` });
+        const course = await Course.findOne({ courseNumber });
+        if (!course)
+            throw new Error(`No course found with courseNumber ${courseNumber} in the database!`);
+
+        ta.currCourses.forEach((courseReg: any) => {
+            if (courseReg.courseNumber === courseNumber && courseReg.term === term && courseReg.termYear === termYear)
+                throw new Error(`Course registration info already exists for this TA for course ${courseNumber} in term ${term} ${termYear}! Please delete the existing registration info and try again.`);
+        });
+
+        const courseRegInfo: CourseRegInfo = { term, termYear, courseNumber, assignedHours };
+        ta.currCourses.push(courseRegInfo);
+        await ta.save();
+
+        res.status(200).json({ courseAdded: courseRegInfo });
 
     } catch (error: any) {
         res.status(400).json({ error: error.message });
@@ -78,21 +104,30 @@ export const addTACurrCourse = asyncHandler(async (req: Request, res: Response) 
 // @Route /api/ta/removeCurrCourse
 // @Method DELETE
 export const removeTACurrCourse = asyncHandler(async (req: Request, res: Response) => {
-    const { taStudentID, courseNumber } = req.body;
+    let { taStudentID, term, termYear, courseNumber } = req.body;
 
-    // TODO: add course to TA's prev courses once removed?
+    // TODO: add course to TA prevCourses once removed ?
 
     try {
 
-        if (!taStudentID || !courseNumber)
-            throw new Error("Missing at least one of required fields: taStudentID, courseNumber.");
+        if (!taStudentID || !term || !termYear || !courseNumber)
+            throw new Error("Missing at least one of required fields: taStudentID, term, termYear, courseNumber.");
 
-        // delete courseNumber from currCourses array if it exists
-        const update = await TA.updateOne({ studentID: taStudentID }, { $pull: { currCourses: courseNumber.toUpperCase() } });
-        if (update.matchedCount === 0)
+        term = capitalizeFirstLetter(term);
+        courseNumber = courseNumber.toUpperCase();
+
+        const ta = await TA.findOne({ studentID: taStudentID });
+        if (!ta)
             throw new Error(`No TA found with studentID ${taStudentID} in the database!`);
 
-        res.status(200).json({ "message": `Successfully removed course ${courseNumber} from TA with studentID ${taStudentID}!` });
+        // delete course from currCourses
+        const courseIndex = ta.currCourses.findIndex((courseReg: CourseRegInfo) => courseReg.courseNumber === courseNumber && courseReg.term === term && courseReg.termYear === termYear);
+        if (courseIndex === -1)
+            throw new Error(`No course registration info found for this TA for course ${courseNumber} in term ${term} ${termYear}!`);
+        ta.currCourses.splice(courseIndex, 1);
+
+        await ta.save();
+        res.status(200).json({ courseRemoved: courseNumber.toUpperCase() });
 
     } catch (error: any) {
         res.status(400).json({ error: error.message });
