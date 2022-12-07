@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
 import { ICourse } from './Course';
-import {IUser} from "./User";
+import { IProfessor } from './Professor';
+import { ITA } from './TA';
 const Schema = mongoose.Schema;
 
 export interface IPerformanceLog extends mongoose.Document {
-    ta: IUser,
+    ta: ITA,
+    professor: IProfessor,
     course: ICourse,
     course_num: string,
     term: string,
@@ -15,10 +17,15 @@ export interface IPerformanceLog extends mongoose.Document {
 }
 
 const PerformanceLogSchema = new mongoose.Schema({
+    professor: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "Professor"
+    },
     ta: {
         type: Schema.Types.ObjectId,
         required: true,
-        ref: "User"
+        ref: "TA"
     },
     course: {
         type: Schema.Types.ObjectId,

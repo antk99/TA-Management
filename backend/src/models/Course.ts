@@ -4,7 +4,7 @@ import {IProfessor} from "./Professor";
 
 const Schema = mongoose.Schema;
 
-enum Term {
+export enum Term {
     Fall = "fall",
     Spring = "spring",
     Summer = "summer"

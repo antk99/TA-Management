@@ -9,13 +9,20 @@ import { UserTypes } from "../enums/UserTypes";
 import ManageProfessors from "../components/sysop/ManageProfessors";
 import ManageCourses from "../components/sysop/ManageCourses";
 import ManageUsers from "../components/sysop/ManageUsers";
+<<<<<<< HEAD
 import ManageTAs from "../components/ta-management/ManageTAs";
+=======
+>>>>>>> main
 import { emptyUser } from "../classes/User";
 
 
 // these don't need to be in the component since they don't change
 const adminTabs = ["TA Admin"];
+<<<<<<< HEAD
 const managementTabs = ["TA Management"];
+=======
+const managementTabs = []; // TODO: add blue tabs here
+>>>>>>> main
 const rateTabs = ["Rate TA"];
 const sysopTabs = ["Professors", "Courses", "Users"];
 
@@ -32,12 +39,18 @@ const tabNamesToJSX = new Map<string, JSX.Element>([
   ["Professors", <ManageProfessors />],
   ["Courses", <ManageCourses />],
   ["Users", <ManageUsers />],
+<<<<<<< HEAD
   ["TA Admin", <div>TA Admin</div>],
   ["TA Management", <ManageTAs />],
 ]);
 
 export const ProfileContext = React.createContext<{ profile: UserTypes }>({ profile: UserTypes.Student });
 
+=======
+  ["TA Admin", <div>TA Admin</div>]
+]);
+
+>>>>>>> main
 export function Dashboard() {
 
   const navigate = useNavigate();
@@ -100,6 +113,7 @@ export function Dashboard() {
           </Container>
         </Navbar>
         <Container>
+<<<<<<< HEAD
           <Tabs
             defaultActiveKey="0"
             transition={false}
@@ -112,6 +126,26 @@ export function Dashboard() {
               </Tab>
             ))}
           </Tabs>
+=======
+          <img className="logo" src={logo} alt="mcgill-logo" />
+          <Nav className="me-auto">
+            <NavDropdown title={currentProfile} id="basic-nav-dropdown">
+              {user.userType.map((profile) => (
+                <NavDropdown.Item
+                  key={profile.toString()}
+                  onClick={() => {
+                    handleNavClick(profile);
+                  }}
+                >
+                  {profile}
+                </NavDropdown.Item>
+              ))}
+            </NavDropdown>
+          </Nav>
+          <button className="logout" onClick={() => handleLogout()}>
+            <LogoutIcon />
+          </button>
+>>>>>>> main
         </Container>
       </div>
     </ProfileContext.Provider>
