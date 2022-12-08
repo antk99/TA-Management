@@ -28,13 +28,14 @@ app.use((req: Request, res: Response, next: any) => {
     next();
 });
 
+app.use("/api/users", userRoutes);
+
 // Authentication middleware
 app.use(requireAuth);
 
 // Application routes
 // TODO: for all route controllers, only provide info for the current user passed in request.body.user
 // e.g. if user._id = 1, only allow user 1 to access their own info & not other users' info even if authenticated
-app.use("/api/users", userRoutes);
 app.use("/api/prof", profRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/student", studentRoutes);
