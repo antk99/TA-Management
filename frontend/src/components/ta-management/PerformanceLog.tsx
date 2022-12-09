@@ -10,13 +10,10 @@ const PerformanceLog = () => {
     const [selectedTAUuid, setSelectedTAUUid] = useState<string>("")
     const [selectedTA, setSelectedTA] = useState<CourseTA>()
 
-    console.log(course.courseTAs)
-
     useEffect(() => {
         if (course.courseTAs) {
             setSelectedTAUUid(course.courseTAs[0].uuid)
         }
-        console.log(course.courseTAs)
     }, [course])
 
     useEffect(() => {

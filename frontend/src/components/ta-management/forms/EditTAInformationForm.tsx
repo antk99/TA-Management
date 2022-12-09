@@ -7,6 +7,7 @@ import { Edit } from "@mui/icons-material";
 import { CourseContext } from "../ManageTAs";
 import { OfficeHour } from "../../../classes/OfficeHour";
 import OfficeHoursForm from "./OfficeHoursForm";
+import { UserContext } from "../../../App";
 
 function EditTAInformationForm({ ta }) {
   const [show, setShow] = useState(false);
@@ -16,6 +17,7 @@ function EditTAInformationForm({ ta }) {
   const [tempOfficeHours, setTempOfficeHours] = useState<Array<OfficeHour>>([]);
 
   const { course, fetchCourseData } = React.useContext(CourseContext);
+  const { user } = React.useContext(UserContext);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,10 +33,11 @@ function EditTAInformationForm({ ta }) {
     console.log(tempOfficeHours)
 
     try {
-      const res = await fetch(`http://127.0.0.1:3000/api/course/${course.id}`, {
+      const res = await fetch(`http://127.0.0.1:3000/api/course/edit/${course.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": "Bearer " + user.token,
         },
         body: JSON.stringify({
           ...course,

@@ -24,8 +24,6 @@ const ManageCourse = () => {
             <ArrowBackRoundedIcon />
         </button>
       <Container className="mt-3 taInfo">
-        {/* <Button onClick={() => changeCourse()} variant="outline-secondary" size="sm"><ChevronLeft fontSize="small"/> Change course</Button> */}
-          {/* <h2 className="mt-3">{course.courseName}</h2> */}
           <h2>
               {course.courseName}
           </h2>

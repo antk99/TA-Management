@@ -10,14 +10,15 @@ interface InformationCardProps {
     form: ReactNode;
     officeHours?: Array<OfficeHour>;
     responsabilities?: Array<string>;
+    title: string;
 }
 
-function InformationCard({ name, email, officeHours, responsabilities, form } : InformationCardProps) {
+function InformationCard({ name, email, officeHours, responsabilities, form, title } : InformationCardProps) {
 
   return (
     <Card className="taInfoCard">
         <Card.Body>
-            <Card.Title>Professor</Card.Title>
+            <Card.Title>{title}</Card.Title>
             <Row>
                 <div className="d-flex flex-row justify-content-between">
                     <h5>{name}</h5>

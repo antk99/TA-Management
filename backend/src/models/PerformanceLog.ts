@@ -29,22 +29,10 @@ const PerformanceLogSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    year: {
-        type: String,
-        required: true,
-    },
-    TA_name: {
-        type: String,
-        required: true,
-    },
     comment: {
         type: String,
         required: true,
     },
-    time_stamp: {
-        type: Date,
-        required: true,
-    }
 
 }, {
     timestamps: false

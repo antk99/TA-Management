@@ -6,6 +6,7 @@ import { CourseContext } from "../ManageTAs";
 import { fetchPerformanceLogByTa } from "../../../helpers/fetchPerformanceLogs";
 import { PerformanceLog } from "../../../classes/PerformanceLog";
 import LabelledTextbox from "../../admin/LabelledTextbox";
+import { UserContext } from "../../../App";
 
 function PerformanceLogForm({ ta }) {
   const [show, setShow] = useState(false);
@@ -13,19 +14,23 @@ function PerformanceLogForm({ ta }) {
   const [performanceLogs, setPerformanceLogs] = useState<PerformanceLog[]>([]);
 
   const { course } = React.useContext(CourseContext);
+  const { user } = React.useContext(UserContext);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`http://127.0.0.1:3000/api/performanceLog`, {
+      const res = await fetch(`http://127.0.0.1:3000/api/performanceLog/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": "Bearer " + user.token,
         },
         body: JSON.stringify({
-          ta: ta.uuid,
-          course: course.id,
+          taStudentID: ta.uuid,
+          courseNumber: course.courseNumber,
+          term: course.term,
+          profEmail: course.instructorEmail,
           comment: tempLog
         }),
       });
@@ -42,8 +47,9 @@ function PerformanceLogForm({ ta }) {
   };
 
   const loadPerformanceLog = async () => {
-    const data = await fetchPerformanceLogByTa(ta.uuid);
-    setPerformanceLogs(data.performanceLog);
+    console.log('LOADING')
+    const data = await fetchPerformanceLogByTa(course.instructorEmail, ta.uuid, user.token);
+    setPerformanceLogs(data.performanceLogs);
   }
 
   useEffect(() => {
@@ -81,7 +87,7 @@ function PerformanceLogForm({ ta }) {
             </Card.Body>
           </Card>
           {performanceLogs && performanceLogs.map((log, i) => (
-              <LabelledTextbox key={i} label={log.course_num} value={log.comment} styles={{ marginTop: 10 }}/>
+              <LabelledTextbox key={i} label={log.courseNumber} value={log.comment} styles={{ marginTop: 10 }}/>
           ))}
         </Modal.Body>
       </Modal>

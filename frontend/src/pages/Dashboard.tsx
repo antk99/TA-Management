@@ -34,12 +34,8 @@ const tabNamesToJSX = new Map<string, JSX.Element>([
   ["Professors", <ManageProfessors />],
   ["Courses", <ManageCourses />],
   ["Users", <ManageUsers />],
-<<<<<<< HEAD
   ["TA Admin", <div>TA Admin</div>],
   ["TA Management", <ManageTAs />],
-=======
-  ["TA Admin", <TAAdmin />]
->>>>>>> origin/api+controllers
 ]);
 
 export const ProfileContext = React.createContext<{ profile: UserTypes }>({ profile: UserTypes.Student });

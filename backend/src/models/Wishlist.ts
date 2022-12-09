@@ -26,21 +26,6 @@ const WishlistSchema = new mongoose.Schema({
         required: true,
     },
 
-    course_num: {
-        type: String,
-        required: true,
-    },
-
-    prof_name: {
-        type: String,
-        required: true,
-    },
-
-    TA_name: {
-        type: String,
-        required: true,
-    },
-
     termFor: {
         type: String,
         required: true,

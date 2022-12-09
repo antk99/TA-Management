@@ -36,6 +36,7 @@ const ManageOfficeHours = () => {
         <div>
             {profile && profile === UserTypes.Professor &&
                 <InformationCard
+                    title="Instructor's information"
                     form={<EditProfInformationForm instructor={{ instructorName: course.instructorName, email: course.instructorEmail, officeHours: course.instructorOfficeHours }}/>}
                     name={course.instructorName}
                     email={course.instructorEmail}
@@ -45,6 +46,7 @@ const ManageOfficeHours = () => {
 
             {currentTA && profile === UserTypes.TA &&
                 <InformationCard
+                    title="Your information"
                     form={<EditTAInformationForm ta={currentTA}/>}
                     name={currentTA.fullName}
                     email={currentTA.email}

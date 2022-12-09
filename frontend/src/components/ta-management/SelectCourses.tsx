@@ -7,7 +7,12 @@ const SelectCourses = ({ courses, setSelectedCourseId }) => {
   return (
       <Container className="mt-3">
         <div className="rowC">
-          <h2 style={{ marginBottom: "20px" }}>Select a course</h2> 
+          {courses.length > 0 &&
+            <h2 style={{ marginBottom: "20px" }}>Select a course</h2> 
+          }
+          {courses.length === 0 &&
+            <h2 style={{ marginBottom: "20px" }}>You are currently not registered in any course.</h2> 
+          }
         </div>
         <div className="select__courses">
          {courses.map((course: Course) => (

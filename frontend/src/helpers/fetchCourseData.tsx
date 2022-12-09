@@ -1,15 +1,39 @@
-export const fetchCourseData = async () => {
+import { UserTypes } from "../enums/UserTypes";
+
+export const fetchCourseData = async (token, profile = null, userId = null) => {
     try {
-        const res = await fetch("http://127.0.0.1:3000/api/course");
+        let fetchUrl = "http://127.0.0.1:3000/api/course";
+        if (profile && userId) {
+            fetchUrl = `http://127.0.0.1:3000/api/course/${profile === UserTypes.Professor ? 'instructor' : 'ta'}/${userId}`
+        }
+        const res = await fetch(fetchUrl, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+        });
         const data = await res.json();
         const courseObject = [];
         for (const d of data.courses) {
-            const instructorRes = await fetch("http://127.0.0.1:3000/api/users/" + d.courseInstructor);
+            const instructorRes = await fetch("http://127.0.0.1:3000/api/users/" + d.courseInstructor, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+            });
 
             const tas = [];
             if(d.courseTAs) {
                 for (const ta of d.courseTAs) {
-                    const taRes = await fetch("http://127.0.0.1:3000/api/users/" + ta.uuid);
+                    const taRes = await fetch("http://127.0.0.1:3000/api/users/" + ta.uuid, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                    });
                     const taData = await taRes.json();
                     tas.push({email: taData.user.email, fullName: taData.user.firstName + " " + taData.user.lastName, ...ta });
                 }

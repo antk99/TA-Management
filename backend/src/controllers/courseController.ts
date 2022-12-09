@@ -15,6 +15,25 @@ export const getAllCourses = asyncHandler(async (req: Request, res: Response) =>
     res.status(200).json({ courses });
 });
 
+// @Desc Get all Courses by Inscructor
+// @Route /api/course/instructor/:instructorUuid
+// @Method GET
+export const getCourseByInstructor = asyncHandler(async (req: Request, res: Response) => {
+    const instructorUuid = req.params.instructorUuid;
+    const courses = await Course.find({ courseInstructor: instructorUuid });
+    res.status(200).json({ courses });
+});
+
+// @Desc Get all Courses by TA
+// @Route /api/course/ta/:taUuid
+// @Method GET
+export const getCourseByTA = asyncHandler(async (req: Request, res: Response) => {
+    const uuid = req.params.taUuid;
+    const courses = await Course.find({ courseTAs: { $elemMatch: { uuid } } });
+    res.status(200).json({ courses });
+});
+
+
 // @Desc Save multiple courses
 // @Route /api/course/upload
 // @Method POST
@@ -93,7 +112,7 @@ export const addCourse = asyncHandler(async (req: Request, res: Response) => {
 });
 
 // @Desc Update Course
-// @Route /api/course/:id
+// @Route /api/course/edit/:id
 // @Method PUT
 export const updateCourse = asyncHandler(async (req: Request, res: Response) => {
     const { courseName, courseDesc, term, year, courseNumber, instructorEmail, courseTAs, instructorOfficeHours } = req.body;

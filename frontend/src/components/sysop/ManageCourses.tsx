@@ -43,8 +43,7 @@ const ManageCourses = () => {
 
   useEffect(() => {
     async function fetchCourses() {
-      const courses = await fetchCourseData();
-      setCourses(courses);
+      await fetchCourseData();
     }
     fetchCourses()
   }, []);

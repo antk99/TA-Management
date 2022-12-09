@@ -41,7 +41,7 @@ export const getPerformanceLogsByProf = asyncHandler(async (req: Request, res: R
     try {
         const performanceLogs = await PerformanceLog.find({ profEmail, taStudentID: studentID });
         if (performanceLogs.length === 0)
-            throw new Error("No performance logs found for given prof for given TA.");
+            res.status(200).json({ performanceLogs: [] });
         res.status(200).json({ performanceLogs });
     } catch (error: any) {
         res.status(400).json({ error: error.message });
@@ -77,7 +77,7 @@ export const addPerformanceLog = asyncHandler(async (req: Request, res: Response
             throw new Error("Comment must be less than 1000 characters.");
 
         const performanceLog = await PerformanceLog.create({ profEmail, taStudentID, courseNumber, term, comment });
-        res.status(200).json({ performanceLog });
+        res.status(201).json({ performanceLog });
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }
