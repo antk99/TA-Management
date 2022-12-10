@@ -14,6 +14,31 @@ const booleanToYesNo = (bool) => { return bool ? "Yes" : "No" };
 const arrToString = (arr) => { return arr ? arr.length === 0 ? "None" : arr.join(", ") : "" };
 const convertScoreToStars = (score) => { return "⭐".repeat(score) }
 
+// calculates average score for each author, then averages all averages
+const calcAverageScore = (ratings) => {
+    // group ratings by authorID
+    const groupedRatings = {};
+    ratings.forEach(rating => {
+        if (groupedRatings[rating.authorID])
+            groupedRatings[rating.authorID].push(rating);
+        else
+            groupedRatings[rating.authorID] = [rating];
+    });
+
+    // calculate average score for each author
+    const avgScores = [];
+    for (const authorID in groupedRatings) {
+        const currRatings = groupedRatings[authorID];
+        const avgScore = currRatings.reduce((acc, curr) => acc + curr.score, 0) / currRatings.length;
+        avgScores.push(avgScore);
+    }
+
+    // calculate average of all averages
+    return avgScores.reduce((acc, curr) => acc + curr, 0) / avgScores.length;
+};
+
+// TODO: implement office hours display
+
 const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
     const [isAtBottom, setIsAtBottom] = React.useState<boolean>(false);
     const { user } = React.useContext(UserContext);
@@ -109,6 +134,8 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
     const hasStudentComments = ratings.length > 0;
     const hasWishlistMembership = wishlists.length > 0;
 
+    const averageScore = (Math.round(calcAverageScore(ratings) * 10) / 10).toFixed(1); // round to 1 decimal place
+
     return (
         <div className="taInfoContainer">
             <button className="btn btn-secondary" onClick={exitTAInfoView}>
@@ -122,8 +149,8 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
                         {ta.name !== taCohortInfo.legalName && ` (${taCohortInfo.legalName})`}
                         &nbsp;
                     </h2>
-                    <OverlayTrigger placement='top' overlay={<Tooltip>Student Rating Average</Tooltip>}>
-                        <span style={{ alignSelf: "center", fontSize: "28px" }}>⭐⭐⭐⭐⭐</span>
+                    <OverlayTrigger placement='top' overlay={<Tooltip>Student Rating Average {`(${averageScore})`}</Tooltip>}>
+                        <span style={{ alignSelf: "center", fontSize: "28px" }}>{convertScoreToStars(averageScore)}</span>
                     </OverlayTrigger>
                 </div>
 
