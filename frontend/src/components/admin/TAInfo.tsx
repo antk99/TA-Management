@@ -1,67 +1,99 @@
 import React from 'react';
-import { Card, Container, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Container, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import '../../style/taInfoPage.css';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import TAInfoCard from './TAInfoCard';
 import LabelledTextbox from './LabelledTextbox';
 import TAActionsBar from './TAActionsBar';
+import { UserContext } from '../../App';
+import { useHttp } from '../../hooks/useHttp';
+import { courseRegArrayToString } from '../../classes/TA';
 
 const booleanToYesNo = (bool) => { return bool ? "Yes" : "No" };
-const arrToString = (arr) => { return arr.join(", ") };
+const arrToString = (arr) => { return arr ? arr.length === 0 ? "None" : arr.join(", ") : "" };
+const convertScoreToStars = (score) => { return "⭐".repeat(score) }
 
 const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
     const [isAtBottom, setIsAtBottom] = React.useState<boolean>(false);
+    const { user } = React.useContext(UserContext);
+    const [taCohortInfo, setTACohortInfo] = React.useState<any>({});
+    const [wishlists, setWishlists] = React.useState<any>([]);
+    const [performanceLogs, setPerformanceLogs] = React.useState<any>([]);
+    const [ratings, setRatings] = React.useState<any>([]);
+
+    // fetch cohort info
+    const { isLoading: isCohortLoading, error: isCohortError, sendRequest: getCohortInfo } = useHttp(
+        { url: "http://localhost:3000/api/cohort/" + ta.studentID },
+        (data) => { setTACohortInfo(data.cohortInfo) },
+        user.token
+    );
+
+    // fetch wishlists
+    const { isLoading: isWishlistsLoading, error: isWishlistsError, sendRequest: getWishlists } = useHttp(
+        { url: "http://localhost:3000/api/wishlist/ta/" + ta.studentID },
+        (data) => { setWishlists(data.wishlist) },
+        user.token
+    );
+
+    // fetch performance logs
+    const { isLoading: isPerfLogsLoading, error: isPerfLogsError, sendRequest: getPerfLogs } = useHttp(
+        { url: "http://localhost:3000/api/performanceLog/" + ta.studentID },
+        (data) => { setPerformanceLogs(data.logs) },
+        user.token
+    );
+
+    // fetch student ratings
+    const { isLoading: isRatingsLoading, error: isRatingsError, sendRequest: getRatings } = useHttp(
+        { url: "http://localhost:3000/api/rating/" + ta.studentID },
+        (data) => { setRatings(data.ratings) },
+        user.token
+    );
+
+    const isLoading = isCohortLoading || isWishlistsLoading || isPerfLogsLoading || isRatingsLoading;
+    const isError = isCohortError || isWishlistsError || isPerfLogsError || isRatingsError;
 
     React.useEffect(() => {
+        // onload functions
+
+        // set scroll listener
         document.addEventListener("scroll", () => {
             window.innerHeight + window.pageYOffset >= document.body.offsetHeight ? setIsAtBottom(true) : setIsAtBottom(false);
         });
+
+        // fetch cohort info
+        getCohortInfo();
+
+        // fetch wishlists
+        getWishlists();
+
+        // fetch performance logs
+        getPerfLogs();
+
+        // fetch student ratings
+        getRatings();
     }, []);
 
-    const cohortFields = [
+    const defaultData = "N/A";
+
+    const fields = [
         { label: "Email", value: ta.email },
         { label: "Student ID", value: ta.studentID },
-        { label: "Phone Number", value: ta.phone },
-        { label: "Degree", value: ta.degree },
-        { label: "Level", value: ta.level },
-        { label: "Priority", value: booleanToYesNo(ta.priority) },
-        { label: "Supervisor", value: ta.supervisorName },
-        { label: "Location", value: ta.location },
-        { label: "Date Applied", value: ta.dateApplied },
-        { label: "Courses Applied For", value: arrToString(ta.coursesAppliedFor) },
-        { label: "Open To Other Courses", value: booleanToYesNo(ta.openToOtherCourses) },
-        { label: "Hours", value: ta.hours },
-        { label: "Current Courses", value: arrToString(ta.currCourses) },
-        { label: "Previous Courses", value: arrToString(ta.prevCourses) }
+        { label: "Phone Number", value: isCohortError ? defaultData : taCohortInfo.phone },
+        { label: "Degree", value: isCohortError ? defaultData : taCohortInfo.degree },
+        { label: "Level", value: isCohortError ? defaultData : taCohortInfo.level },
+        { label: "Priority", value: isCohortError ? defaultData : booleanToYesNo(taCohortInfo.priority) },
+        { label: "Supervisor", value: isCohortError ? defaultData : taCohortInfo.supervisorName },
+        { label: "Location", value: isCohortError ? defaultData : taCohortInfo.location },
+        { label: "Date Applied", value: isCohortError ? defaultData : taCohortInfo.dateApplied },
+        { label: "Courses Applied For", value: isCohortError ? defaultData : arrToString(taCohortInfo.coursesAppliedFor) },
+        { label: "Open To Other Courses", value: isCohortError ? defaultData : booleanToYesNo(taCohortInfo.openToOtherCourses) },
+        { label: "Hours", value: isCohortError ? defaultData : taCohortInfo.hours },
+        { label: "Current Courses", value: courseRegArrayToString(ta.currCourses) },
+        { label: "Previous Courses", value: courseRegArrayToString(ta.prevCourses) }
     ];
 
-    const midPoint = Math.ceil(cohortFields.length / 2);
-
-    /* DUMMY DATA */
-    const wishlistMemberships = ["Joseph Vybihal", "John Doe", "Jane Doe", "John Smith", "Jane Smith"];
-    const professorPerformanceLogs = [
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    ];
-    const studentComments = [
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    ];
+    const midPoint = Math.ceil(fields.length / 2);
 
     const wishlistMembershipTitle = (
         <>
@@ -73,9 +105,9 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
         </>
     );
 
-    const hasPerformanceLogs = professorPerformanceLogs.length > 0;
-    const hasStudentComments = studentComments.length > 0;
-    const hasWishlistMembership = wishlistMemberships.length > 0;
+    const hasPerformanceLogs = performanceLogs.length > 0;
+    const hasStudentComments = ratings.length > 0;
+    const hasWishlistMembership = wishlists.length > 0;
 
     return (
         <div className="taInfoContainer">
@@ -87,7 +119,7 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
                 <div className="rowC">
                     <h2>
                         {ta.name}
-                        {ta.name !== ta.legalName && ` (${ta.legalName})`}
+                        {ta.name !== taCohortInfo.legalName && ` (${taCohortInfo.legalName})`}
                         &nbsp;
                     </h2>
                     <OverlayTrigger placement='top' overlay={<Tooltip>Student Rating Average</Tooltip>}>
@@ -95,16 +127,14 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
                     </OverlayTrigger>
                 </div>
 
-
-
                 <TAInfoCard title="Cohort Information" style={{ width: '100%' }} maxHeight="fit-content" flexDirection="row">
                     <div className="cohortFields">
-                        {cohortFields.slice(0, midPoint).map((field, index) => (
+                        {fields.slice(0, midPoint).map((field, index) => (
                             <LabelledTextbox key={index} label={field.label} value={field.value !== "" ? field.value : "None"} />
                         ))}
                     </div>
                     <div className="cohortFields">
-                        {cohortFields.slice(midPoint).map((field, index) => (
+                        {fields.slice(midPoint).map((field, index) => (
                             <LabelledTextbox key={index} label={field.label} value={field.value} />
                         ))}
                     </div>
@@ -112,8 +142,8 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
 
                 <TAInfoCard title={wishlistMembershipTitle}>
                     <div className="wishlistProfessors">
-                        {hasWishlistMembership && wishlistMemberships.map((prof) => (
-                            <LabelledTextbox key={prof} value={prof} />
+                        {hasWishlistMembership && wishlists.map(wishlist => (
+                            <LabelledTextbox key={wishlist._id} value={wishlist.profName} />
                         ))}
 
                         {!hasWishlistMembership && "No professors have this student on their wishlist."}
@@ -121,22 +151,22 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
                 </TAInfoCard>
 
                 <TAInfoCard title="Professor Performance Logs" centerText={!hasPerformanceLogs}>
-                    {hasPerformanceLogs && professorPerformanceLogs.map((log, index) => (
-                        <LabelledTextbox key={index} label={"Joseph Vybihal"} value={log} />
+                    {hasPerformanceLogs && performanceLogs.map(log => (
+                        <LabelledTextbox key={log._id} label={`${log.profName} - ${log.courseNumber}`} value={log.comment} />
                     ))}
 
                     {!hasPerformanceLogs && "No performance logs found."}
                 </TAInfoCard>
 
                 <TAInfoCard title="Student Comments" centerText={!hasStudentComments} style={{ marginBottom: "20px" }}>
-                    {hasStudentComments && studentComments.map((comment, index) => (
-                        <LabelledTextbox key={index} label={"⭐⭐⭐⭐"} value={comment} />
+                    {hasStudentComments && ratings.map(rating => (
+                        <LabelledTextbox key={rating._id} label={`${convertScoreToStars(rating.score)} - ${rating.courseNumber}`} value={rating.comment + ` - ${rating.authorName}`} />
                     ))}
 
                     {!hasStudentComments && "No student comments found."}
                 </TAInfoCard>
 
-                <TAActionsBar currCourses={ta.currCourses} modifyCurrCourses={(newCurrCourses) => modifyCurrCourses(ta.studentID, newCurrCourses)} isAtBottom={isAtBottom} />
+                <TAActionsBar ta={ta} modifyCurrCourses={modifyCurrCourses} isAtBottom={isAtBottom} />
             </Container>
         </div>
     );

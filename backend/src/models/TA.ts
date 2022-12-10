@@ -1,37 +1,45 @@
 import mongoose from 'mongoose';
-import {IUser} from "./User";
-const Schema = mongoose.Schema;
+import { Term } from './Course';
+
+export type CourseRegInfo = { term: Term, termYear: string, courseNumber: string, assignedHours: number };
 
 export interface ITA extends mongoose.Document {
-    ta: IUser,
+    email: string,
+    name: string,
     studentID: string;
-    currCourses: Array<string>;
-    prevCourses: Array<string>;
+    currCourses: Array<CourseRegInfo>;
+    prevCourses: Array<CourseRegInfo>;
 }
 
 const TASchema = new mongoose.Schema({
 
-    ta: {
-        type: Schema.Types.ObjectId,
+    email: {
+        type: String,
         required: true,
-        ref: "User"
+        unique: true
+    },
+
+    name: {
+        type: String,
+        required: true,
     },
 
     studentID: {
         type: String,
         required: true,
+        unique: true,
     },
 
     currCourses: {
-        type: Array, // or Array<ObjectId>?
+        type: Array<CourseRegInfo>,
         required: true,
     },
 
     prevCourses: {
-        type: Array, // or Array<ObjectId>?
+        type: Array<CourseRegInfo>,
         required: true,
     },
-    
+
 }, {
     timestamps: true
 })

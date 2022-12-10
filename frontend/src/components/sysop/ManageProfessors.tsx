@@ -1,21 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import AddProfForm from "./AddProfForm";
 import ProfRow from "./ProfRow";
 import "../../style/userTable.css";
 import { Professor } from "../../classes/Professor";
 import ImportForm from "./ImportForm";
 import { Container } from "react-bootstrap";
+import { UserContext } from "../../App";
+import { useHttp } from "../../hooks/useHttp";
 
 const ManageProfessors = () => {
   const [profs, setProfs] = React.useState<Array<Professor>>([]);
+  const { user } = useContext(UserContext);
 
-  const fetchProfData = async () => {
-    try {
-      const res = await fetch("http://127.0.0.1:3000/api/prof");
-      const data = await res.json();
+  const { isLoading, error, sendRequest: fetchProfData } = useHttp(
+    { url: "http://127.0.0.1:3000/api/prof" },
+    async (data) => {
       const profObject = [];
       for (const d of data.profs) {
-        const instructorRes = await fetch("http://127.0.0.1:3000/api/users/" + d.professor);
+        const instructorRes = await fetch(
+          "http://127.0.0.1:3000/api/users/" + d.professor,
+          { headers: { Authorization: "Bearer " + user.token } }
+        );
         let item = {
           faculty: d.faculty,
           department: d.department,
@@ -33,10 +38,9 @@ const ManageProfessors = () => {
         profObject.push(item);
       }
       setProfs(profObject);
-    } catch (err) {
-      console.log(err);
-    }
-  }; 
+    },
+    user.token
+  );
 
   useEffect(() => {
     // Load data
@@ -45,10 +49,10 @@ const ManageProfessors = () => {
 
   return (
     <div>
-      <ImportForm taskName="Professors" uploadUrl="http://127.0.0.1:3000/api/prof/upload"/>
+      <ImportForm taskName="Professors" uploadUrl="http://127.0.0.1:3000/api/prof/upload" />
       <Container className="mt-3">
         <div className="rowC">
-          <h2 style={{ marginBottom: "20px" }}>All Professors</h2> 
+          <h2 style={{ marginBottom: "20px" }}>All Professors</h2>
           <AddProfForm fetchProfData={fetchProfData} />
         </div>
         <div id="profTable">

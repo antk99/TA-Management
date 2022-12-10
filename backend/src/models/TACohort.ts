@@ -1,6 +1,4 @@
 import mongoose from 'mongoose';
-import {IUser} from "./User";
-const Schema = mongoose.Schema;
 
 export enum GradLevel {
     Undergraduate = "undergraduate",
@@ -8,7 +6,7 @@ export enum GradLevel {
 }
 
 export interface ITACohort extends mongoose.Document {
-    ta: IUser,
+    studentID: string;
 
     // TA cohort fields
     phone: string;
@@ -28,10 +26,10 @@ export interface ITACohort extends mongoose.Document {
 
 const ITACohortSchema = new mongoose.Schema({
 
-    ta: {
-        type: Schema.Types.ObjectId,
+    studentID: {
+        type: String,
         required: true,
-        ref: "TA"
+        unique: true
     },
 
     phone: {

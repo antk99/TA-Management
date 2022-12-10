@@ -1,40 +1,40 @@
 import mongoose from 'mongoose';
-import { ICourse, Term } from './Course';
-import { IProfessor } from './Professor';
-import { ITA } from './TA';
-const Schema = mongoose.Schema;
+import { Term } from './Course';
 
 export interface IWishlist extends mongoose.Document {
-	professor: IProfessor;
-	ta: ITA;
-	course: ICourse;
-	termFor: Term;
+    profEmail: string;
+    taStudentID: string;
+    courseNumber: string;
+    termFor: Term;
+    termYearFor: string;
 }
 
 const WishlistSchema = new mongoose.Schema({
 
-    professor: {
-        type: Schema.Types.ObjectId,
+    profEmail: {
+        type: String,
         required: true,
-        ref: "Professor"
     },
 
-    ta: {
-        type: Schema.Types.ObjectId,
+    taStudentID: {
+        type: String,
         required: true,
-        ref: "TA"
     },
 
-    course: {
-        type: Schema.Types.ObjectId,
+    courseNumber: {
+        type: String,
         required: true,
-        ref: "Course"
     },
 
     termFor: {
         type: String,
         required: true,
     },
+
+    termYearFor: {
+        type: String,
+        required: true,
+    }
 
 }, {
     timestamps: true

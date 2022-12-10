@@ -1,23 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import "../../style/userTable.css";
 import { User } from "../../classes/User";
 import UserRow from "./UserRow";
 import ImportForm from "./ImportForm";
 import { Container } from "react-bootstrap";
 import AddUserForm from "./AddUserForm";
+import { UserContext } from "../../App";
+import { useHttp } from "../../hooks/useHttp";
 
 const ManageUsers = () => {
   const [users, setUsers] = React.useState<Array<User>>([]);
+  const { user } = useContext(UserContext);
 
-  const fetchUserData = async () => {
-    try {
-      const res = await fetch("http://127.0.0.1:3000/api/users");
-      const json = await res.json();
-      setUsers(json.users);
-    } catch (err) {
-      console.log(err);
-    }
-  }; 
+  const { isLoading, error, sendRequest: fetchUserData } = useHttp(
+    { url: "http://127.0.0.1:3000/api/users" },
+    (data) => { setUsers(data.users) },
+    user.token
+  );
 
   useEffect(() => {
     // Load data
@@ -26,10 +25,10 @@ const ManageUsers = () => {
 
   return (
     <div>
-      <ImportForm taskName="Users" uploadUrl="http://127.0.0.1:3000/api/users/upload"/>
+      <ImportForm taskName="Users" uploadUrl="http://127.0.0.1:3000/api/users/upload" />
       <Container className="mt-3">
         <div className="rowC">
-          <h2 style={{ marginBottom: "20px" }}>All Users</h2> 
+          <h2 style={{ marginBottom: "20px" }}>All Users</h2>
           <AddUserForm fetchUserData={fetchUserData} />
         </div>
         <div id="profTable">

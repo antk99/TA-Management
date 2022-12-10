@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import "../../style/userTable.css";
-import { TA } from "../../classes/TA";
+import { courseRegArrayToString as arrToStr, TA } from "../../classes/TA";
 import "../../style/taTable.css";
 import AdminButton from "./AdminButton";
 
@@ -17,8 +16,8 @@ const UserRow = ({ ta, focusStudent }: { ta: TA, focusStudent: Function }) => {
             <td className="column1">{ta.name}</td>
             <td className="column2">{ta.email}</td>
             <td className="column3">{ta.studentID}</td>
-            <td className="column4">{ta.currCourses.join(", ")}</td>
-            <td className="column5">{ta.prevCourses.join(", ")}</td>
+            <td className="column4">{arrToStr(ta.currCourses)}</td>
+            <td className="column5">{arrToStr(ta.prevCourses)}</td>
         </tr>
     );
 };

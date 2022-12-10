@@ -116,3 +116,8 @@
 .btn-primary.redDropdown:hover {
     background-color: rgb(135, 0, 0) !important;
 }
+
+.taInfoCard ul {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
