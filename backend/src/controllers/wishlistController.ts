@@ -1,102 +1,77 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import Course from "../models/Course";
+import User from "../models/User";
+import { parse } from 'csv-string';
+import { CourseTA } from "../models/CourseTA";
+import PerformanceLog from "../models/PerformanceLog";
 import Wishlist from "../models/Wishlist";
 import Professor from "../models/Professor";
 import TA from "../models/TA";
-import { capitalizeFirstLetter } from "../utils/stringFormatting";
-import { getProfNameByEmail } from "./profController";
 
-// @Desc Get a prof's wishlist
-// @Route /api/wishlist/:profEmail
+// @Desc Get Wish List by Professor
+// @Route /api/wishList/professor/:id
 // @Method GET
-export const getProfWishlist = asyncHandler(async (req: Request, res: Response) => {
-    const profEmail = req.params.profEmail;
-
-    try {
-        const wishlist = await Wishlist.find({ profEmail });
-        res.status(200).json({ wishlist });
-
-    } catch (error: any) {
-        res.status(400).json({ error: error.message });
+export const getWishListByProfessor = asyncHandler(async (req: Request, res: Response) => {
+    const wishList = await Wishlist.find({ professor: req.params.id });
+    if (wishList) {
+        res.status(200).json({wishList});
+    }
+    else {
+        res.status(404);
+        throw new Error("Wish List not found");
     }
 });
 
-// @Desc Get all wishlists for given TA
-// @Route /api/wishlist/ta/:studentID
-// @Method GET
-export const getTAWishlist = asyncHandler(async (req: Request, res: Response) => {
-    const studentID = req.params.studentID;
-
-    try {
-        const wishlist = await Wishlist.find({ taStudentID: studentID }) as any;
-        if (!wishlist)
-            throw new Error(`No wishlist found.`);
-
-        const list = [];
-        for (const item of wishlist) {
-            // get prof name & attach to wishlist
-            const profName = await getProfNameByEmail(item.profEmail);
-            item.profName = profName;
-            list.push({ ...item._doc, profName });
-        }
-        res.status(200).json({ wishlist: list });
-
-    } catch (error: any) {
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// @Desc Delete a prof's singular ta in their wishlist
-// @Route /api/wishlist/delete/:wishlistID
-// @Method DELETE
-export const deleteWishlist = asyncHandler(async (req: Request, res: Response) => {
-    const wishlistID = req.params.wishlistID;
-
-    try {
-        const wishlist = await Wishlist.findByIdAndDelete({ _id: wishlistID });
-        if (!wishlist)
-            throw new Error(`No wishlist found.`);
-
-        res.status(200).json({ "message": "Wishlist deleted successfully." });
-
-    } catch (error: any) {
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// @Desc Add Wishlist
-// @Route /api/wishlist/add
+// @Desc Add Wish List
+// @Route /api/wishList
 // @Method POST
-export const addWishlist = asyncHandler(async (req: Request, res: Response) => {
-    let { profEmail, taStudentID, courseNumber, termFor, termYearFor } = req.body;
+export const addWishList = asyncHandler(async (req: Request, res: Response) => {
+    const { professor, ta, course } = req.body;
+    const courseData = await Course.findById(course);
+    const professorData = await Professor.findById(professor);
+    const taData = await TA.findById(ta);
 
-    try {
-        if (!profEmail || !taStudentID || !courseNumber || !termFor || !termYearFor)
-            throw new Error("Missing at least one of required fields: profEmail, taStudentID, courseNumber, termFor, termYearFor.");
+    if(!courseData) {
+        res.status(404);
+        throw new Error("Course not found");
+    }
+    if(!professorData) {
+        res.status(404);
+        throw new Error("Professor not found");
+    }
+    if(!taData) {
+        res.status(404);
+        throw new Error("TA not found");
+    }
 
-        courseNumber = courseNumber.toUpperCase(); // uppercase course number
-        termFor = capitalizeFirstLetter(termFor); // capitalize first letter of term
+    if(courseData && professorData && taData) {
+        const wishList = new Wishlist({
+            professor,
+            ta,
+            course,
+            course_num: courseData.courseNumber,
+            termFor: courseData.term,
+            yearFor: courseData.year,
+            professor_name: professorData.professor.firstName + " " + professorData.professor.lastName,
+            TA_name: taData.ta.firstName + " " + taData.ta.lastName,
+        });
+        await wishList.save();
+        res.status(201).json({wishList});
+    }
+});
 
-        const professorExists = await Professor.findOne({ profEmail });
-        if (!professorExists)
-            throw new Error(`Professor ${profEmail} not found in the database! Add professor and continue.`);
-
-        const taExists = await TA.findOne({ studentID: taStudentID });
-        if (!taExists)
-            throw new Error(`TA ${taStudentID} not found in the database! Add TA and continue.`);
-
-        const courseExists = await Course.findOne({ courseNumber });
-        if (!courseExists)
-            throw new Error(`Course ${courseNumber} not found in the database! Add course and continue.`);
-
-        let wishlist = await Wishlist.findOne({ profEmail, taStudentID, courseNumber, termFor, termYearFor });
-        if (!wishlist) {
-            wishlist = new Wishlist({ profEmail, taStudentID, courseNumber, termFor, termYearFor });
-            await wishlist.save();
-        }
-        res.status(201).json({ wishlist });
-    } catch (error: any) {
-        res.status(400).json({ error: error.message });
+// @Desc Delete Wish List
+// @Route /api/wishlist/:id
+// @Method DELETE
+export const deleteWishList = asyncHandler(async (req: Request, res: Response) => {
+    const wishList = await Wishlist.findById(req.params.id);
+    if (wishList) {
+        await wishList.remove();
+        res.status(200).json({message: "Wish List removed"});
+    }
+    else {
+        res.status(404);
+        throw new Error("Wish List not found");
     }
 });
