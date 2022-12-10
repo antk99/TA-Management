@@ -1,12 +1,10 @@
 import { Button, Dropdown, DropdownButton, Form, Modal } from "react-bootstrap";
 import "../../style/taInfoPage.css";
 import React from "react";
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { UserContext } from "../../App";
 import { TA } from "../../classes/TA";
 import AdminButton from "./AdminButton";
 import { useHttp } from "../../hooks/useHttp";
-import { Term } from "../../../../backend/src/models/Course";
 
 // from backend/src/models/Course.ts
 const Terms = ["Fall", "Spring", "Summer"];
@@ -22,13 +20,18 @@ const TAActionsBar = ({ ta, modifyCurrCourses, isAtBottom }: { ta: TA, modifyCur
 
     const { isLoading, error, sendRequest: fetchCourses } = useHttp(
         { url: "http://localhost:3000/api/course" },
-        (data) => { setCourses(data.courses.map(course => course.courseNumber)) },
+        (data) => {
+            const coursesData = data.courses.map(course => course.courseNumber).sort();
+            setCourses(coursesData);
+            setFilteredCourses(coursesData);
+        },
         user.token
     );
 
     const filterCourses = () => {
+        const filter = courseSearchInputRef.current.value.toLowerCase();
         setFilteredCourses(courses.filter(
-            course => course.toLowerCase().includes(courseSearchInputRef.current.value.toLowerCase())
+            course => course.toLowerCase().includes(filter)
         ));
     };
 
@@ -92,9 +95,9 @@ const TAActionsBar = ({ ta, modifyCurrCourses, isAtBottom }: { ta: TA, modifyCur
             <div className={`taActionsBackdrop ${!isAtBottom && "realBackdrop"}`}></div>
             <div className="taActionsBackdrop containerBackdrop">
                 <div className="taActionsBar">
-                    <AdminButton style={{ display: "flex", flexDirection: "row" }} color="green" onClick={() => setShowCourseAddModal(true)}>
+                    <Button style={{ display: "flex", flexDirection: "row" }} variant="primary greenDropdown" onClick={() => setShowCourseAddModal(true)}>
                         Add To Course
-                    </AdminButton>
+                    </Button>
                     <DropdownButton variant="primary redDropdown" title="Remove From Course">
                         {ta.currCourses.map(course => {
                             return <Dropdown.Item onClick={() => handleCourseRemoval(course)} key={course.courseNumber}>{course.courseNumber}</Dropdown.Item>
@@ -111,7 +114,7 @@ const TAActionsBar = ({ ta, modifyCurrCourses, isAtBottom }: { ta: TA, modifyCur
                     <Form onSubmit={handleAddCourseSubmit}>
                         <Form.Group controlId="formCourseNumber" className="mb-3">
                             <Form.Label>Course Number</Form.Label>
-                            <Form.Control type="text" placeholder="Enter course number" ref={courseSearchInputRef} onChange={filterCourses} />
+                            {filterCourses.length > 50 && <Form.Control type="text" placeholder="Enter course number" ref={courseSearchInputRef} onChange={filterCourses} />}
                             <Form.Select required name="courseNumber">
                                 {filteredCourses.map(c => <option key={c} value={c}>{c}</option>)}
                             </Form.Select>
@@ -139,7 +142,7 @@ const TAActionsBar = ({ ta, modifyCurrCourses, isAtBottom }: { ta: TA, modifyCur
                             </Form.Select>
                         </Form.Group>
 
-                        <Button variant="outline-secondary" type="submit">
+                        <Button variant="primary greenDropdown" type="submit">
                             Add To Course
                         </Button>
                     </Form>

@@ -11,12 +11,12 @@ import ManageCourses from "../components/sysop/ManageCourses";
 import ManageUsers from "../components/sysop/ManageUsers";
 import ManageTAs from "../components/ta-management/ManageTAs";
 import { emptyUser } from "../classes/User";
-import TACourseHistory from "../components/admin/TACourseHistory";
 import TAAdmin from "../components/admin/TAAdmin";
+import CourseQuota from "../components/admin/CourseQuota";
 
 
 // these don't need to be in the component since they don't change
-const adminTabs = ["TA Admin"];
+const adminTabs = ["TA Admin", "Course Quota"];
 const managementTabs = ["TA Management"];
 const rateTabs = ["Rate TA"];
 const sysopTabs = ["Professors", "Courses", "Users"];
@@ -34,7 +34,8 @@ const tabNamesToJSX = new Map<string, JSX.Element>([
   ["Professors", <ManageProfessors />],
   ["Courses", <ManageCourses />],
   ["Users", <ManageUsers />],
-  ["TA Admin", <div>TA Admin</div>],
+  ["TA Admin", <TAAdmin />],
+  ["Course Quota", <CourseQuota />],
   ["TA Management", <ManageTAs />],
 ]);
 
@@ -78,7 +79,7 @@ export function Dashboard() {
   // Render nav dropdown options and nav tabs based on state above
   return (
     <ProfileContext.Provider value={{ profile: currentProfile }}>
-       <div>
+      <div>
         <Navbar expand="lg">
           <Container>
             <img className="logo" src={logo} alt="mcgill-logo" />
