@@ -10,12 +10,12 @@ import ManageProfessors from "../components/sysop/ManageProfessors";
 import ManageCourses from "../components/sysop/ManageCourses";
 import ManageUsers from "../components/sysop/ManageUsers";
 import { emptyUser } from "../classes/User";
-import TACourseHistory from "../components/admin/TACourseHistory";
 import TAAdmin from "../components/admin/TAAdmin";
+import CourseQuota from "../components/admin/CourseQuota";
 
 
 // these don't need to be in the component since they don't change
-const adminTabs = ["TA Admin"];
+const adminTabs = ["TA Admin", "Course Quota"];
 const managementTabs = []; // TODO: add blue tabs here
 const rateTabs = ["Rate TA"];
 const sysopTabs = ["Professors", "Courses", "Users"];
@@ -33,7 +33,8 @@ const tabNamesToJSX = new Map<string, JSX.Element>([
   ["Professors", <ManageProfessors />],
   ["Courses", <ManageCourses />],
   ["Users", <ManageUsers />],
-  ["TA Admin", <TAAdmin />]
+  ["TA Admin", <TAAdmin />],
+  ["Course Quota", <CourseQuota />],
 ]);
 
 export function Dashboard() {
