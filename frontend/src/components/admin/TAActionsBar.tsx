@@ -73,7 +73,8 @@ const TAActionsBar = ({ ta, modifyCurrCourses, isAtBottom }: { ta: TA, modifyCur
             modifyCurrCourses(ta.studentID, [...ta.currCourses, data.courseAdded]);
 
             // clear input
-            courseSearchInputRef.current.value = "";
+            if (courseSearchInputRef.current)
+                courseSearchInputRef.current.value = ""
         }
     };
 
