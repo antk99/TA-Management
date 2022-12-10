@@ -42,7 +42,10 @@ const ManageCourses = () => {
   );
 
   useEffect(() => {
-    fetchCourseData();
+    async function fetchCourses() {
+      await fetchCourseData();
+    }
+    fetchCourses()
   }, []);
 
   return (

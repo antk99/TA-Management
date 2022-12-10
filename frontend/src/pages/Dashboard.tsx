@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { Container, Nav, Navbar, NavDropdown, Tab, Tabs } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -9,6 +9,7 @@ import { UserTypes } from "../enums/UserTypes";
 import ManageProfessors from "../components/sysop/ManageProfessors";
 import ManageCourses from "../components/sysop/ManageCourses";
 import ManageUsers from "../components/sysop/ManageUsers";
+import ManageTAs from "../components/ta-management/ManageTAs";
 import { emptyUser } from "../classes/User";
 import TAAdmin from "../components/admin/TAAdmin";
 import CourseQuota from "../components/admin/CourseQuota";
@@ -16,7 +17,7 @@ import CourseQuota from "../components/admin/CourseQuota";
 
 // these don't need to be in the component since they don't change
 const adminTabs = ["TA Admin", "Course Quota"];
-const managementTabs = []; // TODO: add blue tabs here
+const managementTabs = ["TA Management"];
 const rateTabs = ["Rate TA"];
 const sysopTabs = ["Professors", "Courses", "Users"];
 
@@ -35,7 +36,10 @@ const tabNamesToJSX = new Map<string, JSX.Element>([
   ["Users", <ManageUsers />],
   ["TA Admin", <TAAdmin />],
   ["Course Quota", <CourseQuota />],
+  ["TA Management", <ManageTAs />],
 ]);
+
+export const ProfileContext = React.createContext<{ profile: UserTypes }>({ profile: UserTypes.Student });
 
 export function Dashboard() {
 
@@ -74,44 +78,46 @@ export function Dashboard() {
 
   // Render nav dropdown options and nav tabs based on state above
   return (
-    <div>
-      <Navbar expand="lg">
+    <ProfileContext.Provider value={{ profile: currentProfile }}>
+      <div>
+        <Navbar expand="lg">
+          <Container>
+            <img className="logo" src={logo} alt="mcgill-logo" />
+            <Nav className="me-auto">
+              <NavDropdown title={currentProfile} id="basic-nav-dropdown">
+                {user.userType.map((profile) => (
+                  <NavDropdown.Item
+                    key={profile.toString()}
+                    onClick={() => {
+                      handleNavClick(profile);
+                    }}
+                  >
+                    {profile}
+                  </NavDropdown.Item>
+                ))}
+              </NavDropdown>
+            </Nav>
+            <button className="logout" onClick={() => handleLogout()}>
+              <LogoutIcon />
+            </button>
+          </Container>
+        </Navbar>
         <Container>
-          <img className="logo" src={logo} alt="mcgill-logo" />
-          <Nav className="me-auto">
-            <NavDropdown title={currentProfile} id="basic-nav-dropdown">
-              {user.userType.map((profile) => (
-                <NavDropdown.Item
-                  key={profile.toString()}
-                  onClick={() => {
-                    handleNavClick(profile);
-                  }}
-                >
-                  {profile}
-                </NavDropdown.Item>
-              ))}
-            </NavDropdown>
-          </Nav>
-          <button className="logout" onClick={() => handleLogout()}>
-            <LogoutIcon />
-          </button>
+          <Tabs
+            defaultActiveKey="0"
+            transition={false}
+            id="noanim-tab"
+            className="sub"
+          >
+            {currentTabs.map((currentTabName, i) => (
+              <Tab className="sub" key={i} eventKey={i} title={currentTabName}>
+                {tabNamesToJSX.get(currentTabName)}
+              </Tab>
+            ))}
+          </Tabs>
         </Container>
-      </Navbar>
-      <Container>
-        <Tabs
-          defaultActiveKey="0"
-          transition={false}
-          id="noanim-tab"
-          className="sub"
-        >
-          {currentTabs.map((currentTabName, i) => (
-            <Tab className="sub" key={i} eventKey={i} title={currentTabName}>
-              {tabNamesToJSX.get(currentTabName)}
-            </Tab>
-          ))}
-        </Tabs>
-      </Container>
-    </div>
+      </div>
+    </ProfileContext.Provider>
   );
 }
 

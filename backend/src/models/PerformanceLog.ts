@@ -25,20 +25,17 @@ const PerformanceLogSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-
     term: {
         type: String,
         required: true,
     },
-
     comment: {
         type: String,
         required: true,
-        maxLength: 1000
     },
 
 }, {
-    timestamps: true
+    timestamps: false
 })
 
 const PerformanceLog = mongoose.model<IPerformanceLog>("PerformanceLog", PerformanceLogSchema);
