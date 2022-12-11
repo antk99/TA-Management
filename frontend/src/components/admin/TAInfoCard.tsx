@@ -13,7 +13,7 @@ const TAInfoCard = ({ title = "", children, style = {}, maxHeight = "300px", fle
     return (
         <Card style={style} className="taInfoCard">
             {title && <Card.Title>{title}</Card.Title>}
-            <Card.Body className="taInfoCardBody" style={{ maxHeight, flexDirection }}>
+            <Card.Body className="taInfoCardBody" style={{ maxHeight, flexDirection, justifyContent: "center" }}>
                 {children}
             </Card.Body>
         </Card>

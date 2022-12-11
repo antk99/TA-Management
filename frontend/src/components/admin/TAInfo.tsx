@@ -43,6 +43,7 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
     const [isAtBottom, setIsAtBottom] = React.useState<boolean>(false);
     const { user } = React.useContext(UserContext);
     const [taCohortInfo, setTACohortInfo] = React.useState<any>({});
+    const [officeHours, setOfficeHours] = React.useState<any>([]);
     const [wishlists, setWishlists] = React.useState<any>([]);
     const [performanceLogs, setPerformanceLogs] = React.useState<any>([]);
     const [ratings, setRatings] = React.useState<any>([]);
@@ -51,6 +52,29 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
     const { isLoading: isCohortLoading, error: isCohortError, sendRequest: getCohortInfo } = useHttp(
         { url: "http://localhost:3000/api/cohort/" + ta.studentID },
         (data) => { setTACohortInfo(data.cohortInfo) },
+        user.token
+    );
+
+    // fetch office hours
+    const { isLoading: isOHLoading, error: isOHError, sendRequest: getOfficeHours } = useHttp(
+        { url: "http://localhost:3000/api/users/email/" + ta.email },
+        async (data) => {
+            const taUserID = data.user._id;
+            const request = await fetch("http://localhost:3000/api/course/ta/" + taUserID,
+                { 'headers': { 'Authorization': 'Bearer ' + user.token, 'Content-Type': 'application/json' } }
+            );
+            const response = await request.json();
+            const tasAllCourses = response.courses.map(course => ({ courseNumber: course.courseNumber, tas: course.courseTAs }));
+            const temp = [];
+
+            for (const tasCourse of tasAllCourses) {
+                for (const ta of tasCourse.tas) {
+                    if (ta.uuid === taUserID)
+                        temp.push(ta.officeHours);
+                }
+            }
+            setOfficeHours(temp.flat());
+        },
         user.token
     );
 
@@ -75,8 +99,8 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
         user.token
     );
 
-    const isLoading = isCohortLoading || isWishlistsLoading || isPerfLogsLoading || isRatingsLoading;
-    const isError = isCohortError || isWishlistsError || isPerfLogsError || isRatingsError;
+    const isLoading = isCohortLoading || isWishlistsLoading || isPerfLogsLoading || isRatingsLoading || isOHLoading;
+    const isError = isCohortError || isWishlistsError || isPerfLogsError || isRatingsError || isOHError;
 
     React.useEffect(() => {
         // onload functions
@@ -97,6 +121,9 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
 
         // fetch student ratings
         getRatings();
+
+        // fetch office hours
+        getOfficeHours();
     }, []);
 
     const defaultData = "N/A";
@@ -132,6 +159,7 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
 
     const hasPerformanceLogs = performanceLogs.length > 0;
     const hasStudentComments = ratings.length > 0;
+    const hasOfficeHours = officeHours.length > 0;
     const hasWishlistMembership = wishlists.length > 0;
 
     const averageScore = (Math.round(calcAverageScore(ratings) * 10) / 10).toFixed(1); // round to 1 decimal place
@@ -167,15 +195,29 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
                     </div>
                 </TAInfoCard>
 
-                <TAInfoCard title={wishlistMembershipTitle}>
-                    <div className="wishlistProfessors">
-                        {hasWishlistMembership && wishlists.map(wishlist => (
-                            <LabelledTextbox key={wishlist._id} value={wishlist.profName} />
-                        ))}
+                <div style={{ display: "flex", gap: "20px" }}>
+                    <TAInfoCard title="TA Office Hours" style={{ width: '50%' }}>
+                        <div className="wishlistProfessors">
+                            {hasOfficeHours && officeHours.map(officeHour => (
+                                <LabelledTextbox key={officeHour.day + " " + officeHour.startTime}
+                                    label={officeHour.day}
+                                    value={`${officeHour.location} from ${officeHour.startTime} to ${officeHour.endTime}`} />
+                            ))}
 
-                        {!hasWishlistMembership && "No professors have this student on their wishlist."}
-                    </div>
-                </TAInfoCard>
+                            {!hasOfficeHours && "No office hours have been set for this TA."}
+                        </div>
+                    </TAInfoCard>
+
+                    <TAInfoCard title={wishlistMembershipTitle} style={{ width: '50%' }}>
+                        <div className="wishlistProfessors">
+                            {hasWishlistMembership && wishlists.map(wishlist => (
+                                <LabelledTextbox key={wishlist._id} value={wishlist.profName} />
+                            ))}
+
+                            {!hasWishlistMembership && "No professors have this student on their wishlist."}
+                        </div>
+                    </TAInfoCard>
+                </div>
 
                 <TAInfoCard title="Professor Performance Logs" centerText={!hasPerformanceLogs}>
                     {hasPerformanceLogs && performanceLogs.map(log => (
