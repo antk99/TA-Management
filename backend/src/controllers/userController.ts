@@ -9,9 +9,9 @@ import { parse } from 'csv-string';
 // @Method GET
 export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   const users = await User.find({}).select("-password");
-  res.status(200).json({  
-      users  
-    });
+  res.status(200).json({
+    users
+  });
 });
 
 
@@ -23,13 +23,13 @@ export const registerUsersFromFile = asyncHandler(async (req: Request, res: Resp
   if (csv) {
     const fileContent = parse(csv.buffer.toString('utf-8'));
     for (let record of fileContent) {
-      const user = new User({ 
+      const user = new User({
         firstName: record[0],
         lastName: record[1],
         email: record[2],
         password: record[3],
         userType: record[4].split("/")
-       });
+      });
       user.save(); // can be made concurrent
     }
   } else {
@@ -45,13 +45,27 @@ export const registerUsersFromFile = asyncHandler(async (req: Request, res: Resp
 // @Method GET
 export const getUserByID = asyncHandler(async (req: Request, res: Response) => {
   const user = await User.findById({ _id: req.params.id }).select("-password");
-  if(!user) {
+  if (!user) {
     res.status(404);
     throw new Error("User not found");
   }
-  res.status(200).json({  
-        user
-    });
+  res.status(200).json({
+    user
+  });
+});
+
+// @Desc Get User by email
+// @Route /api/users/email/:email
+// @Method GET
+export const getUserByEmail = asyncHandler(async (req: Request, res: Response) => {
+  const user = await User.findOne({ email: req.params.email }).select("-password");
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  res.status(200).json({
+    user
+  });
 });
 
 
@@ -63,12 +77,12 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
   const user = new User({ firstName, lastName, email, password, userType });
   await user.save();
   res.status(201).json({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      password: user.password,
-      userType: user.userType,
-      token: generateToken(user._id)
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    password: user.password,
+    userType: user.userType,
+    token: generateToken(user._id)
   });
 });
 
@@ -79,12 +93,12 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 export const login = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if(!user) {
+  if (!user) {
     res.status(404);
     throw new Error("User not found");
   }
 
-  if(await user.comparePassword(password)) {
+  if (await user.comparePassword(password)) {
     res.status(200).json({
       id: user._id,
       firstName: user.firstName,
@@ -104,10 +118,10 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 // @Route /api/users/:id
 // @Method DELETE
 export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
   let user = await User.findOne({ email });
-  if(!user) {
+  if (!user) {
     res.status(404);
     throw new Error("User not found");
   }
