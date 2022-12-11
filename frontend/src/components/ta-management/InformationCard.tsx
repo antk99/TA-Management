@@ -13,64 +13,64 @@ interface InformationCardProps {
     title: string;
 }
 
-function InformationCard({ name, email, officeHours, responsabilities, form, title } : InformationCardProps) {
+function InformationCard({ name, email, officeHours, responsabilities, form, title }: InformationCardProps) {
 
-  return (
-    <Card className="taInfoCard">
-        <Card.Body>
-            <Card.Title>{title}</Card.Title>
-            <Row>
-                <div className="d-flex flex-row justify-content-between">
-                    <h5>{name}</h5>
-                    {form}
-                </div>
-            </Row>
-            <LabelledTextbox label="Email" value={name} />
-            <Container>
-            <Row>
-                {officeHours && 
-                    <LabelledTextbox label="Office Hours" styles={{ display: 'block' }} value={
-                        <ul>
-                            {
-                                officeHours.map((officeHour, index) => (
-                                    <li key={index}>
-                                        <p className="mb-0">{officeHour.day} ({ officeHour.periodicity }) - {officeHour.startTime} to {officeHour.endTime}</p>
-                                        <p>{officeHour.location}</p>
-                                    </li>
-                                ))
-                            }
-                        </ul>
-                    } />
-                    // <Col className="mt-3">
-                    //     <Card.Subtitle className="mb-2">Office Hours</Card.Subtitle>
-                    //     <ul>
-                    //         {
-                    //             officeHours.map((officeHour, index) => (
-                    //                 <li key={index}>
-                    //                     <p className="mb-0">{officeHour.day} ({ officeHour.periodicity }) - {officeHour.startTime} to {officeHour.endTime}</p>
-                    //                     <p>{officeHour.location}</p>
-                    //                 </li>
-                    //             ))
-                    //         }
-                    //     </ul>
-                    // </Col>
-                }   
-                {responsabilities && 
-                    <LabelledTextbox label="Responsabilities" value={
-                        <ul>
-                            {
-                                responsabilities.map((responsability, index) => (
-                                    <li key={index}>{responsability}</li>
-                                ))
-                            }
-                        </ul>
-                    } />
-                }   
-            </Row>
-            </Container>
-        </Card.Body>
-    </Card>
-  );
+    return (
+        <Card className="taInfoCard">
+            <Card.Body>
+                <Card.Title>{title}</Card.Title>
+                <Row>
+                    <div className="d-flex flex-row justify-content-between">
+                        <h5>{name}</h5>
+                        {form}
+                    </div>
+                </Row>
+                <LabelledTextbox label="Email" value={email} />
+                <Container>
+                    <Row>
+                        {officeHours &&
+                            <LabelledTextbox label="Office Hours" styles={{ display: 'block' }} value={
+                                <ul>
+                                    {
+                                        officeHours.map((officeHour, index) => (
+                                            <li key={index}>
+                                                <p className="mb-0">{officeHour.day} ({officeHour.periodicity}) - {officeHour.startTime} to {officeHour.endTime}</p>
+                                                <p>{officeHour.location}</p>
+                                            </li>
+                                        ))
+                                    }
+                                </ul>
+                            } />
+                            // <Col className="mt-3">
+                            //     <Card.Subtitle className="mb-2">Office Hours</Card.Subtitle>
+                            //     <ul>
+                            //         {
+                            //             officeHours.map((officeHour, index) => (
+                            //                 <li key={index}>
+                            //                     <p className="mb-0">{officeHour.day} ({ officeHour.periodicity }) - {officeHour.startTime} to {officeHour.endTime}</p>
+                            //                     <p>{officeHour.location}</p>
+                            //                 </li>
+                            //             ))
+                            //         }
+                            //     </ul>
+                            // </Col>
+                        }
+                        {responsabilities &&
+                            <LabelledTextbox label="Responsabilities" value={
+                                <ul>
+                                    {
+                                        responsabilities.map((responsability, index) => (
+                                            <li key={index}>{responsability}</li>
+                                        ))
+                                    }
+                                </ul>
+                            } />
+                        }
+                    </Row>
+                </Container>
+            </Card.Body>
+        </Card>
+    );
 }
 
 export default InformationCard;
