@@ -29,6 +29,9 @@ const tabsPerProfile = new Map<UserTypes, Array<string>>([
   [UserTypes.TA, [...managementTabs, ...rateTabs]]
 ]);
 
+// ordered highest to lowest
+const userTypesOrdered = [UserTypes.Sysop, UserTypes.Admin, UserTypes.Professor, UserTypes.TA, UserTypes.Student];
+
 // TODO: add new tab names linked to corresponding components here
 const tabNamesToJSX = new Map<string, JSX.Element>([
   ["Professors", <ManageProfessors />],
@@ -50,10 +53,11 @@ export function Dashboard() {
    */
   const { user, setUser } = useContext(UserContext);
 
+  // get highest profile from user
+  const defaultProfile = userTypesOrdered.find((profile) => user.userType.includes(profile));
+
   // Set a default profile
-  const [currentProfile, setCurrentProfile] = useState<UserTypes>(
-    UserTypes.Sysop
-  );
+  const [currentProfile, setCurrentProfile] = useState<UserTypes>(defaultProfile ?? UserTypes.Student);
 
   // Set the default array of tabs relative to our default profile
   const [currentTabs, setCurrentTabs] = useState<Array<string>>(
