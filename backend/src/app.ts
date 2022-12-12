@@ -11,6 +11,7 @@ import studentRoutes from './routes/studentRoutes';
 import performanceLogRoutes from './routes/performanceLogRoutes';
 import taCohortRoutes from './routes/taCohortRoutes';
 import requireAuth from './middleware/requireAuth';
+import courseQuotaRoutes from './routes/courseQuotaRoutes';
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use("/api/rating", ratingRoutes);
 app.use("/api/performanceLog", performanceLogRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/cohort", taCohortRoutes);
+app.use("/api/courseQuota", courseQuotaRoutes);
 
 // Start the server
 app.listen(port, () => {
