@@ -3,7 +3,7 @@ import "../../style/taTable.css";
 import WarningIcon from '@mui/icons-material/Warning';
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
-const UserRow = ({ course }) => {
+const CourseQuotaRow = ({ course }) => {
 
     const studentsPerTA = course.enrollmentNumber / course.taQuota;
     const needsAttention = studentsPerTA < 30 || studentsPerTA > 45;
@@ -31,4 +31,4 @@ const UserRow = ({ course }) => {
     );
 };
 
-export default UserRow;
+export default CourseQuotaRow;
