@@ -1,0 +1,3 @@
+2023,COMP 307,Regular,Web Development,Joseph Vybihal,350,10
+2023,COMP 302,Regular,Programming Languages,Anthony Kumar,225,50
+2023,COMP 303,Seminar,Software Design,Mathieu Blanchette,100,3
