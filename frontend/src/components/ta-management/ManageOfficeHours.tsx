@@ -25,19 +25,18 @@ const ManageOfficeHours = () => {
     useEffect(() => {
         if (course.courseTAs && user) {
             const ta = findTAInCourse(user.id);
-            console.log(user, ta, course.courseTAs)
             if (ta) {
                 setCurrentTA(ta);
             }
         }
     }, [course, user])
-    
+
     return (
         <div>
             {profile && profile === UserTypes.Professor &&
                 <InformationCard
                     title="Instructor's information"
-                    form={<EditProfInformationForm instructor={{ instructorName: course.instructorName, email: course.instructorEmail, officeHours: course.instructorOfficeHours }}/>}
+                    form={<EditProfInformationForm instructor={{ instructorName: course.instructorName, email: course.instructorEmail, officeHours: course.instructorOfficeHours }} />}
                     name={course.instructorName}
                     email={course.instructorEmail}
                     officeHours={course.instructorOfficeHours}
@@ -47,7 +46,7 @@ const ManageOfficeHours = () => {
             {currentTA && profile === UserTypes.TA &&
                 <InformationCard
                     title="Your information"
-                    form={<EditTAInformationForm ta={currentTA}/>}
+                    form={<EditTAInformationForm ta={currentTA} />}
                     name={currentTA.fullName}
                     email={currentTA.email}
                     officeHours={currentTA.officeHours}
@@ -62,20 +61,20 @@ const ManageOfficeHours = () => {
 
                         <table className="w-100">
                             <thead>
-                            <tr>
-                                <th className="column1">Name</th>
-                                <th className="column2">Email</th>
-                                <th className="column3">Responsabilities</th>
-                                <th className="column4">Office Hours</th>
-                            </tr>
+                                <tr>
+                                    <th className="column1">Name</th>
+                                    <th className="column2">Email</th>
+                                    <th className="column3">Responsabilities</th>
+                                    <th className="column4">Office Hours</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {course.courseTAs.map((ta: CourseTA, i: number) => (
-                                <SelectTARow ta={ta} key={i}/>
-                            ))}
+                                {course.courseTAs.map((ta: CourseTA, i: number) => (
+                                    <SelectTARow ta={ta} key={i} />
+                                ))}
                             </tbody>
                         </table>
-                    </Card.Body>    
+                    </Card.Body>
                 </Card>
             }
         </div>
