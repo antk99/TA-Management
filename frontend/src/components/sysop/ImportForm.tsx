@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import React from "react";
 import { Modal } from "react-bootstrap";
 import "../../style/userTable.css";
 import { FileDownload } from "@mui/icons-material";
+import { UserContext } from "../../App";
 
-function ImportForm({ taskName, uploadUrl }: { taskName: string, uploadUrl: string }) {
+function ImportForm({ taskName, uploadUrl, label = "Choose the CSV file and upload it to import the data." }: { taskName: string, uploadUrl: string, label?: string }) {
+  const { user } = useContext(UserContext);
   const [show, setShow] = useState(false);
   const [file, setFile] = useState();
 
@@ -23,6 +25,7 @@ function ImportForm({ taskName, uploadUrl }: { taskName: string, uploadUrl: stri
       console.log(uploadUrl);
       const res = await fetch(uploadUrl, {
         method: "POST",
+        headers: { Authorization: `Bearer ${user.token}` },
         body: formData
       });
 
@@ -50,7 +53,7 @@ function ImportForm({ taskName, uploadUrl }: { taskName: string, uploadUrl: stri
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="formFile" className="mb-3">
-              <Form.Label>Default file input example</Form.Label>
+              <Form.Label>{label}</Form.Label>
               <Form.Control required type="file" name="csvFile" onChange={(e) => handleChange(e)} />
             </Form.Group>
 
