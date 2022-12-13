@@ -2,10 +2,8 @@ import { CourseRegInfo } from './../models/TA';
 import { capitalizeFirstLetter } from './../utils/stringFormatting';
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-import Professor from "../models/Professor";
 import Course from "../models/Course";
 import User from "../models/User";
-import { parse } from 'csv-string';
 import TA from "../models/TA";
 
 // @Desc Get all TAs
@@ -132,39 +130,4 @@ export const removeTACurrCourse = asyncHandler(async (req: Request, res: Respons
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }
-});
-
-// @Desc Save multiple TAs
-// @Route /api/ta/upload
-// @Method POST
-export const registerTAFromFile = asyncHandler(async (req: Request, res: Response) => {
-    const csv = req.file;
-
-    // TODO
-
-    if (csv) {
-        const fileContent = parse(csv.buffer.toString('utf-8'));
-        for (let record of fileContent) {
-            const professorEmail = record[0];
-            const courseNumber = record[3];
-            let instructor = await User.findOne({ professorEmail }).select("-password");
-            let course = await Course.findOne({ courseNumber });
-            if (!instructor || !course) {
-                res.status(404);
-                console.log("Instructor or course not found in the database! Skipping row.");
-            } else {
-                const prof = new Professor({
-                    professor: instructor,
-                    faculty: record[1],
-                    department: record[2],
-                    course: course
-                });
-                await prof.save();
-            }
-        }
-    } else {
-        res.status(500);
-        throw new Error("File upload unsuccessful.");
-    }
-    res.status(200).json({});
 });
