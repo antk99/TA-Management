@@ -31,7 +31,7 @@ const ManageUsers = () => {
           <h2 style={{ marginBottom: "20px" }}>All Users</h2>
           <AddUserForm fetchUserData={fetchUserData} />
         </div>
-        <div id="profTable">
+        <div id="taCourseInfoTable">
           <table>
             <thead>
               <tr>

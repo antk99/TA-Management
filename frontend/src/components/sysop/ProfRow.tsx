@@ -46,7 +46,7 @@ const ProfRow = ({ professor, fetchProfData }: { professor: Professor; fetchProf
   return (
     <tr className="body">
       <td className="column0">
-        <button className="btn btn-secondary" onClick={handleDeleteProf}>
+        <button className="btn btn-secondary" onClick={handleDeleteProf} style={{ color: "red" }}>
           <RemoveIcon />
         </button>
       </td>

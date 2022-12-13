@@ -56,7 +56,7 @@ const ManageCourses = () => {
           <h2 style={{ marginBottom: "20px" }}>All Courses</h2>
           <AddCourseForm fetchCourseData={fetchCourseData} />
         </div>
-        <div id="profTable">
+        <div id="taCourseInfoTable">
           <table>
             <thead>
               <tr>

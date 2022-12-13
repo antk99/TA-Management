@@ -10,7 +10,7 @@ const CourseRow = ({ course, fetchCourseData }: { course: Course; fetchCourseDat
   return (
     <tr className="body">
       <td className="column0">
-        <button className="btn btn-secondary" onClick={handleDeleteCourse}>
+        <button className="btn btn-secondary" onClick={handleDeleteCourse} style={{ color: "red" }}>
           <RemoveIcon />
         </button>
       </td>

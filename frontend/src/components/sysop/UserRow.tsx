@@ -30,7 +30,7 @@ const UserRow = ({ user, fetchUserData }: { user: User; fetchUserData: Function 
   return (
     <tr className="body">
       <td className="column0">
-        <button className="btn btn-secondary" onClick={handleDeleteUser}>
+        <button className="btn btn-secondary" onClick={handleDeleteUser} style={{ color: "red" }}>
           <RemoveIcon />
         </button>
       </td>

@@ -57,7 +57,7 @@ const ManageProfessors = () => {
           <h2 style={{ marginBottom: "20px" }}>All Professors</h2>
           <AddProfForm fetchProfData={fetchProfData} />
         </div>
-        <div id="profTable">
+        <div id="taCourseInfoTable">
           <table>
             <thead>
               <tr>
