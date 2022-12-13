@@ -32,7 +32,7 @@ function ImportForm({ taskName, uploadUrl, label = "Choose the CSV file and uplo
       if (res.status === 200) {
         const data = await res.json();
       } else {
-        alert("Error while adding user.");
+        alert("Error while adding the data.");
       }
     } catch (err) {
       console.log(err);
