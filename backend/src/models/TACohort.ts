@@ -19,6 +19,7 @@ export interface ITACohort extends mongoose.Document {
     location: string;
     degree: string;
     coursesAppliedFor: Array<string>;
+    termYear: string;
     openToOtherCourses: boolean;
     notes: string;
 }
@@ -79,6 +80,11 @@ const ITACohortSchema = new mongoose.Schema({
 
     coursesAppliedFor: {
         type: Array,
+        required: true,
+    },
+
+    termYear: {
+        type: String,
         required: true,
     },
 
