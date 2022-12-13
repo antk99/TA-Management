@@ -41,7 +41,7 @@ const TACourseHistory = ({ TAs, focusStudent }: { TAs: Array<TA>, focusStudent: 
 
     return (
         <>
-            <ImportForm taskName="TA Cohort Information" uploadUrl="http://127.0.0.1:3000/api/users/upload" />
+            <ImportForm taskName="TA Cohort Information" uploadUrl="http://127.0.0.1:3000/api/cohort/upload" />
             <Container className="mt-3">
                 <div className="rowC">
                     <h2 style={{ marginBottom: "20px" }}>TA Course History</h2>
