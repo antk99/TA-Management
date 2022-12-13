@@ -80,6 +80,24 @@ export const addProf = asyncHandler(async (req: Request, res: Response) => {
     }
 });
 
+// @Desc Delete prof by email
+// @Route /api/prof/delete/:email
+// @Method DELETE
+export const deleteProf = asyncHandler(async (req: Request, res: Response) => {
+    const profEmail = req.params.email;
+
+    try {
+        let prof = await Professor.findOne({ profEmail });
+        if (!prof)
+            throw new Error("Professor not found");
+
+        await prof.delete();
+        res.status(201).json({ "message": "Professor deleted successfully" });
+    } catch (error: any) {
+        res.status(404).json({ 'error': error.message });
+    }
+})
+
 export const getProfNameByEmail = async (profEmail: string) => {
     const profNames = await User.findOne({ email: profEmail }).select("firstName lastName") as any;
     if (!profNames) return "No Name";

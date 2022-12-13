@@ -1,18 +1,46 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import RemoveIcon from "@material-ui/icons/Remove";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import "../../style/userTable.css";
 import { Professor } from "../../classes/Professor";
 import { Course } from "../../classes/Course";
+import { UserContext } from "../../App";
+import { useHttp } from "../../hooks/useHttp";
 
 const ProfRow = ({ professor, fetchProfData }: { professor: Professor; fetchProfData: Function }) => {
-  const [show, setShow] = useState(false);
-  const [courses, setCourses] = useState<Array<Course>>([]);
+  const { user } = useContext(UserContext);
+  const [courses, setCourses] = useState<Array<any>>([]);
 
-  const handleDeleteProf = () => {
+  const { isLoading, error, sendRequest: fetchCourses } = useHttp(
+    { url: "http://localhost:3000/api/course/instructor/" + professor.uuid },
+    (data) => {
+      let c = data.courses;
+      c = c.map((course => course.courseNumber));
+      setCourses(c);
+    },
+    user.token
+  );
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const handleDeleteProf = async () => {
     try {
-      // make API call to delete prof
-    } catch (e) { }
+      const response = await fetch("http://localhost:3000/api/prof/delete/" + professor.email,
+        {
+          method: "DELETE", headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" }
+        });
+
+      if (!response.ok)
+        throw new Error("Could not remove professor.");
+      else {
+        // delete from state
+        fetchProfData();
+      }
+    } catch (e) {
+      alert(e.message);
+    }
   };
 
   return (
@@ -27,13 +55,7 @@ const ProfRow = ({ professor, fetchProfData }: { professor: Professor; fetchProf
       <td className="column3">{professor.lastName}</td>
       <td className="column4">{professor.faculty}</td>
       <td className="column5">{professor.department}</td>
-      <td className="column6 course-button">
-      <>
-        <button className="courses" onClick={() => setShow(true)}>
-          <OpenInFullIcon fontSize="small" /> View Courses
-        </button>
-      </>
-      </td>
+      <td className="column6">{courses.join(", ")}</td>
     </tr>
   );
 };

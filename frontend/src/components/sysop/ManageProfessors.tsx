@@ -30,10 +30,12 @@ const ManageProfessors = () => {
           item["firstName"] = instructorData.user.firstName;
           item["lastName"] = instructorData.user.lastName;
           item["email"] = instructorData.user.email;
+          item["uuid"] = d.professor;
         } else {
           item["firstName"] = "";
           item["lastName"] = "";
           item["email"] = "";
+          item["uuid"] = "";
         }
         profObject.push(item);
       }

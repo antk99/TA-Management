@@ -114,17 +114,20 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 })
 
 
-// @Desc Delete user by ID
-// @Route /api/users/:id
+// @Desc Delete user by email
+// @Route /api/users/delete/:email
 // @Method DELETE
 export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const email = req.params.email;
 
-  let user = await User.findOne({ email });
-  if (!user) {
-    res.status(404);
-    throw new Error("User not found");
+  try {
+    let user = await User.findOne({ email });
+    if (!user)
+      throw new Error("User not found");
+
+    await user.delete();
+    res.status(201).json({ "message": "User deleted successfully" });
+  } catch (error: any) {
+    res.status(404).json({ 'error': error.message });
   }
-  await User.findOneAndDelete({ email });
-  res.status(201).json({});
 })
