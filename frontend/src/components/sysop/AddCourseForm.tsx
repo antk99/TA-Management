@@ -2,9 +2,12 @@ import React from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import AddIcon from "@mui/icons-material/Add";
 import "../../style/userTable.css";
+import { UserContext } from "../../App";
 
 // Form that adds a course with fields: courseCode, courseNumber, courseName, term, year
 const AddCourseForm = ({ fetchCourseData }) => {
+  const { user } = React.useContext(UserContext);
+
   const [show, setShow] = React.useState(false);
   const [courseDesc, setCourseDesc] = React.useState("");
   const [courseNumber, setCourseNumber] = React.useState("");
@@ -14,11 +17,13 @@ const AddCourseForm = ({ fetchCourseData }) => {
   const [instructor, setInstructor] = React.useState("");
 
   const handleAddCourse = async (e) => {
+    e.preventDefault();
+
     try {
       const res = await fetch("http://127.0.0.1:3000/api/course/add", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json", "Authorization": "Bearer " + user.token
         },
         body: JSON.stringify({
           courseDesc: courseDesc,
@@ -29,14 +34,27 @@ const AddCourseForm = ({ fetchCourseData }) => {
           instructorEmail: instructor
         }),
       });
-      if (res.status === 201) {
-        setTimeout(() => {
-          fetchCourseData();
-          setShow(false);
-        }, 500);
-      }
+
+      const data = await res.json();
+
+      if (!res.ok)
+        throw new Error(data.error || "Something went wrong, please try again.");
+
+      // Reset form
+      setCourseDesc("");
+      setCourseNumber("");
+      setCourseName("");
+      setTerm("");
+      setYear("");
+      setInstructor("");
+
+      setTimeout(() => {
+        fetchCourseData();
+        setShow(false);
+      }, 500);
+
     } catch (e) {
-      console.error(e);
+      alert(e.message);
     }
   };
 
@@ -82,14 +100,14 @@ const AddCourseForm = ({ fetchCourseData }) => {
                 <Form.Control required type="year" placeholder="Please enter the course year." value={year} onChange={(e) => setYear(e.target.value)} />
               </Col>
             </Row>
-            
+
             <Row>
               <Col>
                 <Form.Control required type="email" placeholder="Please enter Course Instructor's Email." value={instructor} onChange={(e) => setInstructor(e.target.value)} />
               </Col>
             </Row>
 
-            
+
             <Button className="mt-3" variant="light" type="submit">
               Add
             </Button>
