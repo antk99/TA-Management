@@ -3,13 +3,13 @@ import "../../style/taInfoPage.css";
 import React from "react";
 import { UserContext } from "../../App";
 import { TA } from "../../classes/TA";
-import AdminButton from "./AdminButton";
 import { useHttp } from "../../hooks/useHttp";
 
 // from backend/src/models/Course.ts
-const Terms = ["Fall", "Spring", "Summer"];
+const Terms = ["Fall", "Winter", "Summer"];
 
 // TODO: add confirmation prompt for course removal
+// TODO: add option to delete course from prevCourses
 
 const TAActionsBar = ({ ta, modifyCurrCourses, isAtBottom }: { ta: TA, modifyCurrCourses: Function, isAtBottom: boolean }) => {
     const { user } = React.useContext(UserContext);
@@ -42,39 +42,51 @@ const TAActionsBar = ({ ta, modifyCurrCourses, isAtBottom }: { ta: TA, modifyCur
 
     const handleCourseRemoval = async (course) => {
         // delete from db
-        const response = await fetch("http://localhost:3000/api/ta/removeCurrCourse", {
-            method: "DELETE",
-            headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
-            body: JSON.stringify({ taStudentID: ta.studentID, ...course })
-        });
 
-        if (!response.ok)
-            throw new Error("Could not remove course.");
-        else {
-            // delete from state
+        try {
+            const response = await fetch("http://localhost:3000/api/ta/removeCurrCourse", {
+                method: "DELETE",
+                headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
+                body: JSON.stringify({ taStudentID: ta.studentID, ...course })
+            });
             const data = await response.json();
+
+            if (!response.ok)
+                throw new Error(data.error);
+
+            // delete from state
             modifyCurrCourses(ta.studentID, ta.currCourses.filter(courseReg => courseReg.courseNumber !== data.courseRemoved));
+
+        } catch (error) {
+            alert(error.message)
         }
     };
 
     const addCourse = async (course) => {
         // add to db
-        const response = await fetch("http://localhost:3000/api/ta/addCurrCourse", {
-            method: "POST",
-            headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
-            body: JSON.stringify({ taStudentID: ta.studentID, ...course })
-        });
 
-        if (!response.ok)
-            throw new Error("Could not add course.");
-        else {
-            // add to state
+        try {
+            const response = await fetch("http://localhost:3000/api/ta/addCurrCourse", {
+                method: "POST",
+                headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
+                body: JSON.stringify({ taStudentID: ta.studentID, ...course })
+            });
             const data = await response.json();
+
+            if (!response.ok)
+                throw new Error(data.error);
+
+            // add to state
             modifyCurrCourses(ta.studentID, [...ta.currCourses, data.courseAdded]);
 
             // clear input
             if (courseSearchInputRef.current)
                 courseSearchInputRef.current.value = ""
+
+            setShowCourseAddModal(false);
+
+        } catch (err) {
+            alert(err.message);
         }
     };
 
@@ -99,7 +111,7 @@ const TAActionsBar = ({ ta, modifyCurrCourses, isAtBottom }: { ta: TA, modifyCur
                     <Button style={{ display: "flex", flexDirection: "row" }} variant="primary greenDropdown" onClick={() => setShowCourseAddModal(true)}>
                         Add To Course
                     </Button>
-                    <DropdownButton variant="primary redDropdown" title="Remove From Course">
+                    <DropdownButton variant="primary redDropdown" title="Remove From Course" disabled={ta.currCourses.length === 0}>
                         {ta.currCourses.map(course => {
                             return <Dropdown.Item onClick={() => handleCourseRemoval(course)} key={course.courseNumber}>{course.courseNumber}</Dropdown.Item>
                         })}
