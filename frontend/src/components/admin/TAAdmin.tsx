@@ -14,7 +14,7 @@ const TAAdmin = () => {
 
     const { isLoading, error, sendRequest: fetchAllTAs } = useHttp(
         { url: "http://localhost:3000/api/ta" },
-        (data) => { setTAs(data.TAs) },
+        (data) => { setTAs(data.TAs.sort((a, b) => a.name.localeCompare(b.name))) },
         user.token
     );
 
@@ -24,7 +24,23 @@ const TAAdmin = () => {
     }, []);
 
     const modifyCurrCourses = (studentID, newCurrCourses) => {
-        setTAs(TAs.map((ta) => (studentID === ta.studentID ? { ...ta, currCourses: newCurrCourses } : ta)));
+
+        let courseRemoved;
+
+        // if course was removed, find which one
+        TAs.find(ta => ta.studentID === studentID).currCourses.forEach(course => {
+            if (!newCurrCourses.find(newCourse => newCourse.courseNumber === course.courseNumber))
+                courseRemoved = course;
+        });
+
+        // update state
+        if (courseRemoved) { // course was removed, add to prevCourses
+            setTAs(prevTAs => prevTAs.map((ta) => (studentID === ta.studentID) ?
+                { ...ta, currCourses: newCurrCourses, prevCourses: [...ta.prevCourses, courseRemoved] } : ta));
+        } else { // course was added
+            setTAs(prevTAs => prevTAs.map((ta) => (studentID === ta.studentID) ?
+                { ...ta, currCourses: newCurrCourses } : ta));
+        }
     };
 
     return (
@@ -32,7 +48,7 @@ const TAAdmin = () => {
             {
                 studentID ?
                     <TAInfo modifyCurrCourses={modifyCurrCourses} ta={TAs.find(ta => ta.studentID === studentID)} exitTAInfoView={() => setStudentID("")} /> :
-                    <TACourseHistory TAs={TAs} focusStudent={setStudentID} />
+                    <TACourseHistory TAs={TAs} focusStudent={setStudentID} fetchData={fetchAllTAs} />
             }
         </>
     );
