@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import asyncHandler from "express-async-handler";
 import TA from '../models/TA';
 import TACohort from '../models/TACohort';
-import User from '../models/User';
 
 // @Desc Get all cohort info for given TA
 // @Route /api/cohort/:studentID
@@ -78,40 +77,43 @@ export const registerTAFromFile = asyncHandler(async (req: Request, res: Respons
     if (csv) {
         const fileContent = parse(csv.buffer.toString('utf-8'));
         for (let record of fileContent) {
-            console.log(record)
-            const taInfo = {
-                name: record[1],
-                email: record[4],
+            try {
+                const taInfo = {
+                    name: record[1],
+                    email: record[4],
+                }
+                const cohortInfo = {
+                    termYear: record[0],
+                    studentID: record[2],
+                    legalName: record[3],
+                    level: record[5],
+                    supervisorName: record[6],
+                    isPriority: record[7],
+                    hours: record[8],
+                    dateApplied: record[9],
+                    location: record[10],
+                    phone: record[11],
+                    degree: record[12],
+                    coursesAppliedFor: record[13].split('/'),
+                    openToOtherCourses: record[14],
+                    notes: record[15]
+                };
+                let ta = await TA.findOne({ studentID: cohortInfo.studentID });
+
+                // create new ta if not exists, assumes ta User already exists
+                if (!ta)
+                    ta = await TA.create({ email: taInfo.email, name: taInfo.name, studentID: cohortInfo.studentID, currCourses: [], prevCourses: [] });
+
+                // check if ta has cohort data already
+                let cohort = await TACohort.findOne({ studentID: cohortInfo.studentID });
+                if (cohort)
+                    await cohort.delete();
+
+                // create new cohort data
+                cohort = await TACohort.create(cohortInfo);
+            } catch (error: any) {
+                res.status(400).json({ error: error.message });
             }
-            const cohortInfo = {
-                termYear: record[0],
-                studentID: record[2],
-                legalName: record[3],
-                level: record[5],
-                supervisorName: record[6],
-                isPriority: record[7],
-                hours: record[8],
-                dateApplied: record[9],
-                location: record[10],
-                phone: record[11],
-                degree: record[12],
-                coursesAppliedFor: record[13].split('/'),
-                openToOtherCourses: record[14],
-                notes: record[15]
-            };
-            let ta = await TA.findOne({ studentID: cohortInfo.studentID });
-
-            // create new ta if not exists, assumes ta User already exists
-            if (!ta)
-                ta = await TA.create({ email: taInfo.email, name: taInfo.name, studentID: cohortInfo.studentID, currCourses: [], prevCourses: [] });
-
-            // check if ta has cohort data already
-            let cohort = await TACohort.findOne({ studentID: cohortInfo.studentID });
-            if (cohort)
-                await cohort.delete();
-
-            // create new cohort data
-            cohort = await TACohort.create(cohortInfo);
         }
     } else {
         res.status(500);
