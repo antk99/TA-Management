@@ -11,7 +11,7 @@ const PerformanceLog = () => {
     const [selectedTA, setSelectedTA] = useState<CourseTA>()
 
     useEffect(() => {
-        if (course.courseTAs) {
+        if (course.courseTAs && course.courseTAs[0]) {
             setSelectedTAUUid(course.courseTAs[0].uuid)
         }
     }, [course])
