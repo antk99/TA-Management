@@ -98,13 +98,11 @@ export const addTACurrCourse = asyncHandler(async (req: Request, res: Response) 
     }
 });
 
-// @Desc Remove currCourse from TA
+// @Desc Remove currCourse from TA & puts it in prevCourses
 // @Route /api/ta/removeCurrCourse
 // @Method DELETE
 export const removeTACurrCourse = asyncHandler(async (req: Request, res: Response) => {
     let { taStudentID, term, termYear, courseNumber } = req.body;
-
-    // TODO: add course to TA prevCourses once removed ?
 
     try {
 
@@ -122,7 +120,10 @@ export const removeTACurrCourse = asyncHandler(async (req: Request, res: Respons
         const courseIndex = ta.currCourses.findIndex((courseReg: CourseRegInfo) => courseReg.courseNumber === courseNumber && courseReg.term === term && courseReg.termYear === termYear);
         if (courseIndex === -1)
             throw new Error(`No course registration info found for this TA for course ${courseNumber} in term ${term} ${termYear}!`);
-        ta.currCourses.splice(courseIndex, 1);
+        const course = ta.currCourses.splice(courseIndex, 1);
+
+        // add course to prevCourses
+        ta.prevCourses.push({ term, termYear, courseNumber, assignedHours: course[0].assignedHours });
 
         await ta.save();
         res.status(200).json({ courseRemoved: courseNumber.toUpperCase() });
