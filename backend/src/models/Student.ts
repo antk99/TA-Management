@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import { IUser } from "./User";
 const Schema = mongoose.Schema;
@@ -6,7 +5,7 @@ const Schema = mongoose.Schema;
 export interface IStudent extends mongoose.Document {
     student: IUser;
     studentID: string;
-    courses: Array<ObjectId>;
+    courses: Array<string>; // Array of courseNumbers
 }
 
 const StudentSchema = new mongoose.Schema({
@@ -25,7 +24,7 @@ const StudentSchema = new mongoose.Schema({
     },
 
     courses: {
-        type: Array, // or Array<ObjectId>?
+        type: Array,
         required: true,
     },
 
