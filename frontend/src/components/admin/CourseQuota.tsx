@@ -9,10 +9,9 @@ const CourseQuota = () => {
     const { user } = useContext(UserContext);
     const [courseQuotas, setCourseQuotas] = React.useState([]);
 
-    // TODO: get course quota data from backend
     const { isLoading, error, sendRequest: fetchCourseQuotas } = useHttp(
         { url: "http://localhost:3000/api/courseQuota" },
-        (data) => { setCourseQuotas(data.quotas) },
+        (data) => { setCourseQuotas(data.quotas.sort((a, b) => (a.courseNumber > b.courseNumber) ? 1 : -1)) },
         user.token
     );
 
@@ -22,7 +21,7 @@ const CourseQuota = () => {
 
     return (
         <>
-            <ImportForm taskName="Course Quota" uploadUrl="http://127.0.0.1:3000/api/courseQuota/upload" />
+            <ImportForm taskName="Course Quota" uploadUrl="http://127.0.0.1:3000/api/courseQuota/upload" fetchData={fetchCourseQuotas} />
             <Container className="mt-3">
                 <div className="rowC">
                     <h2 style={{ marginBottom: "20px" }}>Course Quota</h2>
