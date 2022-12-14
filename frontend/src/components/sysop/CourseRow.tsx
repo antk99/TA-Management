@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useContext } from "react";
 import RemoveIcon from "@material-ui/icons/Remove";
 import { Course } from "../../classes/Course";
+import { UserContext } from "../../App";
 
 const CourseRow = ({ course, fetchCourseData }: { course: Course; fetchCourseData: Function }) => {
-  const handleDeleteCourse = () => {
-    console.log("Delete course");
+  const { user } = useContext(UserContext);
+
+  const handleDeleteCourse = async () => {
+    // delete from db
+    try {
+      const response = await fetch("http://localhost:3000/api/course/delete/", {
+        method: "DELETE",
+        headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
+        body: JSON.stringify({ courseNumber: course.courseNumber }),
+      });
+
+      if (!response.ok)
+        throw new Error("Could not remove course.");
+      else {
+        // delete from state
+        fetchCourseData();
+      }
+    } catch (e) {
+      alert(e.message);
+    }
   };
 
   return (
