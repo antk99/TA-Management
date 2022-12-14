@@ -30,7 +30,8 @@ export const registerUsersFromFile = asyncHandler(async (req: Request, res: Resp
         password: record[3],
         userType: record[4].split("/")
       });
-      user.save(); // can be made concurrent
+      await user.save();
+      console.log(user.email + " saved.");
     }
   } else {
     res.status(500);
