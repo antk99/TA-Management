@@ -6,7 +6,7 @@ import "../../style/userTable.css";
 import { FileDownload } from "@mui/icons-material";
 import { UserContext } from "../../App";
 
-function ImportForm({ taskName, uploadUrl, label = "Choose the CSV file and upload it to import the data." }: { taskName: string, uploadUrl: string, label?: string }) {
+function ImportForm({ taskName, uploadUrl, label = "Choose the CSV file and upload it to import the data.", fetchData }: { taskName: string, uploadUrl: string, label?: string, fetchData: Function }) {
   const { user } = useContext(UserContext);
   const [show, setShow] = useState(false);
   const [file, setFile] = useState();
@@ -22,21 +22,22 @@ function ImportForm({ taskName, uploadUrl, label = "Choose the CSV file and uplo
     formData.append('csvFile', file);
     try {
       // CAUTION: Do not hard code the URLs, rather use routers
-      console.log(uploadUrl);
       const res = await fetch(uploadUrl, {
         method: "POST",
         headers: { Authorization: `Bearer ${user.token}` },
         body: formData
       });
 
-      if (res.status === 200) {
-        const data = await res.json();
-      } else {
-        alert("Error while adding the data.");
-      }
+      const data = await res.json();
+
+      if (!res.ok)
+        throw new Error(data.error);
+
     } catch (err) {
-      console.log(err);
+      alert(err.message || "Something went wrong");
     }
+
+    fetchData();
   };
 
   return (

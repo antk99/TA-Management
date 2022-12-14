@@ -25,7 +25,7 @@ const ManageUsers = () => {
 
   return (
     <div>
-      <ImportForm taskName="Users" uploadUrl="http://127.0.0.1:3000/api/users/upload" />
+      <ImportForm taskName="Users" uploadUrl="http://127.0.0.1:3000/api/users/upload" fetchData={fetchUserData} />
       <Container className="mt-3">
         <div className="rowC">
           <h2 style={{ marginBottom: "20px" }}>All Users</h2>

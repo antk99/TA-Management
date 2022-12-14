@@ -6,7 +6,7 @@ import TARow from "./TARow";
 import "../../style/taTable.css";
 import FilterButton from "./FilterButton";
 
-const TACourseHistory = ({ TAs, focusStudent }: { TAs: Array<TA>, focusStudent: Function }) => {
+const TACourseHistory = ({ TAs, focusStudent, fetchData }: { TAs: Array<TA>, focusStudent: Function, fetchData: Function }) => {
     const [nameFilter, setNameFilter] = React.useState<string>("");
     const [emailFilter, setEmailFilter] = React.useState<string>("");
     const [idFilter, setIdFilter] = React.useState<string>("");
@@ -41,7 +41,7 @@ const TACourseHistory = ({ TAs, focusStudent }: { TAs: Array<TA>, focusStudent: 
 
     return (
         <>
-            <ImportForm taskName="TA Cohort Information" uploadUrl="http://127.0.0.1:3000/api/cohort/upload" />
+            <ImportForm taskName="TA Cohort Information" uploadUrl="http://127.0.0.1:3000/api/cohort/upload" fetchData={fetchData} />
             <Container className="mt-3">
                 <div className="rowC">
                     <h2 style={{ marginBottom: "20px" }}>TA Course History</h2>

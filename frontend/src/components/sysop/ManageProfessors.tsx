@@ -51,7 +51,7 @@ const ManageProfessors = () => {
 
   return (
     <div>
-      <ImportForm taskName="Professors" uploadUrl="http://127.0.0.1:3000/api/prof/upload" />
+      <ImportForm taskName="Professors" uploadUrl="http://127.0.0.1:3000/api/prof/upload" fetchData={fetchProfData} />
       <Container className="mt-3">
         <div className="rowC">
           <h2 style={{ marginBottom: "20px" }}>All Professors</h2>

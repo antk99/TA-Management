@@ -36,7 +36,7 @@ const ManageCourses = () => {
         }
         courseObject.push(item);
       }
-      setCourses(courseObject);
+      setCourses(courseObject.sort((a, b) => (a.courseNumber > b.courseNumber) ? 1 : -1));
     },
     user.token
   );
@@ -50,7 +50,7 @@ const ManageCourses = () => {
 
   return (
     <div>
-      <ImportForm taskName="Courses" uploadUrl="http://127.0.0.1:3000/api/course/upload" />
+      <ImportForm taskName="Courses" uploadUrl="http://127.0.0.1:3000/api/course/upload" fetchData={fetchCourseData} />
       <Container className="mt-3">
         <div className="rowC">
           <h2 style={{ marginBottom: "20px" }}>All Courses</h2>
