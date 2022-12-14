@@ -1,1 +1,4 @@
-2022,Jeremy Macdonald,999999999,Jeremy Macdonald,jeremy.macdonald@mcgill.ca,Graduate,Joseph Vybihal,true,180,5/25/2022,Downtown,5140001111,BEng,COMP 307/COMP 303/COMP 250,true,This is a new TA to the school
+2022,Emily White,000000001,Emily Bob Smith,emily@comp307.com,Graduate,Joseph Vybihal,true,180,5/25/2022,Downtown,5140001111,Bachelor of Science,COMP 307/COMP 303/COMP 273,true,This is a new TA to the school
+2022,Peter Taylor,000000002,Peter Taylor,peter@comp307.com,Undergraduate,Joseph Vybihal,false,90,7/12/2022,Online,5140002222,Bachelor of Engineering,COMP 402,false,
+2023,Serge Beaulieu,000000003,Serge Tremblay Beaulieu,serge@comp307.com,Graduate,Mathieu Blanchette,true,180,4/19/2022,Downtown,5140003333,Bachelor of Science,COMP 302/COMP 303,true,Promised to be a good TA
+2023,Anthony Kumar,000000004,Anthony Kumar,anthony@comp307.com,Undergraduate,Joseph Vybihal,true,180,8/2/2022,Online,5140005555,Bachelor of Science,COMP 307/COMP 402/COMP 310,true,Best TA ever!

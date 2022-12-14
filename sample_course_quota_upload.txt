@@ -1,3 +1,6 @@
-2023,COMP 307,Regular,Web Development,Joseph Vybihal,350,10
-2023,COMP 302,Regular,Programming Languages,Anthony Kumar,225,50
-2023,COMP 303,Seminar,Software Design,Mathieu Blanchette,100,3
+2022,COMP 307,Regular,Principles of Web Development,Joseph Vybihal,350,3
+2022,COMP 402,Regular,Honours Project in Computer Science and Biology,Mathieu Blanchette,53,10
+2022,COMP 310,Regular,Operating Systems,Joseph Vybihal,225,10
+2022,COMP 273,Regular,Introduction to Computer Systems,Joseph Vybihal,180,4
+2022,COMP 302,Regular,Programming Languages,Mathieu Blanchette,225,50
+2022,COMP 303,Seminar,Software Design,Sylvain Leclerc,100,3

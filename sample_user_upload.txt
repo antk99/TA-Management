@@ -1,2 +1,11 @@
-Jane,Doe,jane@comp307.com,jdcomp307,ta/student
-Mathieu,Blanchette,mathieu@comp307.com,mbcomp307,prof/sysop/admin
+Joseph,Vybihal,joseph@comp307.com,password,sysop/admin/prof
+Mathieu,Blanchette,mathieu@comp307.com,password,sysop/admin/prof
+Mary,Smith,mary@comp307.com,password,admin
+Sylvain,Leclerc,sylvain@comp307.com,password,prof
+Emily,White,emily@comp307.com,password,ta/stud
+Peter,Taylor,peter@comp307.com,password,ta/stud
+Serge,Beaulieu,serge@comp307.com,password,ta/stud
+Anthony,Kumar,anthony@comp307.com,password,ta/stud
+Jane,Doe,jane@comp307.com,password,stud
+John,Doe,john@comp307.com,password,stud
+Sandra,Doe,sandra@comp307.com,password,stud
