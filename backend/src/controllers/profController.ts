@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import Professor from "../models/Professor";
-import Course from "../models/Course";
 import User from "../models/User";
 import { parse } from 'csv-string';
 
@@ -19,18 +18,14 @@ export const getAllProfs = asyncHandler(async (req: Request, res: Response) => {
 export const registerProfFromFile = asyncHandler(async (req: Request, res: Response) => {
     const csv = req.file;
 
-    // TODO
-
     if (csv) {
         const fileContent = parse(csv.buffer.toString('utf-8'));
         for (let record of fileContent) {
             const professorEmail = record[0];
-            const courseNumber = record[3];
-            let instructor = await User.findOne({ professorEmail }).select("-password");
-            let course = await Course.findOne({ courseNumber });
-            if (!instructor || !course) {
+            let instructor = await User.findOne({ email: professorEmail }).select("-password");
+            if (!instructor) {
                 res.status(404);
-                console.log("Instructor or course not found in the database! Skipping row.");
+                console.log(`Instructor ${professorEmail} not found in the database! Skipping row.`);
             } else {
                 const prof = new Professor({
                     professor: instructor._id,
