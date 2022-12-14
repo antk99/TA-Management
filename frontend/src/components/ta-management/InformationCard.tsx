@@ -25,7 +25,7 @@ function InformationCard({ name, email, officeHours, responsabilities, form, tit
                     {form}
                 </div>
             </Row>
-            <LabelledTextbox label="Email" value={name} />
+            <LabelledTextbox label="Email" value={email} />
             <Container>
             <Row>
                 {officeHours && 

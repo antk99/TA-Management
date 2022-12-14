@@ -90,6 +90,20 @@ function OfficeHoursForm({ officeHours, setOfficeHours }) {
 
                     </InputGroup>
                     </Col>
+                    <Col>
+                    <InputGroup className="col-xs-6">
+                        <InputGroup.Text id="basic-addon1">Periodicity</InputGroup.Text>
+                        <Form.Select
+                          onChange={(e) => updateOfficeHourField(index, "periodicity", e.target.value)}
+                          value={officeHour.periodicity}
+                        >
+                        {['weekly', 'biweekly'].map((period, i) => (
+                            <option value={period} key={i}>{period}</option>
+                        ))}
+                        </Form.Select>
+
+                    </InputGroup>
+                    </Col>
                 </Row>
                 <Button
                     className="mt-2"
