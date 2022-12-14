@@ -126,7 +126,8 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
         getOfficeHours();
     }, []);
 
-    const defaultData = "N/A";
+    // invisible character to prevent empty cells from collapsing, equivalent to blank
+    const defaultData = "‎";
 
     const fields = [
         { label: "Email", value: ta.email },
@@ -136,13 +137,15 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
         { label: "Level", value: isCohortError ? defaultData : taCohortInfo.level },
         { label: "Priority", value: isCohortError ? defaultData : booleanToYesNo(taCohortInfo.priority) },
         { label: "Supervisor", value: isCohortError ? defaultData : taCohortInfo.supervisorName },
+        { label: "Term Year", value: isCohortError ? defaultData : taCohortInfo.termYear },
         { label: "Location", value: isCohortError ? defaultData : taCohortInfo.location },
         { label: "Date Applied", value: isCohortError ? defaultData : taCohortInfo.dateApplied },
         { label: "Courses Applied For", value: isCohortError ? defaultData : arrToString(taCohortInfo.coursesAppliedFor) },
         { label: "Open To Other Courses", value: isCohortError ? defaultData : booleanToYesNo(taCohortInfo.openToOtherCourses) },
         { label: "Hours", value: isCohortError ? defaultData : taCohortInfo.hours },
-        { label: "Current Courses", value: courseRegArrayToString(ta.currCourses) },
-        { label: "Previous Courses", value: courseRegArrayToString(ta.prevCourses) }
+        { label: "Current Courses", value: ta.currCourses.length > 0 ? courseRegArrayToString(ta.currCourses) : defaultData },
+        { label: "Previous Courses", value: ta.prevCourses.length > 0 ? courseRegArrayToString(ta.prevCourses) : defaultData },
+        { label: "Notes", value: isCohortError || taCohortInfo?.notes?.length === 0 ? defaultData : taCohortInfo.notes },
     ];
 
     const midPoint = Math.ceil(fields.length / 2);
@@ -174,7 +177,7 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
                 <div className="rowC">
                     <h2>
                         {ta.name}
-                        {ta.name !== taCohortInfo.legalName && ` (${taCohortInfo.legalName})`}
+                        {!taCohortInfo.legalName === null && ta.name !== taCohortInfo.legalName && ` (${taCohortInfo.legalName})`}
                         &nbsp;
                     </h2>
                     <OverlayTrigger placement='top' overlay={<Tooltip>Student Rating Average {`(${averageScore})`}</Tooltip>}>
