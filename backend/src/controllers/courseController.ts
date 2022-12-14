@@ -40,8 +40,6 @@ export const getCourseByTA = asyncHandler(async (req: Request, res: Response) =>
 export const registerCourseFromFile = asyncHandler(async (req: Request, res: Response) => {
     const csv = req.file;
 
-    // TODO
-
     if (csv) {
         const fileContent = parse(csv.buffer.toString('utf-8'));
         for (let record of fileContent) {
@@ -130,7 +128,7 @@ export const updateCourse = asyncHandler(async (req: Request, res: Response) => 
             throw new Error("TA not found in the database! Add user and continue.");
         }
     });
-   
+
     const updatedCourse = await Course.findByIdAndUpdate(req.params.id, {
         courseName,
         courseDesc,
@@ -141,7 +139,7 @@ export const updateCourse = asyncHandler(async (req: Request, res: Response) => 
         courseTAs,
         instructorOfficeHours
     });
-    if(updatedCourse) {
+    if (updatedCourse) {
         res.status(204).json({
             id: updatedCourse._id,
             courseName: updatedCourse.courseName,
