@@ -12,11 +12,14 @@ import performanceLogRoutes from './routes/performanceLogRoutes';
 import taCohortRoutes from './routes/taCohortRoutes';
 import requireAuth from './middleware/requireAuth';
 import courseQuotaRoutes from './routes/courseQuotaRoutes';
+require('dotenv').config();
 
 const app = express();
 
-// TODO: put in env file
-const port = 5000;
+if (!process.env.PORT)
+    console.log("PORT not set in env file, using default port 3000");
+
+const port = process.env.PORT || 3000;
 
 // Basic express setup
 app.use(cors());
