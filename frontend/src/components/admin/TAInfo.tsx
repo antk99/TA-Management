@@ -9,6 +9,7 @@ import TAActionsBar from './TAActionsBar';
 import { UserContext } from '../../App';
 import { useHttp } from '../../hooks/useHttp';
 import { courseRegArrayToString } from '../../classes/TA';
+import getFullyQualifiedUrl from '../../helpers/host';
 
 const booleanToYesNo = (bool) => { return bool ? "Yes" : "No" };
 const arrToString = (arr) => { return arr ? arr.length === 0 ? "None" : arr.join(", ") : "" };
@@ -50,17 +51,17 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
 
     // fetch cohort info
     const { isLoading: isCohortLoading, error: isCohortError, sendRequest: getCohortInfo } = useHttp(
-        { url: "http://localhost:3000/api/cohort/" + ta.studentID },
+        { url: "/api/cohort/" + ta.studentID },
         (data) => { setTACohortInfo(data.cohortInfo) },
         user.token
     );
 
     // fetch office hours
     const { isLoading: isOHLoading, error: isOHError, sendRequest: getOfficeHours } = useHttp(
-        { url: "http://localhost:3000/api/users/email/" + ta.email },
+        { url: "/api/users/email/" + ta.email },
         async (data) => {
             const taUserID = data.user._id;
-            const request = await fetch("http://localhost:3000/api/course/ta/" + taUserID,
+            const request = await fetch(getFullyQualifiedUrl("/api/course/ta/" + taUserID),
                 { 'headers': { 'Authorization': 'Bearer ' + user.token, 'Content-Type': 'application/json' } }
             );
             const response = await request.json();
@@ -80,21 +81,21 @@ const TAInfo = ({ ta, exitTAInfoView, modifyCurrCourses }) => {
 
     // fetch wishlists
     const { isLoading: isWishlistsLoading, error: isWishlistsError, sendRequest: getWishlists } = useHttp(
-        { url: "http://localhost:3000/api/wishlist/ta/" + ta.studentID },
+        { url: "/api/wishlist/ta/" + ta.studentID },
         (data) => { setWishlists(data.wishlist) },
         user.token
     );
 
     // fetch performance logs
     const { isLoading: isPerfLogsLoading, error: isPerfLogsError, sendRequest: getPerfLogs } = useHttp(
-        { url: "http://localhost:3000/api/performanceLog/" + ta.studentID },
+        { url: "/api/performanceLog/" + ta.studentID },
         (data) => { setPerformanceLogs(data.logs) },
         user.token
     );
 
     // fetch student ratings
     const { isLoading: isRatingsLoading, error: isRatingsError, sendRequest: getRatings } = useHttp(
-        { url: "http://localhost:3000/api/rating/" + ta.studentID },
+        { url: "/api/rating/" + ta.studentID },
         (data) => { setRatings(data.ratings) },
         user.token
     );

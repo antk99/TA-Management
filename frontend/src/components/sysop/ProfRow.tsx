@@ -6,13 +6,14 @@ import { Professor } from "../../classes/Professor";
 import { Course } from "../../classes/Course";
 import { UserContext } from "../../App";
 import { useHttp } from "../../hooks/useHttp";
+import getFullyQualifiedUrl from "../../helpers/host";
 
 const ProfRow = ({ professor, fetchProfData }: { professor: Professor; fetchProfData: Function }) => {
   const { user } = useContext(UserContext);
   const [courses, setCourses] = useState<Array<any>>([]);
 
   const { isLoading, error, sendRequest: fetchCourses } = useHttp(
-    { url: "http://localhost:3000/api/course/instructor/" + professor.uuid },
+    { url: "/api/course/instructor/" + professor.uuid },
     (data) => {
       let c = data.courses;
       c = c.map((course => course.courseNumber));
@@ -27,7 +28,7 @@ const ProfRow = ({ professor, fetchProfData }: { professor: Professor; fetchProf
 
   const handleDeleteProf = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/prof/delete/" + professor.email,
+      const response = await fetch(getFullyQualifiedUrl("/api/prof/delete/" + professor.email),
         {
           method: "DELETE", headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" }
         });

@@ -3,6 +3,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import "../../style/userTable.css";
 import { User } from "../../classes/User";
 import { UserContext } from "../../App";
+import getFullyQualifiedUrl from "../../helpers/host";
 
 const UserRow = ({ user, fetchUserData }: { user: User; fetchUserData: Function }) => {
   const { user: userLoggedIn } = useContext(UserContext);
@@ -11,7 +12,7 @@ const UserRow = ({ user, fetchUserData }: { user: User; fetchUserData: Function 
   const handleDeleteUser = async () => {
     // delete from db
     try {
-      const response = await fetch("http://localhost:3000/api/users/delete/" + user.email, {
+      const response = await fetch(getFullyQualifiedUrl("/api/users/delete/" + user.email), {
         method: "DELETE",
         headers: { "Authorization": "Bearer " + userLoggedIn.token, "Content-Type": "application/json" }
       });

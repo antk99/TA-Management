@@ -6,6 +6,7 @@ import { Modal } from "react-bootstrap";
 import "../../style/userTable.css";
 import { UserTypes } from "../../enums/UserTypes";
 import { UserContext } from "../../App";
+import getFullyQualifiedUrl from "../../helpers/host";
 
 function AddUserForm({ fetchUserData }) {
   const { user } = useContext(UserContext);
@@ -22,7 +23,7 @@ function AddUserForm({ fetchUserData }) {
 
     try {
       // CAUTION: Do not hard code the URLs, rather use routers
-      const res = await fetch("http://127.0.0.1:3000/api/users/register", {
+      const res = await fetch(getFullyQualifiedUrl("/api/users/register"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json", "Authorization": "Bearer " + user.token,

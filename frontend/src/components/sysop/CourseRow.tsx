@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import RemoveIcon from "@material-ui/icons/Remove";
 import { Course } from "../../classes/Course";
 import { UserContext } from "../../App";
+import getFullyQualifiedUrl from "../../helpers/host";
 
 const CourseRow = ({ course, fetchCourseData }: { course: Course; fetchCourseData: Function }) => {
   const { user } = useContext(UserContext);
@@ -9,7 +10,7 @@ const CourseRow = ({ course, fetchCourseData }: { course: Course; fetchCourseDat
   const handleDeleteCourse = async () => {
     // delete from db
     try {
-      const response = await fetch("http://localhost:3000/api/course/delete/", {
+      const response = await fetch(getFullyQualifiedUrl("/api/course/delete/"), {
         method: "DELETE",
         headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
         body: JSON.stringify({ courseNumber: course.courseNumber }),

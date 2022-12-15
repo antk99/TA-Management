@@ -4,6 +4,7 @@ import logo from "../assets/images/mcgill_logo.jpg";
 import { UserContext } from "../App";
 import "../App.css";
 import "../style/login.css";
+import getFullyQualifiedUrl from "../helpers/host";
 
 const Login: React.FC = () => {
   // Load global state
@@ -28,10 +29,8 @@ const Login: React.FC = () => {
     }
 
     try {
-      // Make login API call
-      // CAUTION: Do not hardcode the URLs, instead use routers
       const res = await fetch(
-        "http://127.0.0.1:3000/api/users/login",
+        getFullyQualifiedUrl("/api/users/login"),
         {
           method: "POST",
           headers: {

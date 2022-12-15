@@ -4,6 +4,7 @@ import React from "react";
 import { UserContext } from "../../App";
 import { TA } from "../../classes/TA";
 import { useHttp } from "../../hooks/useHttp";
+import getFullyQualifiedURL from '../../helpers/host';
 
 // from backend/src/models/Course.ts
 const Terms = ["Fall", "Winter", "Summer"];
@@ -19,7 +20,7 @@ const TAActionsBar = ({ ta, modifyCurrCourses, isAtBottom }: { ta: TA, modifyCur
     const [filteredCourses, setFilteredCourses] = React.useState<any>([]);
 
     const { isLoading, error, sendRequest: fetchCourses } = useHttp(
-        { url: "http://localhost:3000/api/course" },
+        { url: "/api/course" },
         (data) => {
             const coursesData = data.courses.map(course => course.courseNumber).sort();
             setCourses(coursesData);
@@ -44,7 +45,7 @@ const TAActionsBar = ({ ta, modifyCurrCourses, isAtBottom }: { ta: TA, modifyCur
         // delete from db
 
         try {
-            const response = await fetch("http://localhost:3000/api/ta/removeCurrCourse", {
+            const response = await fetch(getFullyQualifiedURL("/api/ta/removeCurrCourse"), {
                 method: "DELETE",
                 headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
                 body: JSON.stringify({ taStudentID: ta.studentID, ...course })
@@ -66,7 +67,7 @@ const TAActionsBar = ({ ta, modifyCurrCourses, isAtBottom }: { ta: TA, modifyCur
         // add to db
 
         try {
-            const response = await fetch("http://localhost:3000/api/ta/addCurrCourse", {
+            const response = await fetch(getFullyQualifiedURL("/api/ta/addCurrCourse"), {
                 method: "POST",
                 headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
                 body: JSON.stringify({ taStudentID: ta.studentID, ...course })

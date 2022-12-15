@@ -5,7 +5,11 @@ import { Modal } from "react-bootstrap";
 import "../../style/userTable.css";
 import { FileDownload } from "@mui/icons-material";
 import { UserContext } from "../../App";
+import getFullyQualifiedUrl from "../../helpers/host";
 
+/**
+ * uploadUrl: The RELATIVE URL to upload the file to, MUST start with a slash, e.g. /api/users/import 
+ */
 function ImportForm({ taskName, uploadUrl, label = "Choose the CSV file and upload it to import the data.", fetchData }: { taskName: string, uploadUrl: string, label?: string, fetchData: Function }) {
   const { user } = useContext(UserContext);
   const [show, setShow] = useState(false);
@@ -22,7 +26,7 @@ function ImportForm({ taskName, uploadUrl, label = "Choose the CSV file and uplo
     formData.append('csvFile', file);
     try {
       // CAUTION: Do not hard code the URLs, rather use routers
-      const res = await fetch(uploadUrl, {
+      const res = await fetch(getFullyQualifiedUrl(uploadUrl), {
         method: "POST",
         headers: { Authorization: `Bearer ${user.token}` },
         body: formData

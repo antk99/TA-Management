@@ -3,6 +3,7 @@ import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import AddIcon from "@mui/icons-material/Add";
 import "../../style/userTable.css";
 import { UserContext } from "../../App";
+import getFullyQualifiedUrl from "../../helpers/host";
 
 // Form that adds a course with fields: courseCode, courseNumber, courseName, term, year
 const AddCourseForm = ({ fetchCourseData }) => {
@@ -20,7 +21,7 @@ const AddCourseForm = ({ fetchCourseData }) => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://127.0.0.1:3000/api/course/add", {
+      const res = await fetch(getFullyQualifiedUrl("/api/course/add"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json", "Authorization": "Bearer " + user.token

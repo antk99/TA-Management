@@ -13,7 +13,7 @@ const ManageUsers = () => {
   const { user } = useContext(UserContext);
 
   const { isLoading, error, sendRequest: fetchUserData } = useHttp(
-    { url: "http://127.0.0.1:3000/api/users" },
+    { url: "/api/users" },
     (data) => { setUsers(data.users) },
     user.token
   );
@@ -25,7 +25,7 @@ const ManageUsers = () => {
 
   return (
     <div>
-      <ImportForm taskName="Users" uploadUrl="http://127.0.0.1:3000/api/users/upload" fetchData={fetchUserData} />
+      <ImportForm taskName="Users" uploadUrl="/api/users/upload" fetchData={fetchUserData} />
       <Container className="mt-3">
         <div className="rowC">
           <h2 style={{ marginBottom: "20px" }}>All Users</h2>

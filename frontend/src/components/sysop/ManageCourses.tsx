@@ -7,18 +7,19 @@ import ImportForm from "./ImportForm";
 import { Container } from "react-bootstrap";
 import { UserContext } from "../../App";
 import { useHttp } from "../../hooks/useHttp";
+import getFullyQualifiedUrl from "../../helpers/host";
 
 const ManageCourses = () => {
   const [courses, setCourses] = useState<Array<Course>>([]);
   const { user } = useContext(UserContext);
 
   const { isLoading, error, sendRequest: fetchCourseData } = useHttp(
-    { url: "http://127.0.0.1:3000/api/course" },
+    { url: "/api/course" },
     async (data) => {
       const courseObject = [];
       for (const d of data.courses) {
         const instructorRes = await fetch(
-          "http://127.0.0.1:3000/api/users/" + d.courseInstructor,
+          getFullyQualifiedUrl("/api/users/" + d.courseInstructor),
           { headers: { Authorization: "Bearer " + user.token } }
         );
         let item = {
@@ -50,7 +51,7 @@ const ManageCourses = () => {
 
   return (
     <div>
-      <ImportForm taskName="Courses" uploadUrl="http://127.0.0.1:3000/api/course/upload" fetchData={fetchCourseData} />
+      <ImportForm taskName="Courses" uploadUrl="/api/course/upload" fetchData={fetchCourseData} />
       <Container className="mt-3">
         <div className="rowC">
           <h2 style={{ marginBottom: "20px" }}>All Courses</h2>

@@ -4,6 +4,7 @@ import React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import "../../style/userTable.css";
 import { UserContext } from "../../App";
+import getFullyQualifiedUrl from "../../helpers/host";
 
 function AddProfForm({ fetchProfData }) {
   const { user } = useContext(UserContext);
@@ -17,7 +18,7 @@ function AddProfForm({ fetchProfData }) {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://127.0.0.1:3000/api/prof/add", {
+      const res = await fetch(getFullyQualifiedUrl("/api/prof/add"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json", "Authorization": "Bearer " + user.token,

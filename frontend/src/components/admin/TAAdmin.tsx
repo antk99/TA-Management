@@ -13,7 +13,7 @@ const TAAdmin = () => {
     const [TAs, setTAs] = React.useState<Array<TA>>([]);
 
     const { isLoading, error, sendRequest: fetchAllTAs } = useHttp(
-        { url: "http://localhost:3000/api/ta" },
+        { url: "/api/ta" },
         (data) => { setTAs(data.TAs.sort((a, b) => a.name.localeCompare(b.name))) },
         user.token
     );

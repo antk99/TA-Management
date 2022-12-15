@@ -7,18 +7,19 @@ import ImportForm from "./ImportForm";
 import { Container } from "react-bootstrap";
 import { UserContext } from "../../App";
 import { useHttp } from "../../hooks/useHttp";
+import getFullyQualifiedUrl from "../../helpers/host";
 
 const ManageProfessors = () => {
   const [profs, setProfs] = React.useState<Array<Professor>>([]);
   const { user } = useContext(UserContext);
 
   const { isLoading, error, sendRequest: fetchProfData } = useHttp(
-    { url: "http://127.0.0.1:3000/api/prof" },
+    { url: "/api/prof" },
     async (data) => {
       const profObject = [];
       for (const d of data.profs) {
         const instructorRes = await fetch(
-          "http://127.0.0.1:3000/api/users/" + d.professor,
+          getFullyQualifiedUrl("/api/users/" + d.professor),
           { headers: { Authorization: "Bearer " + user.token } }
         );
         let item = {
@@ -51,7 +52,7 @@ const ManageProfessors = () => {
 
   return (
     <div>
-      <ImportForm taskName="Professors" uploadUrl="http://127.0.0.1:3000/api/prof/upload" fetchData={fetchProfData} />
+      <ImportForm taskName="Professors" uploadUrl="/api/prof/upload" fetchData={fetchProfData} />
       <Container className="mt-3">
         <div className="rowC">
           <h2 style={{ marginBottom: "20px" }}>All Professors</h2>
@@ -71,7 +72,6 @@ const ManageProfessors = () => {
               </tr>
             </thead>
             <tbody>
-              {/**Set to hardcoded list of profs for testing purposes */}
               {profs.map((professor: Professor, i: number) => {
                 if (professor) {
                   return <ProfRow key={i} professor={professor} fetchProfData={fetchProfData} />;
