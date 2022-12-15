@@ -47,10 +47,7 @@ export const ProfileContext = React.createContext<{ profile: UserTypes }>({ prof
 export function Dashboard() {
 
   const navigate = useNavigate();
-  /**
-   * Get list of user's profiles/types
-   * @TODO Retrieve this information from the actual global user state
-   */
+
   const { user, setUser } = useContext(UserContext);
 
   // get highest profile from user
