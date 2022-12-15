@@ -16,7 +16,7 @@ import courseQuotaRoutes from './routes/courseQuotaRoutes';
 const app = express();
 
 // TODO: put in env file
-const port = 3000;
+const port = 5000;
 
 // Basic express setup
 app.use(cors());

@@ -12,6 +12,7 @@ const connectDB = async () => {
         const connect = await mongoose.connect("mongodb://localhost:27017/comp307" as string, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
+            family: 4,
         } as ConnectionOptions);
         console.log("Database is connected!");
     } catch (error: any) {
