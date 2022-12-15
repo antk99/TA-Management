@@ -57,7 +57,12 @@ export const registerCourseFromFile = asyncHandler(async (req: Request, res: Res
                     courseNumber: record[4],
                     courseInstructor: courseInstructor
                 });
-                course.save(); // can be made concurrent
+
+                const exists = await Course.findOne({ "$and": [{ courseNumber: course.courseNumber, term: course.term, year: course.year }] });
+                if (exists)
+                    console.log(`Course with courseNumber: ${course.courseNumber} already exists in the database for term ${course.term} ${course.year}! Skipping row.`);
+                else
+                    course.save(); // can be made concurrent
             }
         }
     } else {

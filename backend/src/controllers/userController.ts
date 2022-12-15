@@ -23,15 +23,22 @@ export const registerUsersFromFile = asyncHandler(async (req: Request, res: Resp
   if (csv) {
     const fileContent = parse(csv.buffer.toString('utf-8'));
     for (let record of fileContent) {
-      const user = new User({
-        firstName: record[0],
-        lastName: record[1],
-        email: record[2],
-        password: record[3],
-        userType: record[4].split("/")
-      });
-      await user.save();
-      console.log(user.email + " saved.");
+      const email = record[2];
+      const userExists = await User.findOne({ email });
+      if (userExists)
+        console.log("User already exists! Skipping row.")
+      else {
+        const user = new User({
+          firstName: record[0],
+          lastName: record[1],
+          email,
+          password: record[3],
+          userType: record[4].split("/")
+        });
+
+        await user.save();
+        console.log(user.email + " saved.");
+      }
     }
   } else {
     res.status(500);
@@ -75,16 +82,23 @@ export const getUserByEmail = asyncHandler(async (req: Request, res: Response) =
 // @Method POST
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const { firstName, lastName, email, password, userType } = req.body;
-  const user = new User({ firstName, lastName, email, password, userType });
-  await user.save();
-  res.status(201).json({
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    password: user.password,
-    userType: user.userType,
-    token: generateToken(user._id)
-  });
+
+  const userExists = await User.findOne({ email });
+  if (userExists)
+    res.status(400).json({ error: "User already exists" });
+
+  else {
+    const user = new User({ firstName, lastName, email, password, userType });
+    await user.save();
+    res.status(201).json({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      password: user.password,
+      userType: user.userType,
+      token: generateToken(user._id)
+    });
+  }
 });
 
 
