@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../models/User";
+import { defaultSecret } from "../utils/generateToken";
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 /*
     Middleware to check if the user is authenticated.
@@ -17,15 +19,13 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     const token = authorization.replace("Bearer ", "");
 
     try {
-        // base64 encoding of "comp307secrets"
-        // TODO: Put this in the env file
-        const SECRET = "Y29tcDMwN3NlY3JldHM=" as string;
+        const SECRET = process.env.SECRET as string || defaultSecret;
         const { id } = jwt.verify(token, SECRET);
 
         // verify if real user
         const user = await User.findById(id);
         if (!user)
-            throw new Error("");
+            throw new Error("No user found.");
 
         // attach user to request body
         req.body.user = user;

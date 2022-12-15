@@ -1,9 +1,15 @@
 import jwt from 'jsonwebtoken';
+require('dotenv').config();
 
-// base64 encoding of "comp307secrets"
-// Put this in the env file
+// for development purposes, use this secret
+export const defaultSecret = "6w1eaeY9#ijgE%rwT$8e9cmEKkZwmE2b";
+
+if (!process.env.SECRET)
+    console.log("SECRET not set in env file, using default secret");
+const SECRET = process.env.SECRET as string || defaultSecret;
+
 const generateToken = (id: string) => {
-    const token = jwt.sign({ id }, "Y29tcDMwN3NlY3JldHM=" as string);
+    const token = jwt.sign({ id }, SECRET);
     return token;
 }
 
