@@ -1,6 +1,7 @@
 let HOST = 'https://fall2022-comp307-group7.cs.mcgill.ca';
 
-if (process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+// use localhost if in development mode
+if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
     HOST = 'http://localhost:3000';
 }
 
