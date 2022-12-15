@@ -3,6 +3,8 @@ const path = require("path");
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, "build")));
+
 /**
  * Serve index.html from the production Build folder for all requests
  */
