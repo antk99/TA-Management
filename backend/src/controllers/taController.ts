@@ -111,6 +111,7 @@ export const addTACurrCourse = asyncHandler(async (req: Request, res: Response) 
         // Add TA to course courseTAs
         const courseTA: CourseTA = {
             uuid: taUser._id,
+            studentID: taStudentID,
             fullName: ta.name,
             email: ta.email,
             responsabilities: [],
