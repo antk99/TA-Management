@@ -32,17 +32,22 @@ export const getPerformanceLogs = asyncHandler(async (req: Request, res: Respons
 });
 
 // @Desc Get all performance logs for given TA for a given prof
-// @Route /api/performanceLog/:profEmail/:studentID
+// @Route /api/performanceLog/:profEmail/:taEmail
 // @Method GET
 export const getPerformanceLogsByProf = asyncHandler(async (req: Request, res: Response) => {
     const profEmail = req.params.profEmail;
-    const studentID = req.params.studentID;
+    const taEmail = req.params.taEmail;
 
     try {
-        const performanceLogs = await PerformanceLog.find({ profEmail, taStudentID: studentID });
+        const ta = await TA.findOne({ email: taEmail });
+        if (!ta)
+            throw new Error("TA not found in the database.");
+
+        const performanceLogs = await PerformanceLog.find({ profEmail, taStudentID: ta.studentID });
         if (performanceLogs.length === 0)
             res.status(200).json({ performanceLogs: [] });
-        res.status(200).json({ performanceLogs });
+        else
+            res.status(200).json({ performanceLogs });
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }
@@ -52,11 +57,11 @@ export const getPerformanceLogsByProf = asyncHandler(async (req: Request, res: R
 // @Route /api/performanceLog/add
 // @Method POST
 export const addPerformanceLog = asyncHandler(async (req: Request, res: Response) => {
-    let { profEmail, taStudentID, courseNumber, term, comment } = req.body;
+    let { profEmail, taEmail, courseNumber, term, comment } = req.body;
 
     try {
-        if (!profEmail || !taStudentID || !courseNumber || !term || !comment)
-            throw new Error("Missing at least one of required fields: profEmail, taStudentID, courseNumber, term, comment.");
+        if (!profEmail || !taEmail || !courseNumber || !term || !comment)
+            throw new Error("Missing at least one of required fields: profEmail, taEmail, courseNumber, term, comment.");
 
         term = capitalizeFirstLetter(term);
         courseNumber = courseNumber.toUpperCase();
@@ -65,7 +70,7 @@ export const addPerformanceLog = asyncHandler(async (req: Request, res: Response
         if (!professorExists)
             throw new Error("Professor not found in the database. Add professor and continue.");
 
-        const taExists = await TA.findOne({ studentID: taStudentID });
+        const taExists = await TA.findOne({ email: taEmail });
         if (!taExists)
             throw new Error("TA not found in the database. Add TA and continue.");
 
@@ -76,7 +81,7 @@ export const addPerformanceLog = asyncHandler(async (req: Request, res: Response
         if (comment.length > 1000)
             throw new Error("Comment must be less than 1000 characters.");
 
-        const performanceLog = await PerformanceLog.create({ profEmail, taStudentID, courseNumber, term, comment });
+        const performanceLog = await PerformanceLog.create({ profEmail, taStudentID: taExists.studentID, courseNumber, term, comment });
         res.status(201).json({ performanceLog });
     } catch (error: any) {
         res.status(400).json({ error: error.message });

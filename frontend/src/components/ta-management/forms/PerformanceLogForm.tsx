@@ -27,7 +27,7 @@ function PerformanceLogForm({ ta }) {
           "Authorization": "Bearer " + user.token,
         },
         body: JSON.stringify({
-          taStudentID: ta.uuid,
+          taEmail: ta.email,
           courseNumber: course.courseNumber,
           term: course.term,
           profEmail: course.instructorEmail,
@@ -47,12 +47,12 @@ function PerformanceLogForm({ ta }) {
   };
 
   const loadPerformanceLog = async () => {
-    const data = await fetchPerformanceLogByTa(course.instructorEmail, ta.uuid, user.token);
+    const data = await fetchPerformanceLogByTa(course.instructorEmail, ta.email, user.token);
     setPerformanceLogs(data.performanceLogs);
   }
 
   useEffect(() => {
-    if(ta) {
+    if (ta) {
       loadPerformanceLog();
     }
   }, [ta]);
@@ -86,7 +86,7 @@ function PerformanceLogForm({ ta }) {
             </Card.Body>
           </Card>
           {performanceLogs && performanceLogs.map((log, i) => (
-              <LabelledTextbox key={i} label={log.courseNumber} value={log.comment} styles={{ marginTop: 10 }}/>
+            <LabelledTextbox key={i} label={log.courseNumber} value={log.comment} styles={{ marginTop: 10 }} />
           ))}
         </Modal.Body>
       </Modal>
