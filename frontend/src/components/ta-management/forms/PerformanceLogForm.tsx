@@ -27,7 +27,7 @@ function PerformanceLogForm({ ta }) {
           "Authorization": "Bearer " + user.token,
         },
         body: JSON.stringify({
-          taEmail: ta.email,
+          taStudentID: ta.uuid,
           courseNumber: course.courseNumber,
           term: course.term,
           profEmail: course.instructorEmail,
@@ -47,7 +47,7 @@ function PerformanceLogForm({ ta }) {
   };
 
   const loadPerformanceLog = async () => {
-    const data = await fetchPerformanceLogByTa(course.instructorEmail, ta.email, user.token);
+    const data = await fetchPerformanceLogByTa(course.instructorEmail, ta.uuid, user.token);
     setPerformanceLogs(data.performanceLogs);
   }
 

@@ -4,7 +4,7 @@ import { addPerformanceLog, deletePerformanceLog, getPerformanceLogs, getPerform
 const router = express.Router();
 
 router.route("/:studentID").get(getPerformanceLogs);
-router.route("/:profEmail/:taEmail").get(getPerformanceLogsByProf);
+router.route("/:profEmail/:studentID").get(getPerformanceLogsByProf);
 router.route("/add").post(addPerformanceLog);
 router.route("/delete/:performanceLogID").delete(deletePerformanceLog);
 
