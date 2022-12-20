@@ -8,6 +8,8 @@ import { CourseContext } from "../ManageTAs";
 import { OfficeHour } from "../../../classes/OfficeHour";
 import OfficeHoursForm from "./OfficeHoursForm";
 import { UserContext } from "../../../App";
+import DutiesForm from "./DutiesForm";
+import { Duties } from "../../../classes/Duties";
 
 function EditTAInformationForm({ ta }) {
   const [show, setShow] = useState(false);
@@ -15,6 +17,7 @@ function EditTAInformationForm({ ta }) {
   const [tempFullname, setTempFullname] = useState<string>();
   const [tempResponsabilities, setTempResponsabilities] = useState<Array<string>>([]);
   const [tempOfficeHours, setTempOfficeHours] = useState<Array<OfficeHour>>([]);
+  const [tempDuties, setTempDuties] = useState<Duties>(null);
 
   const { course, fetchCourseData } = React.useContext(CourseContext);
   const { user } = React.useContext(UserContext);
@@ -27,10 +30,9 @@ function EditTAInformationForm({ ta }) {
         uuid: courseTA.uuid,
         responsabilities: courseTA.uuid === ta.uuid ? tempResponsabilities : courseTA.responsabilities,
         officeHours: courseTA.uuid === ta.uuid ? tempOfficeHours : courseTA.officeHours,
+        duties: courseTA.uuid === ta.uuid ? tempDuties : courseTA.duties,
       }
     });
-
-    console.log(tempOfficeHours)
 
     try {
       const res = await fetch(`http://127.0.0.1:3000/api/course/edit/${course.id}`, {
@@ -44,7 +46,6 @@ function EditTAInformationForm({ ta }) {
           courseTAs: updatedCourseTAs,
         }),
       });
-      console.log(res)
       if (res.status === 204) {
         setTimeout(() => {
           fetchCourseData();
@@ -63,6 +64,7 @@ function EditTAInformationForm({ ta }) {
     setTempFullname(ta.fullName);
     setTempResponsabilities(ta.responsabilities);
     setTempOfficeHours(ta.officeHours);
+    setTempDuties(ta.duties);
   }, [ta]);
 
   return (
@@ -131,6 +133,11 @@ function EditTAInformationForm({ ta }) {
             <Row>
               <Col>
                 <OfficeHoursForm officeHours={tempOfficeHours} setOfficeHours={setTempOfficeHours} />
+              </Col>
+            </Row>
+             <Row>
+              <Col>
+                <DutiesForm duties={tempDuties} setDuties={setTempDuties} />
               </Col>
             </Row>
             <Button className="mt-3" variant="light" type="submit">

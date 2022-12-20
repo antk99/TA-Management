@@ -20,7 +20,6 @@ function EditProfInformationForm({ instructor }) {
     e.preventDefault();
 
     try {
-      console.log(tempOfficeHours)
       const res = await fetch(`http://127.0.0.1:3000/api/course/edit/${course.id}`, {
         method: "PUT",
         headers: {
@@ -32,7 +31,6 @@ function EditProfInformationForm({ instructor }) {
           instructorOfficeHours: tempOfficeHours,
         }),
       });
-      console.log(res)
       if (res.status === 204) {
         setTimeout(() => {
           fetchCourseData();

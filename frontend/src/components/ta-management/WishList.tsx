@@ -16,10 +16,6 @@ const WishList = () => {
 
     const [wishlists, setWishlists] = useState<Wishlist[]>([]);
 
-    const addToWishList = (ta: CourseTA) => {
-        console.log(ta);
-    }
-
     // fetch wishlists
     const { isLoading: isWishlistsLoading, error: isWishlistsError, sendRequest: getWishlists } = useHttp(
         { url: "/api/wishlist/" + course.instructorEmail },

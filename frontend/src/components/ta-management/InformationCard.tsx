@@ -42,19 +42,6 @@ function InformationCard({ name, email, officeHours, responsabilities, form, tit
                                         }
                                     </ul>
                             } />
-                            // <Col className="mt-3">
-                            //     <Card.Subtitle className="mb-2">Office Hours</Card.Subtitle>
-                            //     <ul>
-                            //         {
-                            //             officeHours.map((officeHour, index) => (
-                            //                 <li key={index}>
-                            //                     <p className="mb-0">{officeHour.day} ({ officeHour.periodicity }) - {officeHour.startTime} to {officeHour.endTime}</p>
-                            //                     <p>{officeHour.location}</p>
-                            //                 </li>
-                            //             ))
-                            //         }
-                            //     </ul>
-                            // </Col>
                         }
                         {responsabilities &&
                             <LabelledTextbox label="Responsabilities" value={

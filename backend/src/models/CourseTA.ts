@@ -1,3 +1,4 @@
+import { Duties } from "./Duties";
 import { OfficeHour } from "./OfficeHour";
 
 export interface CourseTA {
@@ -6,4 +7,5 @@ export interface CourseTA {
   email: string;
   responsabilities: string[];
   officeHours: OfficeHour[];
+  duties: Duties;
 }
