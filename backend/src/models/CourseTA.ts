@@ -3,6 +3,7 @@ import { OfficeHour } from "./OfficeHour";
 
 export interface CourseTA {
   uuid: string;
+  studentID: string;
   fullName: string;
   email: string;
   responsabilities: string[];
