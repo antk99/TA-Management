@@ -15,7 +15,7 @@ function OfficeHoursForm({ officeHours, setOfficeHours }) {
 
   useEffect(() => {
     setOfficeHours(tempOfficeHours);
-}, [tempOfficeHours]);
+  }, [tempOfficeHours]);
 
   const updateOfficeHourField = (index: number, field: string, value: string) => {
     const updatedOfficeHours = tempOfficeHours.map((officeHour, i) => {
@@ -85,6 +85,20 @@ function OfficeHoursForm({ officeHours, setOfficeHours }) {
                         >
                         {OFFICE_HOURS_HOURS.map((hour, i) => (
                             <option value={hour} key={i}>{hour}</option>
+                        ))}
+                        </Form.Select>
+
+                    </InputGroup>
+                    </Col>
+                    <Col>
+                    <InputGroup className="col-xs-6">
+                        <InputGroup.Text id="basic-addon1">Periodicity</InputGroup.Text>
+                        <Form.Select
+                          onChange={(e) => updateOfficeHourField(index, "periodicity", e.target.value)}
+                          value={officeHour.periodicity}
+                        >
+                        {['weekly', 'biweekly'].map((period, i) => (
+                            <option value={period} key={i}>{period}</option>
                         ))}
                         </Form.Select>
 

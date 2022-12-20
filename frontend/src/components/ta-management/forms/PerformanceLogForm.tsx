@@ -47,7 +47,6 @@ function PerformanceLogForm({ ta }) {
   };
 
   const loadPerformanceLog = async () => {
-    console.log('LOADING')
     const data = await fetchPerformanceLogByTa(course.instructorEmail, ta.uuid, user.token);
     setPerformanceLogs(data.performanceLogs);
   }
