@@ -72,10 +72,10 @@ const WishList = () => {
                     <Card.Body>
 
                         {course.courseTAs.map((ta, i) => (
-                            <div key={i} className="d-flex align-items-center justify-content-between">
+                            <div key={i} className="d-flex align-items-center justify-content-between flex-column flex-sm-row">
                                 <div>
-                                    <h4>{ta.fullName}</h4>
-                                    <p className="m-0">{ta.email}</p>
+                                    <h4 className="mb-1">{ta.fullName}</h4>
+                                    <p className="m-0 mb-2 mb-sm-0">{ta.email}</p>
                                 </div>
                                 {taBelongsToWishList(ta) ?
                                     <Button variant="outline-danger" onClick={() => handleRemoveTaFromWishlist(ta)}>Remove from wishlist</Button> :

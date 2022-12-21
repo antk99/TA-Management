@@ -57,8 +57,8 @@ function DutiesForm({ duties, setDuties }) {
   return (
     <Form.Group className="mb-2" controlId="formBasicEmail">
       <Form.Label>Duties</Form.Label>
-      <Row>
-        <Col>
+      <Row className="pb-0">
+        <Col md={12} lg={6} className="mb-2">
           <InputGroup>
             <InputGroup.Text id="basic-addon1">Office Hours</InputGroup.Text>
             <Form.Control
@@ -68,7 +68,7 @@ function DutiesForm({ duties, setDuties }) {
             />
           </InputGroup>
         </Col>
-        <Col>
+        <Col md={12} lg={6}>
           <InputGroup>
             <InputGroup.Text id="basic-addon1">Tutorials</InputGroup.Text>
             <Form.Control
@@ -79,8 +79,8 @@ function DutiesForm({ duties, setDuties }) {
           </InputGroup>
         </Col>
       </Row>
-      <Row>
-        <Col>
+      <Row className="pb-0">
+        <Col md={12} lg={6} className="mb-2">
           <InputGroup>
             <InputGroup.Text id="basic-addon1">
               Grading Assignments
@@ -94,7 +94,7 @@ function DutiesForm({ duties, setDuties }) {
             />
           </InputGroup>
         </Col>
-        <Col>
+        <Col md={12} lg={6}>
           <InputGroup>
             <InputGroup.Text id="basic-addon1">Grading Tests</InputGroup.Text>
             <Form.Control
@@ -105,8 +105,8 @@ function DutiesForm({ duties, setDuties }) {
           </InputGroup>
         </Col>
       </Row>
-      <Row>
-        <Col>
+      <Row className="pb-0">
+        <Col md={12} lg={6} className="mb-2">
           <InputGroup>
             <InputGroup.Text id="basic-addon1">Special Duties</InputGroup.Text>
             <Form.Control
@@ -116,7 +116,7 @@ function DutiesForm({ duties, setDuties }) {
             />
           </InputGroup>
         </Col>
-        <Col>
+        <Col md={12} lg={6}>
           <InputGroup>
             <InputGroup.Text id="basic-addon1">Special Hours</InputGroup.Text>
             <Form.Control
@@ -127,8 +127,8 @@ function DutiesForm({ duties, setDuties }) {
           </InputGroup>
         </Col>
       </Row>
-      <Row>
-        <Col>
+      <Row className="pb-0">
+        <Col md={12} lg={6} className="mb-2">
           <InputGroup>
             <InputGroup.Text id="basic-addon1">Hours</InputGroup.Text>
             <Form.Control
@@ -138,14 +138,10 @@ function DutiesForm({ duties, setDuties }) {
             />
           </InputGroup>
         </Col>
-        <Col>
+        <Col md={12} lg={6}>
           <InputGroup>
             <InputGroup.Text id="basic-addon1">Hours Summation</InputGroup.Text>
-            <Form.Control
-              type="number"
-              value={hoursSummation}
-              disabled
-            />
+            <Form.Control type="number" value={hoursSummation} disabled />
           </InputGroup>
         </Col>
       </Row>
