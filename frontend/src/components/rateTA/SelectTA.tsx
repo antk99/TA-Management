@@ -45,7 +45,7 @@ const SelectTA = props => {
                 <div id="rateTable">
                     <table>
                         <tbody>
-                            {TAs.map((ta: TA, i: number) => {
+                            {TAs.map((ta, i: number) => {
                                 if (ta) {
                                     return <TARow key={i}
                                         TA={ta}
@@ -59,7 +59,9 @@ const SelectTA = props => {
                         </tbody>
                     </table>
                 </div>
-            </> : <>{text}</>
+            </> : <div className="rowC">
+                    <h2 style={{ marginBottom: "20px" }}>{text}</h2>
+                </div>
             }
             <div className="links" style={{ textDecoration: "underline", paddingBottom: "20px", paddingTop: "40px", maxWidth: "30px" }}
                 onClick={() => { props.setSelectCourse("") }}>

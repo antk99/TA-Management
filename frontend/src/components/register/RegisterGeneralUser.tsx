@@ -133,11 +133,19 @@ const RegisterGeneralUser = props => {
             <Col></Col>
         </Row>
 
-        {role.map((type, index) => {
+        {/*role.map((type, index) => {
             if ([UserTypes.Student, UserTypes.TA, UserTypes.Professor].includes(type)) {
                 return <div key={index}>{additionalFields.get(type)}</div>
             }
-        })}
+        })*/}
+
+        {role.includes(UserTypes.Student) ?
+            <RegisterStudent
+                setStudentNumber={props.setStudentNumber}
+                setStudentCourses={props.setStudentCourses}
+                allCourses={allCourses}
+            /> : <></>
+        }
     </>);
 
 };

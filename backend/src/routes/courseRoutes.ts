@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllCourses, addCourse, registerCourseFromFile, deleteCourse, updateCourse, getCourseByInstructor, getCourseByTA, getTAsByCourse, addCourseTA, getAllCourseNumbers } from '../controllers/courseController';
+import { getAllCourses, addCourse, registerCourseFromFile, deleteCourse, updateCourse, getCourseByInstructor, getCourseByTA, getTAsByCourse, getAllCourseNumbers } from '../controllers/courseController';
 import multer from "multer";
 import requireAuth from '../middleware/requireAuth';
 
@@ -14,7 +14,6 @@ router.get("/", requireAuth, getAllCourses);
 router.get("/instructor/:instructorUuid", requireAuth, getCourseByInstructor);
 router.get("/ta/:taUuid", requireAuth, getCourseByTA);
 router.get("/allTas/:courseUuid", requireAuth, getTAsByCourse);
-router.patch("/addTAs", requireAuth, addCourseTA);
 router.post("/add", requireAuth, addCourse);
 router.delete("/delete", requireAuth, deleteCourse);
 router.put("/edit/:id", requireAuth, updateCourse);

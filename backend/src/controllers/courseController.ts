@@ -140,7 +140,7 @@ export const addCourse = asyncHandler(async (req: Request, res: Response) => {
 // @Desc Add Course TAs
 // @Route /api/course/addTAs
 // @Method PATCH
-export const addCourseTA = asyncHandler(async (req: Request, res: Response) => {
+/*export const addCourseTA = asyncHandler(async (req: Request, res: Response) => {
     const { courseTA, courses } = req.body;
 
     const studentID = courseTA.studentID;
@@ -159,7 +159,7 @@ export const addCourseTA = asyncHandler(async (req: Request, res: Response) => {
         await course.save();
     }
     res.status(201);
-});
+});*/
 
 // @Desc Update Course
 // @Route /api/course/edit/:id
