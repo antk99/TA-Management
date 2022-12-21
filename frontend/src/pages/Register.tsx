@@ -189,6 +189,7 @@ const Register: React.FC = () => {
         let form = document.getElementById('register-form');
         form.scroll(0, 0);
         if (hasError()) {
+            setIsRegistering(false);
             return;
         }
 
@@ -241,7 +242,7 @@ const Register: React.FC = () => {
                 <Form onSubmit={submitHandler}>
                     <div className="form-inner" id="register-form">
                         <img className="logo" src={logo} alt="mcgill-logo" />
-                        {isRegistering ?  <h6 style={{paddingTop: "20px"}}>Registering...</h6>:
+                        {isRegistering ? <h6 style={{ paddingTop: "20px" }}>Registering...</h6> :
                             <>
                                 <p className="top">Please fill in your information</p>
                                 {error !== "" ? <div className="error"> * {error} </div> : ""}
@@ -254,11 +255,11 @@ const Register: React.FC = () => {
                                     setRole={setRole}
                                     setStudentNumber={setStudentNumber}
                                     setStudentCourses={setStudentCourses}
-                                    /*setTaCourses={setTaCourses}
-                                    setProfCourses={setProfCourses}
-                                    setFaculty={setFaculty}
-                                    setDept={setDept}*/
-                                    />
+                                /*setTaCourses={setTaCourses}
+                                setProfCourses={setProfCourses}
+                                setFaculty={setFaculty}
+                                setDept={setDept}*/
+                                />
 
                                 <div className="register-button">
                                     <input style={{ backgroundColor: '#4ab244' }} type="submit" value="Register" />
