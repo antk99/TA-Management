@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import { User, emptyUser } from "./classes/User";
 import LoggedOut from "./pages/LoggedOut";
 
@@ -26,6 +27,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={!user.email ? <Login /> : <Navigate to="/login" />} />
           <Route path="/login" element={!user.email ? <Login /> : <Navigate to="/dashboard" />} />
+          <Route path="/register" element={!user.email ? <Register /> : <Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={user.email ? <Dashboard /> : <Navigate to="/login" />} />
           <Route path="/logout" element={<LoggedOut />} />
         </Routes>

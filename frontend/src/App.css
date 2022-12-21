@@ -25,17 +25,18 @@ button {
   border-radius: 3px;
 }
 
-.sign-in-button {
+.sign-in-button, .register-button {
   margin-top: 30px;
 }
 
-.sign-in-button input {
+.sign-in-button input, .register-button input {
   width: 100px;
   font-size: 12px;
 }
 
 .links {
   color: #003f9e;
+  cursor: pointer;
 }
 
 form {
@@ -107,4 +108,9 @@ form .form-inner input[type="submit"],
   font-size: 28px;
   font-weight: 500;
   margin-bottom: 30px;
+}
+
+.register-title {
+  margin-top: 20px;
+  margin-bottom: 5px;
 }

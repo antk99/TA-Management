@@ -22,6 +22,49 @@ export const getStudent = asyncHandler(async (req: Request, res: Response) => {
     }
 });
 
+
+// @Desc Get student by user ID
+// @Route /api/student/:id
+// @Method GET
+export const getStudentByID = asyncHandler(async (req: Request, res: Response) => {
+    //const user = await User.findById({ _id: req.params.id });
+    const student = await Student.findOne({ student: req.params.id });
+    if (!student) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+    res.status(200).json({
+      student
+    });
+  });
+
+// @Desc Get students courses
+// @Route /api/student/courses/:id
+// @Method GET
+export const getStudentCourses = asyncHandler(async (req: Request, res: Response) => {
+    const _IdStudent = req.params.id;
+    try {
+        if (!_IdStudent)
+            throw new Error('Missing required field: studentID.');
+        const student = await Student.findOne({ student: _IdStudent });
+        if (!student)
+            throw new Error('Student not found. Add student and continue.');
+        if (!student.courses)
+            throw new Error('Student not enrolled in any courses.');
+        const courses = [];
+        
+        for(const courseId of student.courses){
+            const course = await Course.findOne({ _id: courseId });
+            if(!course)
+                throw new Error(`No course with id: ${courseId} found in the database`);
+            courses.push(course);
+        }
+        res.status(200).json({ courses });
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 // @Desc Adds a student
 // @Route /api/student/add
 // @Method POST

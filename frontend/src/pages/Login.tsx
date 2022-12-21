@@ -98,7 +98,7 @@ const Login: React.FC = () => {
             </div>
 
             <p className="bottom">
-              <Link className="links" to="/login">
+              <Link className="links" to="/register">
                 Register
               </Link>
             </p>

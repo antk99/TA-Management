@@ -6,6 +6,15 @@ import { parse } from 'csv-string';
 import Professor from "../models/Professor";
 import { capitalizeFirstLetter } from "../utils/stringFormatting";
 import { CourseTA } from "../models/CourseTA";
+import TA from "../models/TA";
+
+// @Desc Get all Course Numbers [Public]
+// @Route /api/course/courseNumbers
+// @Method GET
+export const getAllCourseNumbers = asyncHandler(async (req: Request, res: Response) => {
+    const courses = await Course.find({});
+    res.status(200).json({ courses: courses.map(course => course.courseNumber) });
+});
 
 // @Desc Get all Courses
 // @Route /api/course
@@ -31,6 +40,20 @@ export const getCourseByTA = asyncHandler(async (req: Request, res: Response) =>
     const uuid = req.params.taUuid;
     const courses = await Course.find({ courseTAs: { $elemMatch: { uuid } } });
     res.status(200).json({ courses });
+});
+
+// @Desc Get TAs by course
+// @Route /api/course/allTas/:courseUuid
+// @Method GET
+export const getTAsByCourse = asyncHandler(async (req: Request, res: Response) => {
+    const uuid = req.params.courseUuid;
+    const course = await Course.findOne({ _id: uuid });
+    if (!course)
+        throw new Error(`Course with id: ${uuid} not found in database.`);
+    const TAs = course.courseTAs;
+    if (!TAs)
+        throw new Error(`Course has no TAs.`);
+    res.status(200).json({ TAs });
 });
 
 
@@ -149,6 +172,30 @@ export const addCourse = asyncHandler(async (req: Request, res: Response) => {
         res.status(400).json({ error: error.message });
     }
 });
+
+// @Desc Add Course TAs
+// @Route /api/course/addTAs
+// @Method PATCH
+/*export const addCourseTA = asyncHandler(async (req: Request, res: Response) => {
+    const { courseTA, courses } = req.body;
+
+    const studentID = courseTA.studentID;
+    let ta = await TA.findOne({ studentID });
+    if (!ta) {
+        res.status(404);
+        throw new Error("TA not found in the database! Add user and continue.");
+    }
+
+    for (const c of courses) {
+        let course = await Course.findOne({ courseNumber: c });
+        if (!course) {
+            throw new Error("Course not found in the database! Add course and continue.");
+        }
+        if (!(course.courseTAs.includes(courseTA))) course.courseTAs.push(courseTA);
+        await course.save();
+    }
+    res.status(201);
+});*/
 
 // @Desc Update Course
 // @Route /api/course/edit/:id

@@ -3,6 +3,8 @@ import asyncHandler from "express-async-handler";
 import User from "../models/User";
 import generateToken from "../utils/generateToken";
 import { parse } from 'csv-string';
+import Student from "../models/Student";
+import Course from "../models/Course";
 
 // @Desc Get all users
 // @Route /api/users
@@ -159,6 +161,41 @@ export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
     res.status(404).json({ 'error': error.message });
   }
 })
+
+// @Desc Adds a student
+// @Route /api/users/add-student
+// @Method POST
+export const addStudent = asyncHandler(async (req: Request, res: Response) => {
+  const { studentEmail, studentID, courses } = req.body;
+
+  try {
+      if (!studentEmail || !studentID || !courses)
+          throw new Error('Missing at least one of required fields: studentEmail, studentID, courses.');
+
+      const studentUserID = await User.findOne({ email: studentEmail }).select('_id');
+      if (!studentUserID)
+          throw new Error(`No user with email: ${studentEmail} found in the database. Add user and continue.`);
+
+      const exists = await Student.findOne({ "$or": [{ student: studentUserID }, { studentID: studentID }] });
+      if (exists)
+          throw new Error(`Student with email: ${studentEmail} or studentID: ${studentID} already exists in the database.`);
+
+      const coursesIDs = [];
+
+      // check if all courses are in database
+      for (const course of courses) {
+          const courseID = await Course.findOne({ courseNumber: course.toUpperCase() }).select('_id');
+          if (!courseID)
+              throw new Error(`Course ${course} not found in the database. Add course and continue.`);
+          coursesIDs.push(courseID._id);
+      }
+
+      const student = await Student.create({ student: studentUserID, studentID, courses: coursesIDs });
+      res.status(200).json({ student });
+  } catch (error: any) {
+      res.status(400).json({ error: error.message });
+  }
+});
 
 // @Desc Update user details
 // @Route /api/users/edit/:email
