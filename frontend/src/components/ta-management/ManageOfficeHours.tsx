@@ -33,7 +33,7 @@ const ManageOfficeHours = () => {
 
     return (
         <div>
-            {profile && profile === UserTypes.Professor &&
+            {profile && (profile === UserTypes.Professor || profile === UserTypes.Admin || profile === UserTypes.Sysop) &&
                 <InformationCard
                     title="Instructor's information"
                     form={<EditProfInformationForm instructor={{ instructorName: course.instructorName, email: course.instructorEmail, officeHours: course.instructorOfficeHours }} />}
@@ -54,28 +54,43 @@ const ManageOfficeHours = () => {
                 />
             }
 
-            {profile && profile === UserTypes.Professor && course.courseTAs &&
-                <Card className="mt-5 taInfoCard mb-5">
-                    <Card.Body>
-                        <Card.Title>TAs</Card.Title>
+            {profile &&
+                (profile === UserTypes.Professor || profile === UserTypes.Admin || profile === UserTypes.Sysop) &&
+                (
+                    <>
+                    {course.courseTAs && course.courseTAs.length > 0 &&
+                        <Card className="mt-5 taInfoCard mb-5">
+                            <Card.Body>
+                                <Card.Title>TAs</Card.Title>
 
-                        <table className="w-100">
-                            <thead>
-                                <tr>
-                                    <th className="column1">Name</th>
-                                    <th className="column2">Email</th>
-                                    <th className="column3">Responsabilities</th>
-                                    <th className="column4">Office Hours</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {course.courseTAs.map((ta: CourseTA, i: number) => (
-                                    <SelectTARow ta={ta} key={i} />
-                                ))}
-                            </tbody>
-                        </table>
-                    </Card.Body>
-                </Card>
+                                <table className="w-100">
+                                    <thead>
+                                        <tr>
+                                            <th className="column1">Name</th>
+                                            <th className="column2">Email</th>
+                                            <th className="column3">Responsabilities</th>
+                                            <th className="column4">Office Hours</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {course.courseTAs.map((ta: CourseTA, i: number) => (
+                                            <SelectTARow ta={ta} key={i} />
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </Card.Body>
+                        </Card>
+                    }
+                    {course.courseTAs.length === 0 &&
+                        <Card className="mt-5 taInfoCard mb-5">
+                            <Card.Body>
+                                <Card.Title>TAs</Card.Title>
+                                <p className="mt-3">There are no TAs in this course.</p>
+                            </Card.Body>
+                        </Card>
+                    }
+                    </>
+                )
             }
         </div>
     );

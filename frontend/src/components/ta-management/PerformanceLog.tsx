@@ -28,7 +28,8 @@ const PerformanceLog = () => {
             <div className="d-flex flex-column align-items-start">
                 <h4>Select a TA to view their performance log</h4>
                 <Form.Select
-                    className="w-25 mt-3"
+                    className="w-100 mt-3"
+                    style={{ maxWidth: "300px" }}
                     onChange={(e) => setSelectedTAUUid(e.target.value)}
                     value={selectedTAUuid}
                 >

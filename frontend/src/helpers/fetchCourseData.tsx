@@ -4,9 +4,10 @@ import getFullyQualifiedUrl from "./host";
 export const fetchCourseData = async (token, profile = null, userId = null) => {
     try {
         let fetchUrl = "/api/course";
-        if (profile && userId) {
+        if (profile && userId && profile !== UserTypes.Sysop && profile !== UserTypes.Admin) {
             fetchUrl = `/api/course/${profile === UserTypes.Professor ? 'instructor' : 'ta'}/${userId}`;
         }
+
         const res = await fetch(getFullyQualifiedUrl(fetchUrl), {
             method: "GET",
             headers: {
@@ -15,6 +16,7 @@ export const fetchCourseData = async (token, profile = null, userId = null) => {
             },
         });
         const data = await res.json();
+        console.log(data)
         const courseObject = [];
         for (const d of data.courses) {
             const instructorRes = await fetch(getFullyQualifiedUrl("/api/users/" + d.courseInstructor), {
