@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Container } from 'react-bootstrap';
 import { UserContext } from '../../App';
+import getFullyQualifiedUrl from '../../helpers/host';
 import { useHttp } from '../../hooks/useHttp';
 import ImportForm from '../sysop/ImportForm';
 import CourseQuotaRow from './courseQuotaRow';
@@ -11,7 +12,7 @@ const CourseQuota = () => {
 
     const { isLoading, error, sendRequest: fetchCourseQuotas } = useHttp(
         { url: "/api/courseQuota/" },
-        (data) => { setCourseQuotas(data.quotas.sort((a, b) => (a.courseNumber > b.courseNumber) ? 1 : -1)) },
+        async (data) => { setCourseQuotas(data.quotas.sort((a, b) => (a.courseNumber > b.courseNumber) ? 1 : -1)) },
         user.token
     );
 
@@ -43,7 +44,7 @@ const CourseQuota = () => {
                         </thead>
                         <tbody>
                             {courseQuotas.map(course => (
-                                <CourseQuotaRow key={`${course.courseNumber}${course.termYear}${course.courseType}${course.instructorName}`} course={course} />
+                                <CourseQuotaRow key={`${course.courseNumber}${course.termYear}${course.courseType}${course.instructorName}`} course={course} fetchData={fetchCourseQuotas} />
                             ))}
                         </tbody>
                     </table>

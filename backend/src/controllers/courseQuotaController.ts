@@ -44,3 +44,28 @@ export const addCourseQuotaFromFile = asyncHandler(async (req: Request, res: Res
     }
     res.status(200).json({});
 });
+
+// @Desc Update course quota
+// @Route /api/courseQuota/edit/:id
+// @Method PATCH
+export const updateCourseQuota = asyncHandler(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const { taQuota, enrollmentNumber } = req.body;
+
+    try {
+        if (!taQuota || !enrollmentNumber)
+            throw new Error("Missing one of required fields: taQuota, enrollmentNumber.");
+
+        const quota = await CourseQuota.findById({ _id: id });
+        if (!quota)
+            throw new Error("Course quota not found.");
+
+        quota.taQuota = taQuota;
+        quota.enrollmentNumber = enrollmentNumber;
+        await quota.save();
+        res.status(200).json({ quota });
+
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
+    }
+});
