@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 export interface IStudent extends mongoose.Document {
     student: IUser;
     studentID: string;
-    courses: Array<string>; // Array of courseNumbers
+    courses: Array<string>; // Array of course IDs (MongoDB ObjectID)
 }
 
 const StudentSchema = new mongoose.Schema({

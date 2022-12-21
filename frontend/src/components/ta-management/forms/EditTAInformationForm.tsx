@@ -30,6 +30,8 @@ function EditTAInformationForm({ ta }) {
       return {
         uuid: courseTA.uuid,
         studentID: courseTA.studentID,
+        email: courseTA.email,
+        fullName: courseTA.fullName,
         responsabilities: courseTA.uuid === ta.uuid ? tempResponsabilities : courseTA.responsabilities,
         officeHours: courseTA.uuid === ta.uuid ? tempOfficeHours : courseTA.officeHours,
         duties: courseTA.uuid === ta.uuid ? tempDuties : courseTA.duties,

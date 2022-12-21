@@ -22,11 +22,10 @@ const SelectCourse = props => {
             });
             const data = await res.json();
             const courseObject = [];
-            if(!data || !data.courses || data.courses.length < 1){
+            if (!data || !data.courses || data.courses.length < 1) {
                 setText("You are not enrolled in any courses");
                 return;
-            } 
-            console.log(data);
+            }
             for (const d of data.courses) {
                 let item: { [key: string]: any } = {
                     courseNumber: d.courseNumber,
@@ -50,30 +49,30 @@ const SelectCourse = props => {
 
     return (
         <Container className="mt-3">
-            { courses.length > 0 ?
-            <><div className="rowC">
-                <h2 style={{ marginBottom: "20px" }}>Select a Course</h2>
-            </div>
-            <div id="rateTable">
-                <table>
-                    <thead>
-                        <tr>
-                            <th className="column1">Course Number</th>
-                            <th className="column2">Course Name</th>
-                            <th className="column4">Course Semester</th>
-                            <th className="column5">Course Year</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {courses.map((course: Course) => (
-                            <CourseRowNoDesc course={course} setCourse={props.setSelectCourse} />
-                        ))}
-                    </tbody>
-                </table>
-            </div></>
-            : <div className="rowC">
-                <h2 style={{ marginBottom: "20px" }}>{text}</h2>
-            </div>}
+            {courses.length > 0 ?
+                <><div className="rowC">
+                    <h2 style={{ marginBottom: "20px" }}>Select a Course</h2>
+                </div>
+                    <div id="rateTable">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th className="column1">Course Number</th>
+                                    <th className="column2">Course Name</th>
+                                    <th className="column4">Course Semester</th>
+                                    <th className="column5">Course Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {courses.map((course: Course) => (
+                                    <CourseRowNoDesc key={course.courseNumber} course={course} setCourse={props.setSelectCourse} />
+                                ))}
+                            </tbody>
+                        </table>
+                    </div></>
+                : <div className="rowC">
+                    <h2 style={{ marginBottom: "20px" }}>{text}</h2>
+                </div>}
         </Container>
     );
 };

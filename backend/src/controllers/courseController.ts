@@ -53,7 +53,17 @@ export const getTAsByCourse = asyncHandler(async (req: Request, res: Response) =
     const TAs = course.courseTAs;
     if (!TAs)
         throw new Error(`Course has no TAs.`);
-    res.status(200).json({ TAs });
+
+    const data = [];
+    // attach TA name to each TA
+    for (const TA of TAs) {
+        const ta = await User.findOne({ email: TA.email });
+        if (!ta)
+            throw new Error(`TA with email: ${TA.email} not found in database.`);
+        data.push({ ...TA, fullName: `${ta.firstName} ${ta.lastName}` });
+    }
+
+    res.status(200).json({ TAs: data });
 });
 
 
@@ -78,7 +88,9 @@ export const registerCourseFromFile = asyncHandler(async (req: Request, res: Res
                     term: record[2],
                     year: record[3],
                     courseNumber: record[4],
-                    courseInstructor: courseInstructor
+                    courseInstructor: courseInstructor,
+                    instructorOfficeHours: [],
+                    courseTAs: [],
                 });
 
                 const exists = await Course.findOne({ "$and": [{ courseNumber: course.courseNumber, term: course.term, year: course.year }] });
@@ -157,7 +169,7 @@ export const addCourse = asyncHandler(async (req: Request, res: Response) => {
         if (exists)
             throw new Error(`Course with courseNumber: ${courseNumber} already exists in the database for term ${term} ${year}!`);
 
-        const course = new Course({ courseName, courseDesc, term, year, courseNumber: courseNumber, courseInstructor: professorUserID });
+        const course = new Course({ courseName, courseDesc, term, year, courseNumber: courseNumber, courseInstructor: professorUserID, instructorOfficeHours: [], courseTAs: [] });
         await course.save();
         res.status(201).json({
             id: course._id,

@@ -35,7 +35,7 @@ const SelectTA = props => {
     useEffect(() => {
         fetchUserData();
     }, []);
-
+    console.log(TAs);
     return (
         <Container className="mt-3">
             {TAs.length > 0 ? <>
@@ -60,8 +60,8 @@ const SelectTA = props => {
                     </table>
                 </div>
             </> : <div className="rowC">
-                    <h2 style={{ marginBottom: "20px" }}>{text}</h2>
-                </div>
+                <h2 style={{ marginBottom: "20px" }}>{text}</h2>
+            </div>
             }
             <div className="links" style={{ textDecoration: "underline", paddingBottom: "20px", paddingTop: "40px", maxWidth: "30px" }}
                 onClick={() => { props.setSelectCourse("") }}>
