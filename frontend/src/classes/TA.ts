@@ -3,6 +3,7 @@ import { CourseRegInfo } from './../../../backend/src/models/TA';
 export interface TA {
     // TA DB fields
     email: string;
+    fullName: string;
     name: string;
     studentID: string;
     currCourses: Array<CourseRegInfo>;

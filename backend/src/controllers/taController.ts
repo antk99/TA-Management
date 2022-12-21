@@ -23,7 +23,7 @@ export const addTA = asyncHandler(async (req: Request, res: Response) => {
     try {
         if (!email || !studentID || !currCourses || !prevCourses)
             throw new Error("Missing at least one of required fields: email, studentID, currCourses, prevCourses.");
-
+        
         const taUser = await User.findOne({ email });
         if (!taUser)
             throw new Error(`No user with email ${email} found in the database! Add user and continue.`);
@@ -31,25 +31,42 @@ export const addTA = asyncHandler(async (req: Request, res: Response) => {
         const exists = await TA.findOne({ "$or": [{ studentID }, { email }] });
         if (exists)
             throw new Error(`TA with either email: ${email} or studentID: ${studentID} already exists in the database!`);
-
+        
         // Check if all courses exist in the database
+        let currCoursesInfo = [];
         for (const course of currCourses) {
-            const { courseNumber } = course;
-            const courseExists = await Course.findOne({ courseNumber: courseNumber.toUpperCase() });
+            //const { courseNumber } = course;
+            const courseExists = await Course.findOne({ courseNumber: course.toUpperCase() });
             if (!courseExists)
-                throw new Error(`Course ${courseNumber.toUpperCase()} does not exist in the database!`);
+                throw new Error(`Course ${course.toUpperCase()} does not exist in the database!`);
+            
+            let hours = course.assignedHours ? course.assignedHours : 0;
+            currCoursesInfo.push({
+                term: courseExists.term,
+                termYear: courseExists.year,
+                courseNumber: course.toUpperCase(),
+                assignedHours: hours
+            });
         }
-
+        
         // Check if all courses exist in the database
+        let prevCoursesInfo = [];
         for (const course of prevCourses) {
-            const { courseNumber } = course;
-            const courseExists = await Course.findOne({ courseNumber: courseNumber.toUpperCase() });
+            //const { courseNumber } = course;
+            const courseExists = await Course.findOne({ courseNumber: course.toUpperCase() });
             if (!courseExists)
-                throw new Error(`Course ${courseNumber.toUpperCase()} does not exist in the database!`);
+                throw new Error(`Course ${course.toUpperCase()} does not exist in the database!`);
+            let hours = course.assignedHours ? course.assignedHours : 0;
+            prevCoursesInfo.push({
+                term: courseExists.term,
+                termYear: courseExists.year,
+                courseNumber: course.toUpperCase(),
+                assignedHours: hours
+            });
         }
-
-        currCourses = currCourses.map((course: CourseRegInfo) => { return { ...course, term: capitalizeFirstLetter(course.term), courseNumber: course.courseNumber.toUpperCase() } });
-        prevCourses = prevCourses.map((course: CourseRegInfo) => { return { ...course, term: capitalizeFirstLetter(course.term), courseNumber: course.courseNumber.toUpperCase() } });
+        
+        currCourses = currCoursesInfo.map((course: CourseRegInfo) => { return { ...course, term: capitalizeFirstLetter(course.term), courseNumber: course.courseNumber.toUpperCase() } });
+        prevCourses = prevCoursesInfo.map((course: CourseRegInfo) => { return { ...course, term: capitalizeFirstLetter(course.term), courseNumber: course.courseNumber.toUpperCase() } });
 
         const ta = new TA({ email, name: taUser.firstName + " " + taUser.lastName, studentID, currCourses, prevCourses });
         await ta.save();

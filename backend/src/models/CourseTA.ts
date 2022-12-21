@@ -6,4 +6,5 @@ export interface CourseTA {
   email: string;
   responsabilities: string[];
   officeHours: OfficeHour[];
+  studentID: string;
 }
