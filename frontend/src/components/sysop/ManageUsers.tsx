@@ -40,6 +40,7 @@ const ManageUsers = () => {
                 <th className="column2">First name</th>
                 <th className="column3">Last name</th>
                 <th className="column4">User Type</th>
+                <th className="column0"></th>
               </tr>
             </thead>
             <tbody>

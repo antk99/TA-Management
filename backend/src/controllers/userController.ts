@@ -196,3 +196,30 @@ export const addStudent = asyncHandler(async (req: Request, res: Response) => {
       res.status(400).json({ error: error.message });
   }
 });
+
+// @Desc Update user details
+// @Route /api/users/edit/:email
+// @Method PATCH
+export const updateUser = asyncHandler(async (req: Request, res: Response) => {
+  const email = req.params.email;
+  const { firstName, lastName, userType } = req.body;
+
+  try {
+    if (!firstName || !lastName || !userType)
+      throw new Error("Missing one of required fields: firstName, lastName, userType");
+
+    const user = await User.findOne({ email });
+    if (!user)
+      throw new Error("User not found");
+
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.userType = userType;
+
+    await user.save();
+    res.status(201).json({ user });
+
+  } catch (error: any) {
+    res.status(404).json({ 'error': error.message });
+  }
+});

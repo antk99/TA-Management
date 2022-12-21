@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { CourseTA } from './CourseTA';
-import {IProfessor} from "./Professor";
+import { IUser } from './User';
 
 const Schema = mongoose.Schema;
 
@@ -22,7 +22,7 @@ export interface OfficeHour {
     endTime: Hour;
     location: string;
 }
-  
+
 
 export interface ICourse extends mongoose.Document {
     courseName: string,
@@ -30,7 +30,7 @@ export interface ICourse extends mongoose.Document {
     term: Term,
     year: string,
     courseNumber: string,
-    courseInstructor: IProfessor,
+    courseInstructor: IUser,
     instructorOfficeHours: OfficeHour,
     courseTAs: CourseTA[]
 }
