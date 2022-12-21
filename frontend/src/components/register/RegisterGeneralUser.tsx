@@ -12,11 +12,11 @@ const RegisterGeneralUser = props => {
     const [allCourses, setAllCourses] = useState<Array<String> & any>([]);
     const fetchAllCourses = async () => {
         try {
-            const res = await fetch(getFullyQualifiedURL("/api/course"));
+            const res = await fetch(getFullyQualifiedURL("/api/course/courseNumbers"));
             const data = await res.json();
             const courses = [];
-            for (const d of data.courses) {
-                courses.push(d.courseNumber);
+            for (const courseNumber of data.courses) {
+                courses.push(courseNumber);
             }
             setAllCourses(courses);
         } catch (err) {

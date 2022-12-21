@@ -41,6 +41,7 @@ app.use((req: Request, res: Response, next: any) => {
 
 // Some routes do not require authentication
 app.use(urlPrefix + "/users", userRoutes);
+app.use(urlPrefix + "/course", courseRoutes);
 
 app.use(requireAuth);
 
@@ -48,7 +49,6 @@ app.use(requireAuth);
 // TODO: for all route controllers, only provide info for the current user passed in request.body.user
 // e.g. if user._id = 1, only allow user 1 to access their own info & not other users' info even if authenticated
 app.use(urlPrefix + "/prof", profRoutes);
-app.use(urlPrefix + "/course", courseRoutes);
 app.use(urlPrefix + "/student", studentRoutes);
 app.use(urlPrefix + "/ta", taRoutes);
 app.use(urlPrefix + "/rating", ratingRoutes);

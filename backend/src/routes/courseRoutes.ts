@@ -1,18 +1,23 @@
 import express from 'express';
-import { getAllCourses, addCourse, registerCourseFromFile, deleteCourse, updateCourse, getCourseByInstructor, getCourseByTA, getTAsByCourse, addCourseTA } from '../controllers/courseController';
+import { getAllCourses, addCourse, registerCourseFromFile, deleteCourse, updateCourse, getCourseByInstructor, getCourseByTA, getTAsByCourse, addCourseTA, getAllCourseNumbers } from '../controllers/courseController';
 import multer from "multer";
+import requireAuth from '../middleware/requireAuth';
 
 const upload = multer();
 const router = express.Router();
 
-router.route("/").get(getAllCourses);
-router.route("/instructor/:instructorUuid").get(getCourseByInstructor);
-router.route("/ta/:taUuid").get(getCourseByTA);
-router.route("/allTas/:courseUuid").get(getTAsByCourse);
-router.route("/addTAs").patch(addCourseTA);
-router.route("/add").post(addCourse);
-router.route("/delete").delete(deleteCourse);
-router.route("/edit/:id").put(updateCourse);
-router.route("/upload").post(upload.single("csvFile"), registerCourseFromFile);
+// these routes do not require authentication
+router.get("/courseNumbers", getAllCourseNumbers);
+
+// these routes require authentication
+router.get("/", requireAuth, getAllCourses);
+router.get("/instructor/:instructorUuid", requireAuth, getCourseByInstructor);
+router.get("/ta/:taUuid", requireAuth, getCourseByTA);
+router.get("/allTas/:courseUuid", requireAuth, getTAsByCourse);
+router.patch("/addTAs", requireAuth, addCourseTA);
+router.post("/add", requireAuth, addCourse);
+router.delete("/delete", requireAuth, deleteCourse);
+router.put("/edit/:id", requireAuth, updateCourse);
+router.post("/upload", requireAuth, upload.single("csvFile"), registerCourseFromFile);
 
 export default router;  

@@ -8,6 +8,14 @@ import { capitalizeFirstLetter } from "../utils/stringFormatting";
 import { CourseTA } from "../models/CourseTA";
 import TA from "../models/TA";
 
+// @Desc Get all Course Numbers [Public]
+// @Route /api/course/courseNumbers
+// @Method GET
+export const getAllCourseNumbers = asyncHandler(async (req: Request, res: Response) => {
+    const courses = await Course.find({});
+    res.status(200).json({ courses: courses.map(course => course.courseNumber) });
+});
+
 // @Desc Get all Courses
 // @Route /api/course
 // @Method GET
