@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import React from "react";
-import AddIcon from "@mui/icons-material/Add";
 import "../../style/userTable.css";
 import { UserContext } from "../../App";
 import getFullyQualifiedUrl from "../../helpers/host";

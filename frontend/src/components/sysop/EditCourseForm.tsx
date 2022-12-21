@@ -4,7 +4,7 @@ import "../../style/userTable.css";
 import { UserContext } from "../../App";
 import getFullyQualifiedUrl from "../../helpers/host";
 
-// Form that edits a course with fields: courseCode, courseNumber, courseName, term, year
+// Form that edits a course
 const EditCourseForm = ({ courseToEdit, fetchCourseData, show, setShow }) => {
   const { user } = React.useContext(UserContext);
 
