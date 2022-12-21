@@ -1,0 +1,1 @@
+export default (score) => { return "⭐".repeat(score) }
