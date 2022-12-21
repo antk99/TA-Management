@@ -42,7 +42,8 @@ export const getPerformanceLogsByProf = asyncHandler(async (req: Request, res: R
         const performanceLogs = await PerformanceLog.find({ profEmail, taStudentID: studentID });
         if (performanceLogs.length === 0)
             res.status(200).json({ performanceLogs: [] });
-        res.status(200).json({ performanceLogs });
+        else
+            res.status(200).json({ performanceLogs });
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }

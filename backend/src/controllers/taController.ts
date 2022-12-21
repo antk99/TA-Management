@@ -1,3 +1,4 @@
+import { Duties } from './../models/Duties';
 import { CourseRegInfo } from './../models/TA';
 import { capitalizeFirstLetter } from './../utils/stringFormatting';
 import { Request, Response } from "express";
@@ -5,6 +6,7 @@ import asyncHandler from "express-async-handler";
 import Course from "../models/Course";
 import User from "../models/User";
 import TA from "../models/TA";
+import { CourseTA } from '../models/CourseTA';
 
 // @Desc Get all TAs
 // @Route /api/ta
@@ -95,6 +97,10 @@ export const addTACurrCourse = asyncHandler(async (req: Request, res: Response) 
         if (!ta)
             throw new Error(`No TA found with studentID ${taStudentID} in the database!`);
 
+        const taUser = await User.findOne({ email: ta.email });
+        if (!taUser)
+            throw new Error(`No user found with email ${ta.email} in the database!`);
+
         const course = await Course.findOne({ courseNumber });
         if (!course)
             throw new Error(`No course found with courseNumber ${courseNumber} in the database!`);
@@ -107,6 +113,30 @@ export const addTACurrCourse = asyncHandler(async (req: Request, res: Response) 
         const courseRegInfo: CourseRegInfo = { term, termYear, courseNumber, assignedHours };
         ta.currCourses.push(courseRegInfo);
         await ta.save();
+
+        const BLANK_DUTIES: Duties = {
+            officeHoursCount: 0,
+            tutorialsCount: 0,
+            gradingAssignmentsCount: 0,
+            gradingTestsCount: 0,
+            specialDescription: "",
+            specialHours: 0,
+            hours: 0,
+            hoursSummation: 0,
+        };
+
+        // Add TA to course courseTAs
+        const courseTA: CourseTA = {
+            uuid: taUser._id,
+            studentID: taStudentID,
+            fullName: ta.name,
+            email: ta.email,
+            responsabilities: [],
+            officeHours: [],
+            duties: BLANK_DUTIES,
+        };
+        course.courseTAs.push(courseTA);
+        await course.save();
 
         res.status(200).json({ courseAdded: courseRegInfo });
 
@@ -141,6 +171,17 @@ export const removeTACurrCourse = asyncHandler(async (req: Request, res: Respons
 
         // add course to prevCourses
         ta.prevCourses.push({ term, termYear, courseNumber, assignedHours: course[0].assignedHours });
+
+        // remove TA from course courseTAs
+        const courseDB = await Course.findOne({ courseNumber });
+        if (!courseDB)
+            throw new Error(`No course found with courseNumber ${courseNumber} in the database!`);
+
+        const courseTAIndex = courseDB.courseTAs.findIndex((courseTA: CourseTA) => courseTA.email === ta.email);
+        if (courseTAIndex === -1)
+            throw new Error(`No courseTA found for this TA for course ${courseNumber} in term ${term} ${termYear}!`);
+        courseDB.courseTAs.splice(courseTAIndex, 1);
+        await courseDB.save();
 
         await ta.save();
         res.status(200).json({ courseRemoved: courseNumber.toUpperCase() });

@@ -1,8 +1,8 @@
 import getFullyQualifiedUrl from "./host";
 
-export const fetchPerformanceLogByTa = async (profEmail: string, taId: string, token: string) => {
+export const fetchPerformanceLogByTa = async (profEmail: string, taStudentID: string, token: string) => {
     try {
-        const res = await fetch(getFullyQualifiedUrl(`/api/performanceLog/${profEmail}/${taId}`), {
+        const res = await fetch(getFullyQualifiedUrl(`/api/performanceLog/${profEmail}/${taStudentID}`), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

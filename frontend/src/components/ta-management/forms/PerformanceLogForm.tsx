@@ -7,6 +7,7 @@ import { fetchPerformanceLogByTa } from "../../../helpers/fetchPerformanceLogs";
 import { PerformanceLog } from "../../../classes/PerformanceLog";
 import LabelledTextbox from "../../admin/LabelledTextbox";
 import { UserContext } from "../../../App";
+import getFullyQualifiedUrl from "../../../helpers/host";
 
 function PerformanceLogForm({ ta }) {
   const [show, setShow] = useState(false);
@@ -20,14 +21,14 @@ function PerformanceLogForm({ ta }) {
     e.preventDefault();
 
     try {
-      const res = await fetch(`http://127.0.0.1:3000/api/performanceLog/add`, {
+      const res = await fetch(getFullyQualifiedUrl("/api/performanceLog/add"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer " + user.token,
         },
         body: JSON.stringify({
-          taStudentID: ta.uuid,
+          taStudentID: ta.studentID,
           courseNumber: course.courseNumber,
           term: course.term,
           profEmail: course.instructorEmail,
@@ -47,13 +48,12 @@ function PerformanceLogForm({ ta }) {
   };
 
   const loadPerformanceLog = async () => {
-    console.log('LOADING')
-    const data = await fetchPerformanceLogByTa(course.instructorEmail, ta.uuid, user.token);
+    const data = await fetchPerformanceLogByTa(course.instructorEmail, ta.studentID, user.token);
     setPerformanceLogs(data.performanceLogs);
   }
 
   useEffect(() => {
-    if(ta) {
+    if (ta) {
       loadPerformanceLog();
     }
   }, [ta]);
@@ -87,7 +87,7 @@ function PerformanceLogForm({ ta }) {
             </Card.Body>
           </Card>
           {performanceLogs && performanceLogs.map((log, i) => (
-              <LabelledTextbox key={i} label={log.courseNumber} value={log.comment} styles={{ marginTop: 10 }}/>
+            <LabelledTextbox key={i} label={log.courseNumber} value={log.comment} styles={{ marginTop: 10 }} />
           ))}
         </Modal.Body>
       </Modal>

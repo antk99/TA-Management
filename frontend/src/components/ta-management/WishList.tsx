@@ -16,10 +16,6 @@ const WishList = () => {
 
     const [wishlists, setWishlists] = useState<Wishlist[]>([]);
 
-    const addToWishList = (ta: CourseTA) => {
-        console.log(ta);
-    }
-
     // fetch wishlists
     const { isLoading: isWishlistsLoading, error: isWishlistsError, sendRequest: getWishlists } = useHttp(
         { url: "/api/wishlist/" + course.instructorEmail },
@@ -31,7 +27,7 @@ const WishList = () => {
         const response = await fetch(getFullyQualifiedUrl("/api/wishlist/add"), {
             method: "POST",
             headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
-            body: JSON.stringify({ profEmail: course.instructorEmail, taStudentID: ta.uuid, courseNumber: course.courseNumber, termFor: course.term, termYearFor: course.year })
+            body: JSON.stringify({ profEmail: course.instructorEmail, taStudentID: ta.studentID, courseNumber: course.courseNumber, termFor: course.term, termYearFor: course.year })
         });
 
         if (!response.ok)
@@ -43,7 +39,10 @@ const WishList = () => {
     };
 
     const handleRemoveTaFromWishlist = async (ta: CourseTA) => {
-        const wishListId = wishlists.find(wishlist => wishlist.taStudentID === ta.uuid)._id;
+        // delete wishlist ONLY for current selected course
+        const wishListId = wishlists.find(wishlist =>
+            wishlist.taStudentID === ta.studentID && wishlist.courseNumber === course.courseNumber &&
+            wishlist.termFor === course.term && wishlist.termYearFor === `${course.year}`)._id;
         const response = await fetch(getFullyQualifiedUrl("/api/wishlist/delete/" + wishListId), {
             method: "DELETE",
             headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
@@ -52,12 +51,14 @@ const WishList = () => {
         if (!response.ok)
             throw new Error("Could not remove course.");
         else {
-            setWishlists(wishlists.filter(wishlist => wishlist && wishlist.taStudentID !== ta.uuid));
+            setWishlists(wishlists.filter(wishlist => wishlist && wishlist.taStudentID !== ta.studentID));
         }
     }
 
     const taBelongsToWishList = (ta: CourseTA) => {
-        return wishlists.some(wishlist => wishlist.taStudentID === ta.uuid);
+        return wishlists.some(wishlist =>
+            wishlist.taStudentID === ta.studentID && wishlist.courseNumber === course.courseNumber &&
+            wishlist.termFor === course.term && wishlist.termYearFor === `${course.year}`);
     }
 
     useEffect(() => {
@@ -71,10 +72,10 @@ const WishList = () => {
                     <Card.Body>
 
                         {course.courseTAs.map((ta, i) => (
-                            <div key={i} className="d-flex align-items-center justify-content-between">
+                            <div key={i} className="d-flex align-items-center justify-content-between flex-column flex-sm-row">
                                 <div>
-                                    <h4>{ta.fullName}</h4>
-                                    <p className="m-0">{ta.email}</p>
+                                    <h4 className="mb-1">{ta.fullName}</h4>
+                                    <p className="m-0 mb-2 mb-sm-0">{ta.email}</p>
                                 </div>
                                 {taBelongsToWishList(ta) ?
                                     <Button variant="outline-danger" onClick={() => handleRemoveTaFromWishlist(ta)}>Remove from wishlist</Button> :
