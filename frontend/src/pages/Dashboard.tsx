@@ -13,6 +13,7 @@ import ManageTAs from "../components/ta-management/ManageTAs";
 import { emptyUser } from "../classes/User";
 import TAAdmin from "../components/admin/TAAdmin";
 import CourseQuota from "../components/admin/CourseQuota";
+import RateTA from "../components/rateTA/RateTA";
 
 
 // these don't need to be in the component since they don't change
@@ -40,6 +41,7 @@ const tabNamesToJSX = new Map<string, JSX.Element>([
   ["TA Admin", <TAAdmin />],
   ["Course Quota", <CourseQuota />],
   ["TA Management", <ManageTAs />],
+  ["Rate TA", <RateTA />]
 ]);
 
 export const ProfileContext = React.createContext<{ profile: UserTypes }>({ profile: UserTypes.Student });

@@ -1,0 +1,52 @@
+#rateTable thead tr {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+}
+
+#rateTable tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+#rateTable {
+    max-height: 600px;
+    overflow: auto;
+    scroll-snap-type: both mandatory;
+}
+
+#rateTable tr {
+    scroll-snap-align: end;
+}
+
+#rateTable table td {
+    border: 1px solid #e9ecee;
+}
+#rateTable th {
+    font-weight: normal;
+    border: 1px solid #e9ecee;
+}
+#rateTable td {
+    font-weight: 200;
+    color: black;
+    border: 1px solid #e9ecee;
+}
+
+#rateTable th:first-child,
+#rateTable td:first-child {
+    border-left: none;
+}
+
+#rateTable th:nth-child(2),
+#rateTable td:nth-child(2) {
+    border-left: none;
+}
+
+#rateTable th:last-child,
+#rateTable td:last-child {
+    border-right: none;
+}
+
+#rateTable .column0 {
+    border: none;
+}

@@ -1,6 +1,6 @@
 import "../../style/labelledTextbox.css";
 
-const LabelledTextbox = ({ label = "", value, styles }: { label?: string, value: any, styles?: any }) => {
+const LabelledTextbox = ({ label = "", value, styles }: { label?: any, value: any, styles?: any }) => {
 
     const padding = label ? "0px 10px 15px 10px" : "10px 10px 10px 10px";
 

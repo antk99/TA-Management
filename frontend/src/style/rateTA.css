@@ -1,0 +1,17 @@
+.fill{
+ color:#FCD53F;
+}
+
+.empty{
+    color:darkgray;
+}
+
+.ta-td{
+    border-left: none;
+    border-right: none;
+}
+
+.fill, .empty{
+    cursor: pointer;
+    font-size: 40px;
+}

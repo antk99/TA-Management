@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import logo from "../../assets/images/mcgill_logo.jpg";
 import "../../App.css";
 import "../../style/login.css";
 import { Row, Form, Col } from "react-bootstrap";
 import { UserTypes } from "../../enums/UserTypes";
-import Select from "react-select"
 import RegisterStudent from "./RegisterStudent";
 import RegisterTA from "./RegisterTA";
 import RegisterProf from "./RegisterProf";
+import getFullyQualifiedURL from "../../helpers/host"
 
 const RegisterGeneralUser = props => {
     const [allCourses, setAllCourses] = useState<Array<String> & any>([]);
     const fetchAllCourses = async () => {
         try {
-            const res = await fetch("http://127.0.0.1:3000/api/course");
+            const res = await fetch(getFullyQualifiedURL("/api/course"));
             const data = await res.json();
             const courses = [];
             for (const d of data.courses) {
