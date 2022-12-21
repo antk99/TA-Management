@@ -28,6 +28,7 @@ function EditTAInformationForm({ ta }) {
     const updatedCourseTAs = course.courseTAs.map((courseTA) => {
       return {
         uuid: courseTA.uuid,
+        studentID: courseTA.studentID,
         responsabilities: courseTA.uuid === ta.uuid ? tempResponsabilities : courseTA.responsabilities,
         officeHours: courseTA.uuid === ta.uuid ? tempOfficeHours : courseTA.officeHours,
         duties: courseTA.uuid === ta.uuid ? tempDuties : courseTA.duties,
@@ -90,7 +91,7 @@ function EditTAInformationForm({ ta }) {
             <Row>
               <Col>
                 <Form.Group className="mb-2" controlId="formBasicEmail">
-                    <Form.Label>Full name</Form.Label>
+                  <Form.Label>Full name</Form.Label>
                   <Form.Control disabled required type="fullname" placeholder="TA full name" value={tempFullname} onChange={(e) => setTempFullname(e.target.value)} />
                 </Form.Group>
               </Col>
@@ -99,31 +100,31 @@ function EditTAInformationForm({ ta }) {
               <Col>
                 <Form.Group className="mb-2" controlId="formBasicEmail">
                   <Form.Label>Responsabilities</Form.Label>
-                    {tempResponsabilities.map((responsability, index) => (
-                      <InputGroup className="mb-2" key={index}>
-                        <Form.Control
-                          required
-                          type="responsability"
-                          placeholder="Responsability"
-                          value={responsability}
-                          onChange={(e) => {
-                            const newResponsabilities = [...tempResponsabilities];
-                            newResponsabilities[index] = e.target.value;
-                            setTempResponsabilities(newResponsabilities);
-                          }}
-                        />
-                        <Button
-                          variant="danger"
-                          onClick={() => {
-                            const newResponsabilities = [...tempResponsabilities];
-                            newResponsabilities.splice(index, 1);
-                            setTempResponsabilities(newResponsabilities);
-                          }}
-                        >
-                          Remove
-                        </Button>
-                      </InputGroup>
-                    ))}
+                  {tempResponsabilities.map((responsability, index) => (
+                    <InputGroup className="mb-2" key={index}>
+                      <Form.Control
+                        required
+                        type="responsability"
+                        placeholder="Responsability"
+                        value={responsability}
+                        onChange={(e) => {
+                          const newResponsabilities = [...tempResponsabilities];
+                          newResponsabilities[index] = e.target.value;
+                          setTempResponsabilities(newResponsabilities);
+                        }}
+                      />
+                      <Button
+                        variant="danger"
+                        onClick={() => {
+                          const newResponsabilities = [...tempResponsabilities];
+                          newResponsabilities.splice(index, 1);
+                          setTempResponsabilities(newResponsabilities);
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </InputGroup>
+                  ))}
                   <Button variant="light" onClick={() => setTempResponsabilities([...tempResponsabilities, ""])}>
                     <AddIcon fontSize="small" /> Add responsability
                   </Button>
@@ -135,7 +136,7 @@ function EditTAInformationForm({ ta }) {
                 <OfficeHoursForm officeHours={tempOfficeHours} setOfficeHours={setTempOfficeHours} />
               </Col>
             </Row>
-             <Row>
+            <Row>
               <Col>
                 <DutiesForm duties={tempDuties} setDuties={setTempDuties} />
               </Col>

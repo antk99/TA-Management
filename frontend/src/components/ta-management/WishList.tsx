@@ -27,7 +27,7 @@ const WishList = () => {
         const response = await fetch(getFullyQualifiedUrl("/api/wishlist/add"), {
             method: "POST",
             headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
-            body: JSON.stringify({ profEmail: course.instructorEmail, taStudentID: ta.uuid, courseNumber: course.courseNumber, termFor: course.term, termYearFor: course.year })
+            body: JSON.stringify({ profEmail: course.instructorEmail, taStudentID: ta.studentID, courseNumber: course.courseNumber, termFor: course.term, termYearFor: course.year })
         });
 
         if (!response.ok)
@@ -39,7 +39,10 @@ const WishList = () => {
     };
 
     const handleRemoveTaFromWishlist = async (ta: CourseTA) => {
-        const wishListId = wishlists.find(wishlist => wishlist.taStudentID === ta.uuid)._id;
+        // delete wishlist ONLY for current selected course
+        const wishListId = wishlists.find(wishlist =>
+            wishlist.taStudentID === ta.studentID && wishlist.courseNumber === course.courseNumber &&
+            wishlist.termFor === course.term && wishlist.termYearFor === `${course.year}`)._id;
         const response = await fetch(getFullyQualifiedUrl("/api/wishlist/delete/" + wishListId), {
             method: "DELETE",
             headers: { "Authorization": "Bearer " + user.token, "Content-Type": "application/json" },
@@ -48,12 +51,14 @@ const WishList = () => {
         if (!response.ok)
             throw new Error("Could not remove course.");
         else {
-            setWishlists(wishlists.filter(wishlist => wishlist && wishlist.taStudentID !== ta.uuid));
+            setWishlists(wishlists.filter(wishlist => wishlist && wishlist.taStudentID !== ta.studentID));
         }
     }
 
     const taBelongsToWishList = (ta: CourseTA) => {
-        return wishlists.some(wishlist => wishlist.taStudentID === ta.uuid);
+        return wishlists.some(wishlist =>
+            wishlist.taStudentID === ta.studentID && wishlist.courseNumber === course.courseNumber &&
+            wishlist.termFor === course.term && wishlist.termYearFor === `${course.year}`);
     }
 
     useEffect(() => {
