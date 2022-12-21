@@ -10,6 +10,7 @@ import OfficeHoursForm from "./OfficeHoursForm";
 import { UserContext } from "../../../App";
 import DutiesForm from "./DutiesForm";
 import { Duties } from "../../../classes/Duties";
+import getFullyQualifiedUrl from "../../../helpers/host";
 
 function EditTAInformationForm({ ta }) {
   const [show, setShow] = useState(false);
@@ -36,7 +37,7 @@ function EditTAInformationForm({ ta }) {
     });
 
     try {
-      const res = await fetch(`http://127.0.0.1:3000/api/course/edit/${course.id}`, {
+      const res = await fetch(getFullyQualifiedUrl(`/api/course/edit/${course.id}`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

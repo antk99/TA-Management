@@ -7,6 +7,7 @@ import { fetchPerformanceLogByTa } from "../../../helpers/fetchPerformanceLogs";
 import { PerformanceLog } from "../../../classes/PerformanceLog";
 import LabelledTextbox from "../../admin/LabelledTextbox";
 import { UserContext } from "../../../App";
+import getFullyQualifiedUrl from "../../../helpers/host";
 
 function PerformanceLogForm({ ta }) {
   const [show, setShow] = useState(false);
@@ -20,7 +21,7 @@ function PerformanceLogForm({ ta }) {
     e.preventDefault();
 
     try {
-      const res = await fetch(`http://127.0.0.1:3000/api/performanceLog/add`, {
+      const res = await fetch(getFullyQualifiedUrl("/api/performanceLog/add"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
