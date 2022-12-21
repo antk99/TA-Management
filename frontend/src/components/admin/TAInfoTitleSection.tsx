@@ -9,16 +9,20 @@ type props = {
 };
 
 const TAInfoTitleSection = ({ name, legalName, averageScore }: props) => {
+    const showLegalName = legalName && name !== legalName;
+    const legalNameElement = (
+        <OverlayTrigger placement='top' overlay={<Tooltip>Legal Name</Tooltip>}>
+            <span>{legalName}</span>
+        </OverlayTrigger>
+    );
 
     return (
         <div className="rowC">
             <h2>
-                {name}&nbsp;
-                {"("}
-                <OverlayTrigger placement='top' overlay={<Tooltip>Legal Name</Tooltip>}>
-                    <span style={{ textDecoration: "none", borderBottom: "1px dotted black" }}>{legalName && name !== legalName && `${legalName}`}</span>
-                </OverlayTrigger>
-                {")"}&nbsp;
+                {name}
+                {showLegalName && " ("}
+                {showLegalName && legalNameElement}
+                {showLegalName && ") "}
                 <OverlayTrigger placement='top' overlay={<Tooltip>Student Rating Average {`(${averageScore})`}</Tooltip>}>
                     <span>{convertScoreToStars(averageScore)}</span>
                 </OverlayTrigger>
