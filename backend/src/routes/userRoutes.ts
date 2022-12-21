@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllUsers, getUserByID, registerUsersFromFile, getUserByEmail, deleteUser, register, login } from '../controllers/userController';
+import { getAllUsers, getUserByID, registerUsersFromFile, getUserByEmail, deleteUser, register, login, updateUser } from '../controllers/userController';
 import multer from "multer";
 import requireAuth from '../middleware/requireAuth';
 
@@ -16,5 +16,6 @@ router.get("/:id", requireAuth, getUserByID);
 router.get("/email/:email", requireAuth, getUserByEmail);
 router.post("/upload", requireAuth, upload.single("csvFile"), registerUsersFromFile);
 router.delete("/delete/:email", requireAuth, deleteUser);
+router.patch("/edit/:email", requireAuth, updateUser);
 
 export default router;

@@ -16,7 +16,6 @@ export const fetchCourseData = async (token, profile = null, userId = null) => {
             },
         });
         const data = await res.json();
-        console.log(data)
         const courseObject = [];
         for (const d of data.courses) {
             const instructorRes = await fetch(getFullyQualifiedUrl("/api/users/" + d.courseInstructor), {

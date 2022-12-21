@@ -72,6 +72,42 @@ export const registerCourseFromFile = asyncHandler(async (req: Request, res: Res
     res.status(200).json({});
 });
 
+// @Desc Edit Course Details
+// @Route /api/course/editDetails/:courseID
+// @Method PATCH
+export const editCourseDetails = asyncHandler(async (req: Request, res: Response) => {
+    let { courseName, courseDesc, term, year, courseNumber, instructorEmail } = req.body;
+    const courseID = req.params.courseID;
+
+    try {
+        if (!courseName || !courseDesc || !term || !year || !courseNumber || !instructorEmail)
+            throw new Error("Missing one of the required fields: courseName, courseDesc, term, year, courseNumber, instructorEmail");
+
+        const courseInstructor = await Professor.findOne({ profEmail: instructorEmail });
+        if (!courseInstructor)
+            throw new Error(`No professor with email: ${instructorEmail} found in the database! Add professor and continue.`);
+
+        courseNumber = courseNumber.toUpperCase();
+        term = capitalizeFirstLetter(term)  // capitalize first letter: fall -> Fall
+
+        const course = await Course.findById({ _id: courseID });
+        if (!course)
+            throw new Error(`No course with ID: ${courseID} found in the database! Add course and continue.`);
+
+        course.courseName = courseName;
+        course.courseDesc = courseDesc;
+        course.term = term;
+        course.year = year;
+        course.courseNumber = courseNumber;
+        course.courseInstructor = courseInstructor.professor;
+        await course.save();
+        res.status(200).json({ course });
+
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 
 // @Desc Add Course
 // @Route /api/course/add

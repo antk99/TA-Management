@@ -12,6 +12,30 @@ export const getAllProfs = asyncHandler(async (req: Request, res: Response) => {
     res.status(200).json({ profs });
 });
 
+// @Desc Edit prof details
+// @Route /api/prof/edit/:profEmail
+// @Method PATCH
+export const editProfDetails = asyncHandler(async (req: Request, res: Response) => {
+    const profEmail = req.params.profEmail;
+    const { faculty, department } = req.body;
+
+    try {
+        if (!faculty || !department)
+            throw new Error("Missing at least one of required fields: faculty, department.");
+
+        const prof = await Professor.findOne({ profEmail });
+        if (!prof)
+            throw new Error("Professor not found");
+
+        prof.faculty = faculty;
+        prof.department = department;
+        await prof.save();
+        res.status(201).json({ prof });
+    } catch (error: any) {
+        res.status(404).json({ 'error': error.message });
+    }
+});
+
 // @Desc Save multiple profs
 // @Route /api/prof/upload
 // @Method POST

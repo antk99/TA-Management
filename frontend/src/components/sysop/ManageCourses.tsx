@@ -22,18 +22,14 @@ const ManageCourses = () => {
           getFullyQualifiedUrl("/api/users/" + d.courseInstructor),
           { headers: { Authorization: "Bearer " + user.token } }
         );
-        let item = {
-          courseNumber: d.courseNumber,
-          courseName: d.courseName,
-          courseDesc: d.courseDesc,
-          term: d.term,
-          year: d.year,
-        }
+        let item = { ...d };
         if (instructorRes) {
           const instructorData = await instructorRes.json();
           item["instructorName"] = instructorData.user.firstName + " " + instructorData.user.lastName;
+          item["instructorEmail"] = instructorData.user.email;
         } else {
-          item["instructorName"] = ""
+          item["instructorName"] = "";
+          item["instructorName"] = "";
         }
         courseObject.push(item);
       }
@@ -68,6 +64,7 @@ const ManageCourses = () => {
                 <th className="column4">Course Semester</th>
                 <th className="column5">Course Year</th>
                 <th className="column6">Course Instructor</th>
+                <th className="column0"></th>
               </tr>
             </thead>
             <tbody>

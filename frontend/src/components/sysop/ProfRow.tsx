@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
 import RemoveIcon from "@material-ui/icons/Remove";
-import OpenInFullIcon from "@mui/icons-material/OpenInFull";
+import EditIcon from '@mui/icons-material/Edit';
 import "../../style/userTable.css";
 import { Professor } from "../../classes/Professor";
-import { Course } from "../../classes/Course";
 import { UserContext } from "../../App";
 import { useHttp } from "../../hooks/useHttp";
 import getFullyQualifiedUrl from "../../helpers/host";
+import EditProfForm from "./EditProfForm";
 
 const ProfRow = ({ professor, fetchProfData }: { professor: Professor; fetchProfData: Function }) => {
   const { user } = useContext(UserContext);
   const [courses, setCourses] = useState<Array<any>>([]);
+  const [showEditProf, setShowEditProf] = useState<boolean>(false);
 
   const { isLoading, error, sendRequest: fetchCourses } = useHttp(
     { url: "/api/course/instructor/" + professor.uuid },
@@ -45,19 +46,27 @@ const ProfRow = ({ professor, fetchProfData }: { professor: Professor; fetchProf
   };
 
   return (
-    <tr className="body">
-      <td className="column0">
-        <button className="btn btn-secondary" onClick={handleDeleteProf} style={{ color: "red" }}>
-          <RemoveIcon />
-        </button>
-      </td>
-      <td className="column1">{professor.email}</td>
-      <td className="column2">{professor.firstName}</td>
-      <td className="column3">{professor.lastName}</td>
-      <td className="column4">{professor.faculty}</td>
-      <td className="column5">{professor.department}</td>
-      <td className="column6">{courses.join(", ")}</td>
-    </tr>
+    <>
+      <EditProfForm profToEdit={professor} fetchProfData={fetchProfData} show={showEditProf} setShow={setShowEditProf} />
+      <tr className="body">
+        <td className="column0">
+          <button className="btn btn-secondary" onClick={handleDeleteProf} style={{ color: "red" }}>
+            <RemoveIcon />
+          </button>
+        </td>
+        <td className="column1">{professor.email}</td>
+        <td className="column2">{professor.firstName}</td>
+        <td className="column3">{professor.lastName}</td>
+        <td className="column4">{professor.faculty}</td>
+        <td className="column5">{professor.department}</td>
+        <td className="column6">{courses.join(", ")}</td>
+        <td className="column0">
+          <button className="btn btn-secondary" onClick={() => { setShowEditProf(true) }} style={{ color: "darkgray" }}>
+            <EditIcon />
+          </button>
+        </td>
+      </tr>
+    </>
   );
 };
 
