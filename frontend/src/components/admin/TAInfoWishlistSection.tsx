@@ -54,7 +54,7 @@ const TAInfoWishlistSection = ({ wishlists }: props) => {
     );
 
     return (
-        <TAInfoCard title={title} style={{ width: '50%' }}>
+        <TAInfoCard title={title} style={{ width: '50%' }} bodyStyle={{ justifyContent: "center" }}>
             <div className="wishlistProfessors">
                 {hasWishlistMembership && Array.from(wishlistProfsUnique.values()).map(profName => (
                     <OverlayTrigger key={profName} placement='top' overlay={<Tooltip>{profWishlistTooltips[profName]}</Tooltip>}>
