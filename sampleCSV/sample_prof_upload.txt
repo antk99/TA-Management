@@ -1,3 +1,3 @@
-mathieu@comp307.com,Science,Computer Science
-joseph@comp307.com,Science,Computer Science
-sylvain@comp307.com,Engineering,Physics
+test1@comp307.com,Science,Computer Science
+test2@comp307.com,Arts,Mathematics
+test3@comp307.com,Science,Computer Science
