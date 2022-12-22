@@ -35,7 +35,7 @@ const PerformanceLogSchema = new mongoose.Schema({
     },
 
 }, {
-    timestamps: false
+    timestamps: true
 })
 
 const PerformanceLog = mongoose.model<IPerformanceLog>("PerformanceLog", PerformanceLogSchema);
