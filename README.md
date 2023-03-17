@@ -8,9 +8,10 @@ We were awarded as the **winners for the Fall 2022 Web Development Competition f
 URL - must be on campus WIFI or McGill VPN:
 	https://fall2022-comp307-group7.cs.mcgill.ca
 
-Login Information:
-email: joseph@comp307.com
-password: password
+### Login Information:
+email: `joseph@comp307.com`
+
+password: `password`
 
 - You may login as any User on the Users tab with their corresponding email. All passwords for this site are "password".
 
@@ -18,6 +19,6 @@ password: password
 - This is necessary for it to work especially for the features which no template was provided by the professor.
 
 ### **Team:**
-Anthony Kumar (Leader)
-Arthur Monnier 	
-Yvona Acimovic
+- Anthony Kumar (Leader)
+- Arthur Monnier 	
+- Yvona Acimovic
